@@ -1,0 +1,353 @@
+{
+  "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+  "title": {
+    "text": "Creative arts graduates favour the inner city",
+    "subtitle": [
+      "Creative arts share of qualified residents, 2016.",
+      "Close-ups of Sydney and Melbourne on the right.",
+      "One colour scale for all three maps."
+    ]
+  },
+  "hconcat": [
+    {
+      "title": {
+        "text": "Australia",
+        "fontSize": 13,
+        "anchor": "start"
+      },
+      "width": 240,
+      "height": 270,
+      "data": {
+        "url": "data/lga_boundaries_2016.geojson",
+        "format": {
+          "property": "features"
+        }
+      },
+      "projection": {
+        "type": "conicEqualArea",
+        "rotate": [
+          -132,
+          0
+        ],
+        "center": [
+          0,
+          -27
+        ],
+        "parallels": [
+          -18,
+          -36
+        ],
+        "scale": 355,
+        "translate": [
+          120,
+          135
+        ]
+      },
+      "transform": [
+        {
+          "lookup": "properties.code",
+          "from": {
+            "data": {
+              "url": "data/lga_design_qualifications_2016.csv"
+            },
+            "key": "code",
+            "fields": [
+              "creative_arts",
+              "total",
+              "architecture_building"
+            ]
+          }
+        },
+        {
+          "calculate": "toNumber(datum.creative_arts) / toNumber(datum.total)",
+          "as": "share"
+        }
+      ],
+      "mark": {
+        "type": "geoshape",
+        "stroke": "white",
+        "strokeWidth": 0.4,
+        "clip": true
+      },
+      "encoding": {
+        "color": {
+          "field": "share",
+          "type": "quantitative",
+          "title": "Creative arts share of qualified residents",
+          "scale": {
+            "scheme": "oranges",
+            "domain": [
+              0,
+              0.11
+            ],
+            "clamp": true
+          },
+          "legend": {
+            "format": ".0%",
+            "orient": "bottom",
+            "direction": "horizontal",
+            "gradientLength": 260,
+            "title": "Creative arts share of qualified residents",
+            "titleLimit": 300
+          }
+        },
+        "tooltip": [
+          {
+            "field": "properties.name",
+            "title": "Local government area"
+          },
+          {
+            "field": "creative_arts",
+            "title": "Creative arts",
+            "format": ","
+          },
+          {
+            "field": "architecture_building",
+            "title": "Architecture and building",
+            "format": ","
+          },
+          {
+            "field": "total",
+            "title": "Residents with a qualification",
+            "format": ","
+          },
+          {
+            "field": "share",
+            "title": "Creative arts share",
+            "format": ".1%"
+          }
+        ]
+      }
+    },
+    {
+      "title": {
+        "text": "Greater Sydney",
+        "fontSize": 13,
+        "anchor": "start"
+      },
+      "width": 210,
+      "height": 270,
+      "data": {
+        "url": "data/lga_boundaries_2016.geojson",
+        "format": {
+          "property": "features"
+        }
+      },
+      "projection": {
+        "type": "mercator",
+        "center": [
+          151.0,
+          -33.825
+        ],
+        "scale": 14138,
+        "translate": [
+          105,
+          135
+        ]
+      },
+      "transform": [
+        {
+          "filter": "datum.properties.metro == 'Sydney'"
+        },
+        {
+          "lookup": "properties.code",
+          "from": {
+            "data": {
+              "url": "data/lga_design_qualifications_2016.csv"
+            },
+            "key": "code",
+            "fields": [
+              "creative_arts",
+              "total",
+              "architecture_building"
+            ]
+          }
+        },
+        {
+          "calculate": "toNumber(datum.creative_arts) / toNumber(datum.total)",
+          "as": "share"
+        }
+      ],
+      "mark": {
+        "type": "geoshape",
+        "stroke": "white",
+        "strokeWidth": 0.7,
+        "clip": true
+      },
+      "encoding": {
+        "color": {
+          "field": "share",
+          "type": "quantitative",
+          "title": "Creative arts share of qualified residents",
+          "scale": {
+            "scheme": "oranges",
+            "domain": [
+              0,
+              0.11
+            ],
+            "clamp": true
+          },
+          "legend": {
+            "format": ".0%",
+            "orient": "bottom",
+            "direction": "horizontal",
+            "gradientLength": 260,
+            "title": "Creative arts share of qualified residents",
+            "titleLimit": 300
+          }
+        },
+        "tooltip": [
+          {
+            "field": "properties.name",
+            "title": "Local government area"
+          },
+          {
+            "field": "creative_arts",
+            "title": "Creative arts",
+            "format": ","
+          },
+          {
+            "field": "architecture_building",
+            "title": "Architecture and building",
+            "format": ","
+          },
+          {
+            "field": "total",
+            "title": "Residents with a qualification",
+            "format": ","
+          },
+          {
+            "field": "share",
+            "title": "Creative arts share",
+            "format": ".1%"
+          }
+        ]
+      }
+    },
+    {
+      "title": {
+        "text": "Greater Melbourne",
+        "fontSize": 13,
+        "anchor": "start"
+      },
+      "width": 210,
+      "height": 270,
+      "data": {
+        "url": "data/lga_boundaries_2016.geojson",
+        "format": {
+          "property": "features"
+        }
+      },
+      "projection": {
+        "type": "mercator",
+        "center": [
+          145.1,
+          -37.95
+        ],
+        "scale": 7304,
+        "translate": [
+          105,
+          135
+        ]
+      },
+      "transform": [
+        {
+          "filter": "datum.properties.metro == 'Melbourne'"
+        },
+        {
+          "lookup": "properties.code",
+          "from": {
+            "data": {
+              "url": "data/lga_design_qualifications_2016.csv"
+            },
+            "key": "code",
+            "fields": [
+              "creative_arts",
+              "total",
+              "architecture_building"
+            ]
+          }
+        },
+        {
+          "calculate": "toNumber(datum.creative_arts) / toNumber(datum.total)",
+          "as": "share"
+        }
+      ],
+      "mark": {
+        "type": "geoshape",
+        "stroke": "white",
+        "strokeWidth": 0.7,
+        "clip": true
+      },
+      "encoding": {
+        "color": {
+          "field": "share",
+          "type": "quantitative",
+          "title": "Creative arts share of qualified residents",
+          "scale": {
+            "scheme": "oranges",
+            "domain": [
+              0,
+              0.11
+            ],
+            "clamp": true
+          },
+          "legend": {
+            "format": ".0%",
+            "orient": "bottom",
+            "direction": "horizontal",
+            "gradientLength": 260,
+            "title": "Creative arts share of qualified residents",
+            "titleLimit": 300
+          }
+        },
+        "tooltip": [
+          {
+            "field": "properties.name",
+            "title": "Local government area"
+          },
+          {
+            "field": "creative_arts",
+            "title": "Creative arts",
+            "format": ","
+          },
+          {
+            "field": "architecture_building",
+            "title": "Architecture and building",
+            "format": ","
+          },
+          {
+            "field": "total",
+            "title": "Residents with a qualification",
+            "format": ","
+          },
+          {
+            "field": "share",
+            "title": "Creative arts share",
+            "format": ".1%"
+          }
+        ]
+      }
+    }
+  ],
+  "resolve": {
+    "scale": {
+      "color": "shared"
+    }
+  },
+  "config": {
+    "view": {
+      "stroke": null
+    },
+    "title": {
+      "font": "Playfair Display, Georgia, serif",
+      "fontSize": 20,
+      "fontWeight": 700,
+      "anchor": "start",
+      "subtitleFontSize": 13,
+      "subtitleColor": "#555",
+      "subtitlePadding": 4,
+      "offset": 10
+    }
+  }
+}

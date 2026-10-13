@@ -1,0 +1,205 @@
+{
+  "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+  "title": {
+    "text": "NSW and Victoria hold two thirds of firms",
+    "subtitle": [
+      "Design businesses added together, June 2012.",
+      "Bigger circle means more businesses.",
+      "Colour shows each state's largest industry."
+    ]
+  },
+  "width": "container",
+  "height": 480,
+  "projection": {
+    "type": "conicEqualArea",
+    "rotate": [
+      -132,
+      0
+    ],
+    "center": [
+      0,
+      -27
+    ],
+    "parallels": [
+      -18,
+      -36
+    ]
+  },
+  "layer": [
+    {
+      "data": {
+        "url": "data/australia_states.geojson",
+        "format": {
+          "property": "features"
+        }
+      },
+      "mark": {
+        "type": "geoshape",
+        "fill": "#e9e7e2",
+        "stroke": "white",
+        "strokeWidth": 1.5
+      }
+    },
+    {
+      "data": {
+        "url": "data/state_labels.csv"
+      },
+      "transform": [
+        {
+          "lookup": "state",
+          "from": {
+            "data": {
+              "url": "data/design_businesses_by_state_2012.csv"
+            },
+            "key": "state",
+            "fields": [
+              "Architectural services",
+              "Advertising services",
+              "Other specialised design services"
+            ]
+          },
+          "as": [
+            "arch",
+            "adv",
+            "oth"
+          ]
+        },
+        {
+          "calculate": "toNumber(datum.arch) + toNumber(datum.adv) + toNumber(datum.oth)",
+          "as": "total"
+        },
+        {
+          "calculate": "toNumber(datum.arch) >= toNumber(datum.adv) && toNumber(datum.arch) >= toNumber(datum.oth) ? 'Architectural services' : (toNumber(datum.adv) >= toNumber(datum.oth) ? 'Advertising services' : 'Other specialised design services')",
+          "as": "largest"
+        },
+        {
+          "calculate": "datum.state + ' ' + format(datum.total, ',')",
+          "as": "label"
+        }
+      ],
+      "layer": [
+        {
+          "mark": {
+            "type": "circle",
+            "opacity": 0.8,
+            "stroke": "white",
+            "strokeWidth": 1.5
+          },
+          "encoding": {
+            "longitude": {
+              "field": "lon",
+              "type": "quantitative"
+            },
+            "latitude": {
+              "field": "lat",
+              "type": "quantitative"
+            },
+            "size": {
+              "field": "total",
+              "type": "quantitative",
+              "title": "Design businesses",
+              "scale": {
+                "range": [
+                  0,
+                  5200
+                ]
+              },
+              "legend": {
+                "orient": "bottom-left",
+                "values": [
+                  500,
+                  2000,
+                  5000,
+                  10000
+                ],
+                "format": ",.0f"
+              }
+            },
+            "color": {
+              "field": "largest",
+              "type": "nominal",
+              "title": "Largest industry",
+              "scale": {
+                "domain": [
+                  "Architectural services",
+                  "Advertising services",
+                  "Other specialised design services"
+                ],
+                "range": [
+                  "#1f78b4",
+                  "#d95f02",
+                  "#7570b3"
+                ]
+              },
+              "legend": {
+                "orient": "top-left"
+              }
+            },
+            "tooltip": [
+              {
+                "field": "state",
+                "title": "State"
+              },
+              {
+                "field": "arch",
+                "title": "Architecture",
+                "format": ","
+              },
+              {
+                "field": "adv",
+                "title": "Advertising",
+                "format": ","
+              },
+              {
+                "field": "oth",
+                "title": "Other specialised design",
+                "format": ","
+              },
+              {
+                "field": "total",
+                "title": "Total",
+                "format": ","
+              }
+            ]
+          }
+        },
+        {
+          "mark": {
+            "type": "text",
+            "fontSize": 12,
+            "fontWeight": "bold",
+            "color": "#1a1a1a"
+          },
+          "encoding": {
+            "longitude": {
+              "field": "lon",
+              "type": "quantitative"
+            },
+            "latitude": {
+              "field": "labelLat",
+              "type": "quantitative"
+            },
+            "text": {
+              "field": "label"
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "config": {
+    "view": {
+      "stroke": null
+    },
+    "title": {
+      "font": "Playfair Display, Georgia, serif",
+      "fontSize": 20,
+      "fontWeight": 700,
+      "anchor": "start",
+      "subtitleFontSize": 13,
+      "subtitleColor": "#555",
+      "subtitlePadding": 4,
+      "offset": 10
+    }
+  }
+}

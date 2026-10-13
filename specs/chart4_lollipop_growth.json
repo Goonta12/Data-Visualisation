@@ -1,0 +1,171 @@
+{
+  "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+  "title": {
+    "text": "Advertising grew fastest; fashion grew least",
+    "subtitle": [
+      "Growth in people doing each activity,",
+      "2001 to 2007."
+    ]
+  },
+  "width": 520,
+  "height": {
+    "step": 46
+  },
+  "data": {
+    "url": "data/design_participation.csv"
+  },
+  "transform": [
+    {
+      "filter": "datum.year == 2001 || datum.year == 2007"
+    },
+    {
+      "pivot": "year",
+      "value": "people",
+      "groupby": [
+        "activity"
+      ]
+    },
+    {
+      "calculate": "(datum['2007'] - datum['2001']) / datum['2001']",
+      "as": "growth"
+    }
+  ],
+  "encoding": {
+    "y": {
+      "field": "activity",
+      "type": "nominal",
+      "title": null,
+      "sort": [
+        "Advertising",
+        "Graphic design",
+        "Other design",
+        "Fashion design"
+      ],
+      "axis": {
+        "domain": false,
+        "ticks": false,
+        "labelFontSize": 13,
+        "labelPadding": 8
+      }
+    },
+    "color": {
+      "field": "activity",
+      "type": "nominal",
+      "legend": null,
+      "scale": {
+        "domain": [
+          "Advertising",
+          "Graphic design",
+          "Other design",
+          "Fashion design"
+        ],
+        "range": [
+          "#d95f02",
+          "#1b9e77",
+          "#7570b3",
+          "#e7298a"
+        ]
+      }
+    }
+  },
+  "layer": [
+    {
+      "mark": {
+        "type": "rule",
+        "strokeWidth": 3
+      },
+      "encoding": {
+        "x": {
+          "field": "growth",
+          "type": "quantitative",
+          "title": "Increase between 2001 and 2007",
+          "scale": {
+            "domain": [
+              0,
+              1
+            ]
+          },
+          "axis": {
+            "format": "%"
+          }
+        },
+        "x2": {
+          "datum": 0
+        }
+      }
+    },
+    {
+      "mark": {
+        "type": "circle",
+        "size": 500,
+        "opacity": 1
+      },
+      "encoding": {
+        "x": {
+          "field": "growth",
+          "type": "quantitative"
+        },
+        "tooltip": [
+          {
+            "field": "activity",
+            "title": "Activity"
+          },
+          {
+            "field": "2001",
+            "title": "People in 2001",
+            "format": ","
+          },
+          {
+            "field": "2007",
+            "title": "People in 2007",
+            "format": ","
+          },
+          {
+            "field": "growth",
+            "title": "Increase",
+            "format": ".0%"
+          }
+        ]
+      }
+    },
+    {
+      "mark": {
+        "type": "text",
+        "align": "left",
+        "dx": 16,
+        "fontSize": 13,
+        "fontWeight": "bold"
+      },
+      "encoding": {
+        "x": {
+          "field": "growth",
+          "type": "quantitative"
+        },
+        "text": {
+          "field": "growth",
+          "type": "quantitative",
+          "format": "+.0%"
+        }
+      }
+    }
+  ],
+  "config": {
+    "view": {
+      "stroke": null
+    },
+    "axis": {
+      "grid": true,
+      "gridColor": "#eee"
+    },
+    "title": {
+      "font": "Playfair Display, Georgia, serif",
+      "fontSize": 20,
+      "fontWeight": 700,
+      "anchor": "start",
+      "subtitleFontSize": 13,
+      "subtitleColor": "#555",
+      "subtitlePadding": 4,
+      "offset": 10
+    }
+  }
+}

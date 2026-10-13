@@ -1,0 +1,226 @@
+{
+  "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+  "title": {
+    "text": "Per person, NSW, Victoria and WA lead",
+    "subtitle": [
+      "Design businesses per 100,000 residents, June 2001.",
+      "Bars add the three industries together."
+    ]
+  },
+  "data": {
+    "url": "data/design_businesses_by_state_2001.csv"
+  },
+  "transform": [
+    {
+      "lookup": "state",
+      "from": {
+        "data": {
+          "url": "data/state_population_2001.csv"
+        },
+        "key": "state",
+        "fields": [
+          "population"
+        ]
+      }
+    },
+    {
+      "fold": [
+        "Architectural services",
+        "Advertising services",
+        "Commercial art and display services"
+      ],
+      "as": [
+        "industry_long",
+        "businesses"
+      ]
+    },
+    {
+      "calculate": "datum.industry_long == 'Architectural services' ? 'Architecture' : (datum.industry_long == 'Advertising services' ? 'Advertising' : 'Commercial art')",
+      "as": "industry"
+    },
+    {
+      "calculate": "toNumber(datum.businesses) / toNumber(datum.population) * 100000",
+      "as": "rate"
+    }
+  ],
+  "hconcat": [
+    {
+      "width": 360,
+      "height": 320,
+      "encoding": {
+        "x": {
+          "field": "industry",
+          "type": "nominal",
+          "title": null,
+          "sort": [
+            "Architecture",
+            "Advertising",
+            "Commercial art"
+          ],
+          "axis": {
+            "orient": "top",
+            "labelAngle": 0,
+            "labelFontSize": 12,
+            "domain": false,
+            "ticks": false
+          }
+        },
+        "y": {
+          "field": "state",
+          "type": "nominal",
+          "title": null,
+          "sort": {
+            "field": "rate",
+            "op": "sum",
+            "order": "descending"
+          },
+          "axis": {
+            "domain": false,
+            "ticks": false
+          }
+        }
+      },
+      "layer": [
+        {
+          "mark": {
+            "type": "rect",
+            "stroke": "white",
+            "strokeWidth": 2
+          },
+          "encoding": {
+            "color": {
+              "field": "rate",
+              "type": "quantitative",
+              "title": "Businesses per 100,000 people",
+              "scale": {
+                "scheme": "teals"
+              },
+              "legend": {
+                "orient": "bottom",
+                "direction": "horizontal",
+                "gradientLength": 200
+              }
+            },
+            "tooltip": [
+              {
+                "field": "state",
+                "title": "State"
+              },
+              {
+                "field": "industry",
+                "title": "Industry"
+              },
+              {
+                "field": "businesses",
+                "title": "Businesses",
+                "format": ","
+              },
+              {
+                "field": "population",
+                "title": "Residents",
+                "format": ","
+              },
+              {
+                "field": "rate",
+                "title": "Per 100,000 people",
+                "format": ".0f"
+              }
+            ]
+          }
+        },
+        {
+          "mark": {
+            "type": "text",
+            "fontSize": 12
+          },
+          "encoding": {
+            "text": {
+              "field": "rate",
+              "type": "quantitative",
+              "format": ".0f"
+            },
+            "color": {
+              "condition": {
+                "test": "datum.rate > 75",
+                "value": "white"
+              },
+              "value": "#222"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "width": 150,
+      "height": 320,
+      "encoding": {
+        "y": {
+          "field": "state",
+          "type": "nominal",
+          "sort": {
+            "field": "rate",
+            "op": "sum",
+            "order": "descending"
+          },
+          "axis": null
+        }
+      },
+      "layer": [
+        {
+          "mark": {
+            "type": "bar",
+            "color": "#1b7f79"
+          },
+          "encoding": {
+            "x": {
+              "aggregate": "sum",
+              "field": "rate",
+              "type": "quantitative",
+              "title": "All three industries",
+              "axis": {
+                "grid": false,
+                "tickCount": 3
+              }
+            }
+          }
+        },
+        {
+          "mark": {
+            "type": "text",
+            "align": "left",
+            "dx": 4,
+            "fontSize": 12
+          },
+          "encoding": {
+            "x": {
+              "aggregate": "sum",
+              "field": "rate",
+              "type": "quantitative"
+            },
+            "text": {
+              "aggregate": "sum",
+              "field": "rate",
+              "type": "quantitative",
+              "format": ".0f"
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "config": {
+    "view": {
+      "stroke": null
+    },
+    "title": {
+      "font": "Playfair Display, Georgia, serif",
+      "fontSize": 20,
+      "fontWeight": 700,
+      "anchor": "start",
+      "subtitleFontSize": 13,
+      "subtitleColor": "#555",
+      "subtitlePadding": 4,
+      "offset": 10
+    }
+  }
+}

@@ -1,0 +1,526 @@
+{
+  "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+  "title": {
+    "text": "Inner cities lean creative; outer suburbs lean building",
+    "subtitle": [
+      "Circle size: residents in the two fields.",
+      "Orange: more creative arts. Blue: more building.",
+      "Census 2016, by local government area."
+    ]
+  },
+  "hconcat": [
+    {
+      "title": {
+        "text": "Greater Brisbane",
+        "fontSize": 13,
+        "anchor": "start"
+      },
+      "width": 230,
+      "height": 270,
+      "projection": {
+        "type": "mercator",
+        "center": [
+          153.05,
+          -27.45
+        ],
+        "scale": 7590,
+        "translate": [
+          115,
+          135
+        ]
+      },
+      "layer": [
+        {
+          "data": {
+            "url": "data/lga_boundaries_2016.geojson",
+            "format": {
+              "property": "features"
+            }
+          },
+          "transform": [
+            {
+              "filter": "datum.properties.metro == 'Brisbane'"
+            }
+          ],
+          "mark": {
+            "type": "geoshape",
+            "fill": "#f1efe9",
+            "stroke": "#cfcbbf",
+            "strokeWidth": 0.6,
+            "clip": true
+          }
+        },
+        {
+          "data": {
+            "url": "data/lga_centroids.csv"
+          },
+          "transform": [
+            {
+              "filter": "datum.metro == 'Brisbane'"
+            },
+            {
+              "lookup": "code",
+              "from": {
+                "data": {
+                  "url": "data/lga_design_qualifications_2016.csv"
+                },
+                "key": "code",
+                "fields": [
+                  "name",
+                  "architecture_building",
+                  "creative_arts",
+                  "total"
+                ]
+              }
+            },
+            {
+              "calculate": "toNumber(datum.architecture_building) + toNumber(datum.creative_arts)",
+              "as": "design"
+            },
+            {
+              "calculate": "toNumber(datum.creative_arts) / datum.design",
+              "as": "cshare"
+            }
+          ],
+          "mark": {
+            "type": "circle",
+            "stroke": "#555",
+            "strokeWidth": 0.6,
+            "opacity": 0.9,
+            "clip": true
+          },
+          "encoding": {
+            "longitude": {
+              "field": "lon",
+              "type": "quantitative"
+            },
+            "latitude": {
+              "field": "lat",
+              "type": "quantitative"
+            },
+            "size": {
+              "field": "design",
+              "type": "quantitative",
+              "title": "Residents in the two fields",
+              "scale": {
+                "range": [
+                  10,
+                  1500
+                ]
+              },
+              "legend": {
+                "orient": "bottom",
+                "direction": "horizontal",
+                "values": [
+                  1000,
+                  5000,
+                  10000,
+                  25000
+                ],
+                "format": ",.0f",
+                "title": "Residents in the two fields",
+                "titleLimit": 300
+              }
+            },
+            "color": {
+              "field": "cshare",
+              "type": "quantitative",
+              "title": "Creative arts share of the two fields",
+              "scale": {
+                "domain": [
+                  0.2,
+                  0.5,
+                  0.7
+                ],
+                "range": [
+                  "#1f78b4",
+                  "#eeeeee",
+                  "#d95f02"
+                ],
+                "clamp": true
+              },
+              "legend": {
+                "format": ".0%",
+                "orient": "bottom",
+                "direction": "horizontal",
+                "gradientLength": 220,
+                "title": "Creative arts share of the two fields",
+                "titleLimit": 300
+              }
+            },
+            "tooltip": [
+              {
+                "field": "name",
+                "title": "Local government area"
+              },
+              {
+                "field": "architecture_building",
+                "title": "Architecture and building",
+                "format": ","
+              },
+              {
+                "field": "creative_arts",
+                "title": "Creative arts",
+                "format": ","
+              },
+              {
+                "field": "cshare",
+                "title": "Creative arts share",
+                "format": ".0%"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "title": {
+        "text": "Greater Adelaide",
+        "fontSize": 13,
+        "anchor": "start"
+      },
+      "width": 230,
+      "height": 270,
+      "projection": {
+        "type": "mercator",
+        "center": [
+          138.725,
+          -34.95
+        ],
+        "scale": 14899,
+        "translate": [
+          115,
+          135
+        ]
+      },
+      "layer": [
+        {
+          "data": {
+            "url": "data/lga_boundaries_2016.geojson",
+            "format": {
+              "property": "features"
+            }
+          },
+          "transform": [
+            {
+              "filter": "datum.properties.metro == 'Adelaide'"
+            }
+          ],
+          "mark": {
+            "type": "geoshape",
+            "fill": "#f1efe9",
+            "stroke": "#cfcbbf",
+            "strokeWidth": 0.6,
+            "clip": true
+          }
+        },
+        {
+          "data": {
+            "url": "data/lga_centroids.csv"
+          },
+          "transform": [
+            {
+              "filter": "datum.metro == 'Adelaide'"
+            },
+            {
+              "lookup": "code",
+              "from": {
+                "data": {
+                  "url": "data/lga_design_qualifications_2016.csv"
+                },
+                "key": "code",
+                "fields": [
+                  "name",
+                  "architecture_building",
+                  "creative_arts",
+                  "total"
+                ]
+              }
+            },
+            {
+              "calculate": "toNumber(datum.architecture_building) + toNumber(datum.creative_arts)",
+              "as": "design"
+            },
+            {
+              "calculate": "toNumber(datum.creative_arts) / datum.design",
+              "as": "cshare"
+            }
+          ],
+          "mark": {
+            "type": "circle",
+            "stroke": "#555",
+            "strokeWidth": 0.6,
+            "opacity": 0.9,
+            "clip": true
+          },
+          "encoding": {
+            "longitude": {
+              "field": "lon",
+              "type": "quantitative"
+            },
+            "latitude": {
+              "field": "lat",
+              "type": "quantitative"
+            },
+            "size": {
+              "field": "design",
+              "type": "quantitative",
+              "title": "Residents in the two fields",
+              "scale": {
+                "range": [
+                  10,
+                  1500
+                ]
+              },
+              "legend": {
+                "orient": "bottom",
+                "direction": "horizontal",
+                "values": [
+                  1000,
+                  5000,
+                  10000,
+                  25000
+                ],
+                "format": ",.0f",
+                "title": "Residents in the two fields",
+                "titleLimit": 300
+              }
+            },
+            "color": {
+              "field": "cshare",
+              "type": "quantitative",
+              "title": "Creative arts share of the two fields",
+              "scale": {
+                "domain": [
+                  0.2,
+                  0.5,
+                  0.7
+                ],
+                "range": [
+                  "#1f78b4",
+                  "#eeeeee",
+                  "#d95f02"
+                ],
+                "clamp": true
+              },
+              "legend": {
+                "format": ".0%",
+                "orient": "bottom",
+                "direction": "horizontal",
+                "gradientLength": 220,
+                "title": "Creative arts share of the two fields",
+                "titleLimit": 300
+              }
+            },
+            "tooltip": [
+              {
+                "field": "name",
+                "title": "Local government area"
+              },
+              {
+                "field": "architecture_building",
+                "title": "Architecture and building",
+                "format": ","
+              },
+              {
+                "field": "creative_arts",
+                "title": "Creative arts",
+                "format": ","
+              },
+              {
+                "field": "cshare",
+                "title": "Creative arts share",
+                "format": ".0%"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "title": {
+        "text": "Greater Perth",
+        "fontSize": 13,
+        "anchor": "start"
+      },
+      "width": 230,
+      "height": 270,
+      "projection": {
+        "type": "mercator",
+        "center": [
+          116.05,
+          -32.0
+        ],
+        "scale": 9486,
+        "translate": [
+          115,
+          135
+        ]
+      },
+      "layer": [
+        {
+          "data": {
+            "url": "data/lga_boundaries_2016.geojson",
+            "format": {
+              "property": "features"
+            }
+          },
+          "transform": [
+            {
+              "filter": "datum.properties.metro == 'Perth'"
+            }
+          ],
+          "mark": {
+            "type": "geoshape",
+            "fill": "#f1efe9",
+            "stroke": "#cfcbbf",
+            "strokeWidth": 0.6,
+            "clip": true
+          }
+        },
+        {
+          "data": {
+            "url": "data/lga_centroids.csv"
+          },
+          "transform": [
+            {
+              "filter": "datum.metro == 'Perth'"
+            },
+            {
+              "lookup": "code",
+              "from": {
+                "data": {
+                  "url": "data/lga_design_qualifications_2016.csv"
+                },
+                "key": "code",
+                "fields": [
+                  "name",
+                  "architecture_building",
+                  "creative_arts",
+                  "total"
+                ]
+              }
+            },
+            {
+              "calculate": "toNumber(datum.architecture_building) + toNumber(datum.creative_arts)",
+              "as": "design"
+            },
+            {
+              "calculate": "toNumber(datum.creative_arts) / datum.design",
+              "as": "cshare"
+            }
+          ],
+          "mark": {
+            "type": "circle",
+            "stroke": "#555",
+            "strokeWidth": 0.6,
+            "opacity": 0.9,
+            "clip": true
+          },
+          "encoding": {
+            "longitude": {
+              "field": "lon",
+              "type": "quantitative"
+            },
+            "latitude": {
+              "field": "lat",
+              "type": "quantitative"
+            },
+            "size": {
+              "field": "design",
+              "type": "quantitative",
+              "title": "Residents in the two fields",
+              "scale": {
+                "range": [
+                  10,
+                  1500
+                ]
+              },
+              "legend": {
+                "orient": "bottom",
+                "direction": "horizontal",
+                "values": [
+                  1000,
+                  5000,
+                  10000,
+                  25000
+                ],
+                "format": ",.0f",
+                "title": "Residents in the two fields",
+                "titleLimit": 300
+              }
+            },
+            "color": {
+              "field": "cshare",
+              "type": "quantitative",
+              "title": "Creative arts share of the two fields",
+              "scale": {
+                "domain": [
+                  0.2,
+                  0.5,
+                  0.7
+                ],
+                "range": [
+                  "#1f78b4",
+                  "#eeeeee",
+                  "#d95f02"
+                ],
+                "clamp": true
+              },
+              "legend": {
+                "format": ".0%",
+                "orient": "bottom",
+                "direction": "horizontal",
+                "gradientLength": 220,
+                "title": "Creative arts share of the two fields",
+                "titleLimit": 300
+              }
+            },
+            "tooltip": [
+              {
+                "field": "name",
+                "title": "Local government area"
+              },
+              {
+                "field": "architecture_building",
+                "title": "Architecture and building",
+                "format": ","
+              },
+              {
+                "field": "creative_arts",
+                "title": "Creative arts",
+                "format": ","
+              },
+              {
+                "field": "cshare",
+                "title": "Creative arts share",
+                "format": ".0%"
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ],
+  "resolve": {
+    "scale": {
+      "color": "shared",
+      "size": "shared"
+    }
+  },
+  "config": {
+    "view": {
+      "stroke": null
+    },
+    "title": {
+      "font": "Playfair Display, Georgia, serif",
+      "fontSize": 20,
+      "fontWeight": 700,
+      "anchor": "start",
+      "subtitleFontSize": 13,
+      "subtitleColor": "#555",
+      "subtitlePadding": 4,
+      "offset": 10
+    }
+  }
+}

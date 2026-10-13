@@ -1,0 +1,367 @@
+{
+  "$schema": "https://vega.github.io/schema/vega/v5.json",
+  "description": "Treemap of people employed in three design industries by occupation, 2011 Census",
+  "width": 480,
+  "height": 460,
+  "padding": 8,
+  "autosize": {
+    "type": "pad"
+  },
+  "title": {
+    "text": "Advertising employs mostly non-design workers",
+    "subtitle": [
+      "Workers in three design industries, 2011 Census.",
+      "Area shows the number of people.",
+      "Grey boxes are non-design occupations."
+    ],
+    "anchor": "start",
+    "font": "Playfair Display, Georgia, serif",
+    "fontSize": 20,
+    "subtitleFontSize": 13,
+    "subtitleColor": "#555",
+    "subtitlePadding": 4,
+    "offset": 10
+  },
+  "data": [
+    {
+      "name": "table",
+      "url": "data/census2011_occupations_by_industry.csv",
+      "format": {
+        "type": "csv",
+        "parse": {
+          "people": "number"
+        }
+      },
+      "transform": [
+        {
+          "type": "formula",
+          "as": "colorKey",
+          "expr": "datum.group == 'Other occupations' ? 'Other occupations' : datum.industry"
+        }
+      ]
+    },
+    {
+      "name": "totals",
+      "source": "table",
+      "transform": [
+        {
+          "type": "aggregate",
+          "groupby": [
+            "industry"
+          ],
+          "fields": [
+            "people"
+          ],
+          "ops": [
+            "sum"
+          ],
+          "as": [
+            "total"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "tree",
+      "source": "table",
+      "transform": [
+        {
+          "type": "nest",
+          "keys": [
+            "industry"
+          ],
+          "generate": true
+        },
+        {
+          "type": "treemap",
+          "field": "people",
+          "sort": {
+            "field": "value",
+            "order": "descending"
+          },
+          "round": true,
+          "method": "squarify",
+          "ratio": 1.4,
+          "paddingInner": 2,
+          "paddingOuter": 3,
+          "paddingTop": 34,
+          "size": [
+            {
+              "signal": "width"
+            },
+            {
+              "signal": "height"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "leaves",
+      "source": "tree",
+      "transform": [
+        {
+          "type": "filter",
+          "expr": "!datum.children"
+        }
+      ]
+    },
+    {
+      "name": "parents",
+      "source": "tree",
+      "transform": [
+        {
+          "type": "filter",
+          "expr": "datum.depth == 1"
+        },
+        {
+          "type": "lookup",
+          "from": "totals",
+          "key": "industry",
+          "fields": [
+            "key"
+          ],
+          "values": [
+            "total"
+          ],
+          "as": [
+            "total"
+          ]
+        }
+      ]
+    }
+  ],
+  "scales": [
+    {
+      "name": "color",
+      "type": "ordinal",
+      "domain": [
+        "Architectural services",
+        "Advertising services",
+        "Other specialised design services",
+        "Other occupations"
+      ],
+      "range": [
+        "#1f78b4",
+        "#d95f02",
+        "#7570b3",
+        "#d9d9d9"
+      ]
+    }
+  ],
+  "legends": [
+    {
+      "fill": "color",
+      "orient": "bottom",
+      "direction": "horizontal",
+      "title": "Industry",
+      "titleFontSize": 12,
+      "labelFontSize": 12,
+      "symbolType": "square",
+      "symbolSize": 150,
+      "titleLimit": 300
+    }
+  ],
+  "marks": [
+    {
+      "type": "rect",
+      "from": {
+        "data": "parents"
+      },
+      "encode": {
+        "enter": {
+          "fill": {
+            "value": "#fff"
+          },
+          "stroke": {
+            "value": "#555"
+          },
+          "strokeWidth": {
+            "value": 1
+          }
+        },
+        "update": {
+          "x": {
+            "field": "x0"
+          },
+          "x2": {
+            "field": "x1"
+          },
+          "y": {
+            "field": "y0"
+          },
+          "y2": {
+            "field": "y1"
+          }
+        }
+      }
+    },
+    {
+      "type": "rect",
+      "from": {
+        "data": "leaves"
+      },
+      "encode": {
+        "enter": {
+          "tooltip": {
+            "signal": "{'Industry': datum.industry, 'Occupation': datum.occupation, 'People': format(datum.people, ',')}"
+          }
+        },
+        "update": {
+          "x": {
+            "field": "x0"
+          },
+          "x2": {
+            "field": "x1"
+          },
+          "y": {
+            "field": "y0"
+          },
+          "y2": {
+            "field": "y1"
+          },
+          "fill": {
+            "scale": "color",
+            "field": "colorKey"
+          },
+          "fillOpacity": {
+            "signal": "datum.group == 'Other occupations' ? 1 : 0.9"
+          },
+          "stroke": {
+            "value": "#fff"
+          },
+          "strokeWidth": {
+            "value": 1
+          }
+        }
+      }
+    },
+    {
+      "type": "text",
+      "from": {
+        "data": "leaves"
+      },
+      "interactive": false,
+      "encode": {
+        "update": {
+          "x": {
+            "signal": "datum.x0 + 6"
+          },
+          "y": {
+            "signal": "datum.y0 + 15"
+          },
+          "text": {
+            "signal": "(datum.x1 - datum.x0) > 70 && (datum.y1 - datum.y0) > 24 ? datum.occupation : ''"
+          },
+          "limit": {
+            "signal": "datum.x1 - datum.x0 - 10"
+          },
+          "fontSize": {
+            "value": 11
+          },
+          "fontWeight": {
+            "value": 500
+          },
+          "fill": {
+            "signal": "datum.group == 'Other occupations' ? '#333' : '#fff'"
+          }
+        }
+      }
+    },
+    {
+      "type": "text",
+      "from": {
+        "data": "leaves"
+      },
+      "interactive": false,
+      "encode": {
+        "update": {
+          "x": {
+            "signal": "datum.x0 + 6"
+          },
+          "y": {
+            "signal": "datum.y0 + 29"
+          },
+          "text": {
+            "signal": "(datum.x1 - datum.x0) > 70 && (datum.y1 - datum.y0) > 40 ? format(datum.people, ',') : ''"
+          },
+          "fontSize": {
+            "value": 11
+          },
+          "fill": {
+            "signal": "datum.group == 'Other occupations' ? '#333' : '#fff'"
+          }
+        }
+      }
+    },
+    {
+      "type": "text",
+      "from": {
+        "data": "parents"
+      },
+      "interactive": false,
+      "encode": {
+        "update": {
+          "x": {
+            "signal": "datum.x0 + 5"
+          },
+          "y": {
+            "signal": "datum.y0 + 14"
+          },
+          "text": {
+            "signal": "datum.key == 'Other specialised design services' ? 'Other design services' : datum.key"
+          },
+          "limit": {
+            "signal": "datum.x1 - datum.x0 - 10"
+          },
+          "fontSize": {
+            "value": 12
+          },
+          "fontWeight": {
+            "value": "bold"
+          },
+          "fill": {
+            "value": "#222"
+          }
+        }
+      }
+    },
+    {
+      "type": "text",
+      "from": {
+        "data": "parents"
+      },
+      "interactive": false,
+      "encode": {
+        "update": {
+          "x": {
+            "signal": "datum.x0 + 5"
+          },
+          "y": {
+            "signal": "datum.y0 + 28"
+          },
+          "text": {
+            "signal": "format(datum.total, ',') + ' people'"
+          },
+          "limit": {
+            "signal": "datum.x1 - datum.x0 - 10"
+          },
+          "fontSize": {
+            "value": 12
+          },
+          "fontWeight": {
+            "value": "normal"
+          },
+          "fill": {
+            "value": "#222"
+          }
+        }
+      }
+    }
+  ],
+  "config": {
+    "title": {
+      "font": "Playfair Display, Georgia, serif"
+    }
+  }
+}

@@ -1,0 +1,214 @@
+{
+  "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+  "title": {
+    "text": "Creative arts training peaks around Sydney and Melbourne",
+    "subtitle": [
+      "Creative arts share of qualified residents, 2016.",
+      "Hexagons group local areas, about 80 km wide.",
+      "Grey: fewer than 2,000 qualified residents."
+    ]
+  },
+  "width": "container",
+  "height": 500,
+  "projection": {
+    "type": "conicEqualArea",
+    "rotate": [
+      -132,
+      0
+    ],
+    "center": [
+      0,
+      -27
+    ],
+    "parallels": [
+      -18,
+      -36
+    ]
+  },
+  "layer": [
+    {
+      "data": {
+        "url": "data/australia_states.geojson",
+        "format": {
+          "property": "features"
+        }
+      },
+      "mark": {
+        "type": "geoshape",
+        "fill": "#f6f4ee",
+        "stroke": "#cfcbbf",
+        "strokeWidth": 0.6
+      }
+    },
+    {
+      "data": {
+        "url": "data/creative_arts_hexbins_2016.geojson",
+        "format": {
+          "property": "features"
+        }
+      },
+      "transform": [
+        {
+          "calculate": "datum.properties.total >= 2000 ? datum.properties.creative_share : null",
+          "as": "share"
+        }
+      ],
+      "mark": {
+        "type": "geoshape",
+        "stroke": "white",
+        "strokeWidth": 0.8
+      },
+      "encoding": {
+        "color": {
+          "field": "share",
+          "type": "quantitative",
+          "title": "Creative arts share",
+          "scale": {
+            "scheme": "oranges",
+            "domain": [
+              0.015,
+              0.065
+            ]
+          },
+          "legend": {
+            "orient": "bottom-left",
+            "format": ".0%",
+            "gradientLength": 200,
+            "direction": "horizontal",
+            "titleLimit": 300
+          }
+        },
+        "tooltip": [
+          {
+            "field": "properties.total",
+            "title": "Residents with a qualification",
+            "format": ","
+          },
+          {
+            "field": "properties.creative_arts",
+            "title": "Creative arts",
+            "format": ","
+          },
+          {
+            "field": "properties.architecture_building",
+            "title": "Architecture and building",
+            "format": ","
+          },
+          {
+            "field": "properties.lgas",
+            "title": "Local government areas in hexagon"
+          },
+          {
+            "field": "share",
+            "title": "Creative arts share",
+            "format": ".1%"
+          }
+        ]
+      }
+    },
+    {
+      "data": {
+        "values": [
+          {
+            "city": "Sydney",
+            "lon": 151.21,
+            "lat": -33.87
+          },
+          {
+            "city": "Melbourne",
+            "lon": 144.96,
+            "lat": -37.81
+          },
+          {
+            "city": "Brisbane",
+            "lon": 153.03,
+            "lat": -27.47
+          },
+          {
+            "city": "Perth",
+            "lon": 115.86,
+            "lat": -31.95
+          },
+          {
+            "city": "Adelaide",
+            "lon": 138.6,
+            "lat": -34.93
+          },
+          {
+            "city": "Canberra",
+            "lon": 149.13,
+            "lat": -35.28
+          },
+          {
+            "city": "Hobart",
+            "lon": 147.33,
+            "lat": -42.88
+          },
+          {
+            "city": "Darwin",
+            "lon": 130.84,
+            "lat": -12.46
+          }
+        ]
+      },
+      "layer": [
+        {
+          "mark": {
+            "type": "circle",
+            "size": 22,
+            "color": "#222"
+          },
+          "encoding": {
+            "longitude": {
+              "field": "lon",
+              "type": "quantitative"
+            },
+            "latitude": {
+              "field": "lat",
+              "type": "quantitative"
+            }
+          }
+        },
+        {
+          "mark": {
+            "type": "text",
+            "align": "left",
+            "dx": 6,
+            "dy": -4,
+            "fontSize": 11,
+            "fontWeight": "bold",
+            "color": "#222"
+          },
+          "encoding": {
+            "longitude": {
+              "field": "lon",
+              "type": "quantitative"
+            },
+            "latitude": {
+              "field": "lat",
+              "type": "quantitative"
+            },
+            "text": {
+              "field": "city"
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "config": {
+    "view": {
+      "stroke": null
+    },
+    "title": {
+      "font": "Playfair Display, Georgia, serif",
+      "fontSize": 20,
+      "fontWeight": 700,
+      "anchor": "start",
+      "subtitleFontSize": 13,
+      "subtitleColor": "#555",
+      "subtitlePadding": 4,
+      "offset": 10
+    }
+  }
+}

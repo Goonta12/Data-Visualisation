@@ -1,0 +1,447 @@
+{
+  "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+  "title": {
+    "text": "Dense and growing: Victoria stands out",
+    "subtitle": [
+      "Architecture and advertising businesses combined.",
+      "Colour shows density and growth together.",
+      "Cut-offs are my own choice."
+    ]
+  },
+  "hconcat": [
+    {
+      "width": 365,
+      "height": 357,
+      "data": {
+        "url": "data/design_businesses_by_state_long.csv",
+        "format": {
+          "parse": {
+            "year": "number",
+            "businesses": "number"
+          }
+        }
+      },
+      "projection": {
+        "type": "conicEqualArea",
+        "rotate": [
+          -132,
+          0
+        ],
+        "center": [
+          0,
+          -27
+        ],
+        "parallels": [
+          -18,
+          -36
+        ],
+        "scale": 544,
+        "translate": [
+          183,
+          170
+        ]
+      },
+      "transform": [
+        {
+          "filter": "datum.industry != 'Other design services'"
+        },
+        {
+          "aggregate": [
+            {
+              "op": "sum",
+              "field": "businesses",
+              "as": "total"
+            }
+          ],
+          "groupby": [
+            "state",
+            "year"
+          ]
+        },
+        {
+          "pivot": "year",
+          "value": "total",
+          "groupby": [
+            "state"
+          ]
+        },
+        {
+          "lookup": "state",
+          "from": {
+            "data": {
+              "url": "data/state_population_2012.csv"
+            },
+            "key": "state",
+            "fields": [
+              "population"
+            ]
+          }
+        },
+        {
+          "lookup": "state",
+          "from": {
+            "data": {
+              "url": "data/state_labels.csv"
+            },
+            "key": "state",
+            "fields": [
+              "lon",
+              "lat"
+            ]
+          }
+        },
+        {
+          "lookup": "state",
+          "from": {
+            "data": {
+              "url": "data/australia_states.geojson",
+              "format": {
+                "property": "features"
+              }
+            },
+            "key": "properties.state",
+            "fields": [
+              "geometry",
+              "properties"
+            ]
+          }
+        },
+        {
+          "calculate": "datum['2012'] / toNumber(datum.population) * 100000",
+          "as": "rate"
+        },
+        {
+          "calculate": "(datum['2012'] - datum['2007']) / datum['2007']",
+          "as": "growth"
+        },
+        {
+          "calculate": "datum.rate < 85 ? 0 : (datum.rate < 110 ? 1 : 2)",
+          "as": "dclass"
+        },
+        {
+          "calculate": "datum.growth < 0.04 ? 0 : (datum.growth < 0.08 ? 1 : 2)",
+          "as": "gclass"
+        },
+        {
+          "calculate": "datum.gclass * 3 + datum.dclass",
+          "as": "key"
+        },
+        {
+          "calculate": "(datum.growth > 0 ? '+' : '') + format(datum.growth * 100, '.0f') + '%'",
+          "as": "gtext"
+        }
+      ],
+      "layer": [
+        {
+          "mark": {
+            "type": "geoshape",
+            "stroke": "white",
+            "strokeWidth": 1.5
+          },
+          "encoding": {
+            "shape": {
+              "field": "geometry",
+              "type": "geojson"
+            },
+            "color": {
+              "field": "key",
+              "type": "ordinal",
+              "legend": null,
+              "scale": {
+                "domain": [
+                  0,
+                  1,
+                  2,
+                  3,
+                  4,
+                  5,
+                  6,
+                  7,
+                  8
+                ],
+                "range": [
+                  "#e8e8e8",
+                  "#ace4e4",
+                  "#5ac8c8",
+                  "#dfb0d6",
+                  "#a5add3",
+                  "#5698b9",
+                  "#be64ac",
+                  "#8c62aa",
+                  "#3b4994"
+                ]
+              }
+            },
+            "tooltip": [
+              {
+                "field": "properties.name",
+                "title": "State"
+              },
+              {
+                "field": "2007",
+                "title": "Businesses, 2007",
+                "format": ","
+              },
+              {
+                "field": "2012",
+                "title": "Businesses, 2012",
+                "format": ","
+              },
+              {
+                "field": "rate",
+                "title": "Per 100,000 people, 2012",
+                "format": ".0f"
+              },
+              {
+                "field": "gtext",
+                "title": "Change since 2007"
+              }
+            ]
+          }
+        },
+        {
+          "transform": [
+            {
+              "filter": "datum.state == 'ACT'"
+            }
+          ],
+          "mark": {
+            "type": "circle",
+            "size": 520,
+            "stroke": "white",
+            "strokeWidth": 1.5
+          },
+          "encoding": {
+            "longitude": {
+              "field": "lon",
+              "type": "quantitative"
+            },
+            "latitude": {
+              "field": "lat",
+              "type": "quantitative"
+            },
+            "color": {
+              "field": "key",
+              "type": "ordinal",
+              "legend": null,
+              "scale": {
+                "domain": [
+                  0,
+                  1,
+                  2,
+                  3,
+                  4,
+                  5,
+                  6,
+                  7,
+                  8
+                ],
+                "range": [
+                  "#e8e8e8",
+                  "#ace4e4",
+                  "#5ac8c8",
+                  "#dfb0d6",
+                  "#a5add3",
+                  "#5698b9",
+                  "#be64ac",
+                  "#8c62aa",
+                  "#3b4994"
+                ]
+              }
+            }
+          }
+        },
+        {
+          "mark": {
+            "type": "text",
+            "fontSize": 11,
+            "fontWeight": "bold",
+            "dy": -6
+          },
+          "encoding": {
+            "longitude": {
+              "field": "lon",
+              "type": "quantitative"
+            },
+            "latitude": {
+              "field": "lat",
+              "type": "quantitative"
+            },
+            "text": {
+              "field": "state"
+            },
+            "color": {
+              "condition": {
+                "test": "datum.key == 8 || datum.key == 7 || datum.key == 5",
+                "value": "white"
+              },
+              "value": "#1a1a1a"
+            }
+          }
+        },
+        {
+          "mark": {
+            "type": "text",
+            "fontSize": 11,
+            "dy": 7
+          },
+          "encoding": {
+            "longitude": {
+              "field": "lon",
+              "type": "quantitative"
+            },
+            "latitude": {
+              "field": "lat",
+              "type": "quantitative"
+            },
+            "text": {
+              "field": "gtext"
+            },
+            "color": {
+              "condition": {
+                "test": "datum.key == 8 || datum.key == 7 || datum.key == 5",
+                "value": "white"
+              },
+              "value": "#1a1a1a"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "width": 130,
+      "height": 130,
+      "title": {
+        "text": "How to read the colours",
+        "fontSize": 12,
+        "anchor": "start"
+      },
+      "data": {
+        "values": [
+          {
+            "d": 0,
+            "g": 0,
+            "key": 0
+          },
+          {
+            "d": 1,
+            "g": 0,
+            "key": 1
+          },
+          {
+            "d": 2,
+            "g": 0,
+            "key": 2
+          },
+          {
+            "d": 0,
+            "g": 1,
+            "key": 3
+          },
+          {
+            "d": 1,
+            "g": 1,
+            "key": 4
+          },
+          {
+            "d": 2,
+            "g": 1,
+            "key": 5
+          },
+          {
+            "d": 0,
+            "g": 2,
+            "key": 6
+          },
+          {
+            "d": 1,
+            "g": 2,
+            "key": 7
+          },
+          {
+            "d": 2,
+            "g": 2,
+            "key": 8
+          }
+        ]
+      },
+      "mark": {
+        "type": "rect",
+        "stroke": "white",
+        "strokeWidth": 2
+      },
+      "encoding": {
+        "x": {
+          "field": "d",
+          "type": "ordinal",
+          "title": "Businesses per 100,000 people",
+          "axis": {
+            "labelExpr": "datum.value == 0 ? 'under 85' : (datum.value == 1 ? '85-110' : 'over 110')",
+            "labelAngle": 0,
+            "labelFontSize": 10,
+            "ticks": false,
+            "domain": false,
+            "titleFontSize": 11
+          }
+        },
+        "y": {
+          "field": "g",
+          "type": "ordinal",
+          "sort": "descending",
+          "title": "Growth since 2007",
+          "axis": {
+            "labelExpr": "datum.value == 0 ? 'under 4%' : (datum.value == 1 ? '4-8%' : 'over 8%')",
+            "labelFontSize": 10,
+            "ticks": false,
+            "domain": false,
+            "titleFontSize": 11
+          }
+        },
+        "color": {
+          "field": "key",
+          "type": "ordinal",
+          "legend": null,
+          "scale": {
+            "domain": [
+              0,
+              1,
+              2,
+              3,
+              4,
+              5,
+              6,
+              7,
+              8
+            ],
+            "range": [
+              "#e8e8e8",
+              "#ace4e4",
+              "#5ac8c8",
+              "#dfb0d6",
+              "#a5add3",
+              "#5698b9",
+              "#be64ac",
+              "#8c62aa",
+              "#3b4994"
+            ]
+          }
+        }
+      }
+    }
+  ],
+  "config": {
+    "view": {
+      "stroke": null
+    },
+    "title": {
+      "font": "Playfair Display, Georgia, serif",
+      "fontSize": 20,
+      "fontWeight": 700,
+      "anchor": "start",
+      "subtitleFontSize": 13,
+      "subtitleColor": "#555",
+      "subtitlePadding": 4,
+      "offset": 10
+    }
+  }
+}

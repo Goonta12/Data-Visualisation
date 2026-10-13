@@ -1,0 +1,13 @@
+year,band,sex,people,note
+2001,"Under $5,000",men,32300,
+2001,"Under $5,000",women,28100,
+2001,"$5,000 to $39,999",men,49800,"28,300 + 21,500 (two published bands added)"
+2001,"$5,000 to $39,999",women,35400,"18,400 + 17,000 (two published bands added)"
+2001,"$40,000 or more",men,20800,
+2001,"$40,000 or more",women,6500,high margin of error (RSE 25-50%)
+2007,"Under $5,000",men,37500,
+2007,"Under $5,000",women,49600,
+2007,"$5,000 to $39,999",men,44500,
+2007,"$5,000 to $39,999",women,45000,
+2007,"$40,000 or more",men,79600,
+2007,"$40,000 or more",women,41900,

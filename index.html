@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Australia's Design Industries</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Inter:wght@400;500&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/vega@5"></script>
+  <script src="https://cdn.jsdelivr.net/npm/vega-lite@5"></script>
+  <script src="https://cdn.jsdelivr.net/npm/vega-embed@6"></script>
+  <style>
+    /* Sizes: title 4rem > section headings 2.2rem > body text 1.4rem > chart titles 20px */
+    body {
+      margin: 0;
+      font-family: "Inter", system-ui, sans-serif;
+      font-size: 1.4rem;
+      line-height: 1.5;
+      color: #222;
+      background: #fafaf7;
+    }
+    main {
+      max-width: 980px;
+      margin: 0 auto;
+      padding: 56px 20px 80px;
+    }
+    h1, h2 {
+      font-family: "Playfair Display", Georgia, serif;
+      font-weight: 900;
+      text-align: center;
+    }
+    h1 {
+      font-size: clamp(2.6rem, 8vw, 4.4rem);
+      line-height: 1.1;
+      margin: 0 0 24px;
+    }
+    h2 {
+      font-size: 2.2rem;
+      line-height: 1.2;
+      margin: 88px 0 20px;
+    }
+    .lines { text-align: center; margin: 0 auto 8px; }
+    .lines span { display: block; }
+    .lede { font-size: 1.5rem; color: #444; }
+    .note { font-size: 1.05rem; color: #666; margin-top: 12px; }
+    .chart { margin: 24px 0 36px; background: #fff; padding: 16px; border-radius: 8px; overflow-x: hidden; }
+    .chart > div { width: 100%; }
+    .split { display: grid; grid-template-columns: clamp(200px, 28%, 300px) minmax(0, 1fr); gap: 24px; align-items: center; margin: 24px 0 36px; }
+    .split.rev { grid-template-columns: minmax(0, 1fr) clamp(200px, 28%, 300px); }
+    .split.rev .side { order: 2; }
+    .split .chart { margin: 0; }
+    .lines.side { text-align: left; margin: 0; }
+    .split.rev .side { text-align: left; }
+    @media (max-width: 900px) {
+      .split, .split.rev { grid-template-columns: minmax(0, 1fr); }
+      .split.rev .side { order: 0; }
+    }
+    .chart { text-align: center; }
+    .chart > div { display: flex; justify-content: center; }
+    .sidecol { display: flex; flex-direction: column; gap: 28px; }
+    .sidecol .lines { margin: 0; }
+    .summary { border-top: 1px solid #ddd; padding-top: 20px; }
+    .chart svg { max-width: 100%; height: auto; }
+    .chart .vega-embed { max-width: 100%; }
+    footer { margin-top: 80px; font-size: 0.85rem; line-height: 1.6; color: #555; border-top: 1px solid #ddd; padding-top: 24px; }
+    footer li { margin-bottom: 6px; }
+  </style>
+</head>
+<body>
+<main>
+  <h1>Australia's Design Industries</h1>
+  <p class="lines lede">
+    <span>History / People / Present</span>
+    <span> <span>
+    <span>Every logo, building and garment starts</span>
+    <span>with a designer. Australian businesses are led</span>
+    <span>by the designers therefore.</span>
+  </p>
+
+  <h2>1. Design is a $61 billion industry</h2>
+  <div class="split rev">
+  <p class="lines side">
+    <span>Design adds $61 billion a year.</span>
+    <span>That is 3.4% of Australia's GDP.</span>
+    <span>Two thirds comes from design services,</span>
+    <span>architecture, software and interactive content.</span>
+    <span>Designers in other industries add $6.4 billion.</span>
+  </p>
+  <div class="chart"><div id="waffle"></div></div>
+  </div>
+
+  <h2>2. A country of small businesses</h2>
+  <p class="lines">
+    <span>In 2012, Australia had about 39,000 design businesses.</span>
+    <span>New South Wales and Victoria hold two thirds.</span>
+    <span>Most firms have no employees.</span>
+  </p>
+  <div class="chart"><div id="symbolmap"></div></div>
+
+  <h2>3. Where design is most common</h2>
+  <div class="split">
+  <p class="lines side">
+    <span>Firms per 100,000 residents is a fairer count.</span>
+    <span>Victoria and Western Australia lead in architecture.</span>
+    <span>New South Wales leads advertising and other design.</span>
+    <span>The Northern Territory has the fewest advertisers.</span>
+  </p>
+  <div class="chart"><div id="choropleth"></div></div>
+  </div>
+  <p class="lines">
+    <span>The same pattern showed in 2001.</span>
+  </p>
+  <div class="chart"><div id="heatmap"></div></div>
+  <p class="lines note">
+    <span>Note: Counting methods changed so compared patterns only.</span>
+  </p>
+
+  <h2>4. Where design is growing</h2>
+  <div class="split rev">
+  <p class="lines side">
+    <span>South Australia's architecture firms grew 27%.</span>
+    <span>Victoria's grew 15%.</span>
+    <span>New South Wales stood still.</span>
+    <span>Advertising shrank in Tasmania and the Northern Territory.</span>
+  </p>
+  <div class="chart"><div id="tilemap"></div></div>
+  </div>
+  <div class="split">
+  <p class="lines side">
+    <span>Only Victoria is both dense and fast-growing.</span>
+    <span>124 firms per 100,000 people, up 12%.</span>
+    <span>New South Wales is dense but grew 6%.</span>
+  </p>
+  <div class="chart"><div id="bivariate"></div></div>
+  </div>
+
+  <h2>5. Where design skills are trained</h2>
+  <div class="split rev">
+  <p class="lines side">
+    <span>633,000 hold architecture or building qualifications.</span>
+    <span>401,000 hold creative arts qualifications.</span>
+    <span>Creative arts includes design, music and performing arts.</span>
+    <span>Both cluster around the capital cities.</span>
+  </p>
+  <div class="chart"><div id="dotmap"></div></div>
+  </div>
+  <p class="lines">
+    <span>Creative arts is 3.5% of qualifications nationally.</span>
+    <span>In Sydney it reaches 6%.</span>
+    <span>Over half live around Sydney and Melbourne.</span>
+  </p>
+  <div class="chart"><div id="hexmap"></div></div>
+
+  <h2>6. Zooming in on the cities</h2>
+  <p class="lines">
+    <span>Creative arts is strongest in inner suburbs.</span>
+    <span>About 10.5% in Yarra and the Inner West.</span>
+  </p>
+  <div class="chart"><div id="lgachoropleth"></div></div>
+  <p class="lines">
+    <span>Outer suburbs lean towards building instead.</span>
+    <span>Creative share: Vincent 57%, Mandurah 22%.</span>
+  </p>
+  <div class="chart"><div id="lgasymbols"></div></div>
+
+  <h2>7. The people behind the businesses</h2>
+  <div class="split rev">
+  <p class="lines side">
+    <span>People doing design work rose from 350,000</span>
+    <span>to 460,000 between 2001 and 2007.</span>
+    <span>Advertising overtook graphic design in 2007.</span>
+  </p>
+  <div class="chart"><div id="bump"></div></div>
+  </div>
+  <div class="split">
+  <p class="lines side">
+    <span>Advertising grew fastest, up 76%.</span>
+    <span>Fashion design grew least.</span>
+  </p>
+  <div class="chart"><div id="lollipop"></div></div>
+  </div>
+  <div class="split rev">
+  <p class="lines side">
+    <span>Men did most graphic design work,</span>
+    <span>but women's share rose from 35% to 46%.</span>
+    <span>Fashion design stayed mostly female.</span>
+  </p>
+  <div class="chart"><div id="butterfly"></div></div>
+  </div>
+  <div class="split">
+  <p class="lines side">
+    <span>Women's share also rose in advertising.</span>
+    <span>It fell in architecture.</span>
+  </p>
+  <div class="chart"><div id="slope"></div></div>
+  </div>
+  <div class="split rev">
+  <p class="lines side">
+    <span>Pay is where the gap is widest.</span>
+    <span>In 2007, half of men earned $40,000+.</span>
+    <span>Only 31% of women did.</span>
+  </p>
+  <div class="chart"><div id="dotplot"></div></div>
+  </div>
+
+  <h2>8. Inside the industry</h2>
+  <div class="split">
+  <div class="sidecol">
+  <p class="lines side">
+    <span>Design firms employ more than designers.</span>
+    <span>In architecture, 71% hold design-related jobs.</span>
+    <span>In advertising, only 31% do.</span>
+  </p>
+  <p class="lines side summary">
+    <span>In short: a $61 billion industry,</span>
+    <span>built from small businesses in the south-east.</span>
+    <span>Skills are trained in inner cities.</span>
+    <span>Women's share is rising, but pay lags.</span>
+    <span>Most design data ends in 2012.</span>
+    <span>Skills maps are from 2016.</span>
+  </p>
+  </div>
+  <div class="chart"><div id="treemap"></div></div>
+  </div>
+
+  <footer>
+    <p><strong>Data sources.</strong></p>
+    <ul>
+      <li>Australian Bureau of Statistics (ABS), Survey of Work in Selected Culture and Leisure Activities, April 2001, 2004 and 2007, published in ABS 4172.0 Arts and Culture in Australia: design participation, including by sex and income from design.</li>
+      <li>ABS Australian Business Register counts, June 2001, and ABS Counts of Australian Businesses, June 2007 and June 2012 (ABS 4172.0, 2009 and 2014 editions): design businesses by state and by employment size.</li>
+      <li>ABS Census of Population and Housing 2011, published in ABS 4172.0 (2014 edition): people employed in design industries, by occupation.</li>
+      <li>ABS Australian Demographic Statistics (3101.0): state population at June 2001 (December 2006 issue, Table 4; persons are males plus females) and June 2012 (preliminary, June 2012 issue).</li>
+      <li>IP Australia, <em>Defining design: Design's role in the Australian economy</em> (2020), Table 1: value added by design industries and embedded designers, in 2019 dollars. IP Australia draws on BCAR (2018), IBISWorld (2019) and the Census.</li>
+      <li>ABS Census of Population and Housing 2016, table G47 (non-school qualification: field of study) by local government area, from the ABS Data API: residents with a qualification in architecture and building and in creative arts.</li>
+      <li>State boundaries: Natural Earth admin-1 boundaries (public domain). Local government area boundaries: geoBoundaries (open licence). Both filtered to Australia and simplified.</li>
+    </ul>
+    <p>Created by Dean G Park 33156727. Charts built with Vega-Lite and Vega. Ai was used inorder to help find the vast amount of data needed to built the graphs/maps.</p>
+  </footer>
+</main>
+
+<script>
+  const charts = {
+    waffle: 'specs/chart8_waffle_value_added.json',
+    symbolmap: 'specs/chart9_symbol_map_businesses_2012.json',
+    choropleth: 'specs/chart10_choropleth_per_capita_2012.json',
+    heatmap: 'specs/chart3_heatmap_bars_per_capita.json',
+    tilemap: 'specs/chart11_tile_map_change_2007_2012.json',
+    bivariate: 'specs/chart12_bivariate_map_density_growth.json',
+    bump: 'specs/chart1_bump_activity_rank.json',
+    lollipop: 'specs/chart4_lollipop_growth.json',
+    butterfly: 'specs/chart2_butterfly_gender.json',
+    slope: 'specs/chart5_slope_women_share.json',
+    dotplot: 'specs/chart6_connected_dot_income.json',
+    treemap: 'specs/chart7_treemap_occupations.json',
+    dotmap: 'specs/chart13_dot_map_design_qualifications.json',
+    hexmap: 'specs/chart14_hex_bin_map_creative_share.json',
+    lgachoropleth: 'specs/chart15_choropleth_creative_share_metros.json',
+    lgasymbols: 'specs/chart16_symbol_map_metro_lgas.json'
+  };
+  for (const [id, path] of Object.entries(charts)) {
+    vegaEmbed('#' + id, path, {actions: false, renderer: 'svg'}).then(function (r) {
+      // let the chart shrink to fit its box instead of scrolling
+      const svg = r.view.container().querySelector('svg');
+      if (svg && !svg.getAttribute('viewBox')) {
+        svg.setAttribute('viewBox', '0 0 ' + svg.getAttribute('width') + ' ' + svg.getAttribute('height'));
+      }
+    }).catch(function (error) {
+      console.error('Could not load ' + path, error);
+      document.getElementById(id).textContent = 'Chart not found: ' + path;
+    });
+  }
+</script>
+</body>
+</html>

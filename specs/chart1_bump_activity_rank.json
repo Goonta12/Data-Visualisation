@@ -1,0 +1,197 @@
+{
+  "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+  "title": {
+    "text": "Advertising overtook graphic design",
+    "subtitle": [
+      "Rank of each activity by people involved.",
+      "1 means the most people."
+    ]
+  },
+  "width": 560,
+  "height": 300,
+  "data": {
+    "url": "data/design_participation.csv",
+    "format": {
+      "type": "csv",
+      "parse": {
+        "year": "number",
+        "people": "number"
+      }
+    }
+  },
+  "transform": [
+    {
+      "window": [
+        {
+          "op": "rank",
+          "as": "rank"
+        }
+      ],
+      "sort": [
+        {
+          "field": "people",
+          "order": "descending"
+        }
+      ],
+      "groupby": [
+        "year"
+      ]
+    }
+  ],
+  "encoding": {
+    "x": {
+      "field": "year",
+      "type": "ordinal",
+      "title": null,
+      "scale": {
+        "type": "point",
+        "padding": 1.2
+      },
+      "axis": {
+        "orient": "top",
+        "labelAngle": 0,
+        "labelFontSize": 13,
+        "domain": false,
+        "ticks": false
+      }
+    },
+    "y": {
+      "field": "rank",
+      "type": "quantitative",
+      "scale": {
+        "domain": [
+          0.5,
+          4.5
+        ],
+        "reverse": true
+      },
+      "axis": null
+    },
+    "color": {
+      "field": "activity",
+      "type": "nominal",
+      "legend": null,
+      "scale": {
+        "domain": [
+          "Advertising",
+          "Graphic design",
+          "Other design",
+          "Fashion design"
+        ],
+        "range": [
+          "#d95f02",
+          "#1b9e77",
+          "#7570b3",
+          "#e7298a"
+        ]
+      }
+    }
+  },
+  "layer": [
+    {
+      "mark": {
+        "type": "line",
+        "strokeWidth": 6,
+        "interpolate": "monotone",
+        "opacity": 0.9
+      }
+    },
+    {
+      "mark": {
+        "type": "circle",
+        "size": 700,
+        "opacity": 1
+      },
+      "encoding": {
+        "tooltip": [
+          {
+            "field": "activity",
+            "title": "Activity"
+          },
+          {
+            "field": "year",
+            "title": "Year"
+          },
+          {
+            "field": "rank",
+            "title": "Rank"
+          },
+          {
+            "field": "people",
+            "title": "People",
+            "format": ","
+          }
+        ]
+      }
+    },
+    {
+      "mark": {
+        "type": "text",
+        "fontWeight": "bold",
+        "fontSize": 13
+      },
+      "encoding": {
+        "text": {
+          "field": "rank",
+          "type": "ordinal"
+        },
+        "color": {
+          "value": "white"
+        }
+      }
+    },
+    {
+      "transform": [
+        {
+          "filter": "datum.year == 2001"
+        }
+      ],
+      "mark": {
+        "type": "text",
+        "align": "right",
+        "dx": -22,
+        "fontSize": 13,
+        "fontWeight": "bold"
+      },
+      "encoding": {
+        "text": {
+          "field": "activity"
+        }
+      }
+    },
+    {
+      "transform": [
+        {
+          "filter": "datum.year == 2007"
+        }
+      ],
+      "mark": {
+        "type": "text",
+        "align": "left",
+        "dx": 22,
+        "fontSize": 13,
+        "fontWeight": "bold"
+      },
+      "encoding": {
+        "text": {
+          "field": "activity"
+        }
+      }
+    }
+  ],
+  "config": {
+    "view": {
+      "stroke": null
+    },
+    "title": {
+      "font": "Playfair Display, Georgia, serif",
+      "fontSize": 20,
+      "fontWeight": 700,
+      "anchor": "start",
+      "subtitleFontSize": 13,
+      "subtitleColor": "#555",
+      "subtitlePadding": 4,
+      "offset": 10
+    }
+  }
+}

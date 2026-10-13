@@ -1,0 +1,404 @@
+
+DESIGN INDUSTRIES: THE SIXTEEN CHARTS, THEIR DATA AND SOURCES
+Last updated: 13 October 2026
+
+"Note": this page file I used AI inorder to make it
+more structured and to help me keep track of what data sources I used
+for what graph. 
+
+
+1. WHICH CHART USES WHICH DATA, AND WHY
+=======================================
+
+Chart 1: Advertising overtook graphic design
+  Idiom:      Bump chart
+  Spec file:  specs/chart1_bump_activity_rank.json
+  Data file:  data/design_participation.csv
+  Why:        The ranking of activities changes over time, and a bump chart
+              shows rank changes directly.
+
+Chart 2: Who does design work (men and women, three survey years)
+  Idiom:      Butterfly chart
+  Spec file:  specs/chart2_butterfly_gender.json
+  Data file:  data/participation_by_gender.csv
+  Why:        Two groups compared on the same categories, one panel per year.
+
+Chart 3: Where the businesses are
+  Idiom:      Heatmap with bar chart
+  Spec file:  specs/chart3_heatmap_bars_per_capita.json
+  Data files: data/design_businesses_by_state_2001.csv
+              data/state_population_2001.csv
+  Why:        The grid compares industries across states per person. The bars
+              add the three industries into one total for each state.
+
+Chart 4: Advertising grew the most
+  Idiom:      Lollipop chart
+  Spec file:  specs/chart4_lollipop_growth.json
+  Data file:  data/design_participation.csv
+  Why:        One growth figure per activity (2001 to 2007), easy to compare.
+
+Chart 5: Women's share rose in graphic design and fell in architecture
+  Idiom:      Slope chart
+  Spec file:  specs/chart5_slope_women_share.json
+  Data file:  data/participation_by_sex_all.csv
+  Why:        Five activities, two dates. Slopes show which way each share moved,
+              and the dashed line marks equal numbers of men and women.
+              Share = women / (men + women), calculated in the spec.
+
+Chart 6: Men are far more likely to earn $40,000 or more from design
+  Idiom:      Connected dot plot
+  Spec file:  specs/chart6_connected_dot_income.json
+  Data file:  data/income_from_design_by_sex.csv
+  Why:        Two groups (men, women) compared in each income band; the line
+              between the dots is the gap. One panel for 2001 and one for 2007.
+
+Chart 7: Advertising agencies employ mostly people in non-design jobs
+  Idiom:      Treemap (a Vega spec, not Vega-Lite)
+  Spec file:  specs/chart7_treemap_occupations.json
+  Data file:  data/census2011_occupations_by_industry.csv
+  Why:        Parts of a whole in two levels: industry, then occupation. Area
+              shows how many people. Vega-Lite cannot draw treemaps, so this
+              one uses Vega.
+
+Chart 8: What design adds to the economy
+  Idiom:      Waffle chart (two panels)
+  Spec file:  specs/chart8_waffle_value_added.json
+  Data file:  data/design_value_added_ip_australia.csv
+  Why:        Each square is 1% of a group's value added, so shares are easy to
+              read and compare between design industries and embedded designers.
+              Squares come from rounded cumulative shares so each panel sums to 100.
+
+Chart 9: About two thirds of design businesses are in NSW and Victoria
+  Idiom:      Proportional symbol map
+  Spec file:  specs/chart9_symbol_map_businesses_2012.json
+  Data files: data/design_businesses_by_state_2012.csv
+              data/state_labels.csv (circle and label positions, made by me)
+              data/australia_states.geojson (boundaries)
+  Why:        Circle area shows how many businesses each state has, and colour
+              shows its largest industry. Totals are calculated in the spec.
+
+Chart 10: Architecture thrives in Victoria and WA; advertising and other design peak in NSW
+  Idiom:      Choropleth map, three panels (small multiples)
+  Spec file:  specs/chart10_choropleth_per_capita_2012.json
+  Data files: data/design_businesses_by_state_long.csv
+              data/state_population_2012.csv
+              data/state_labels.csv, data/australia_states.geojson
+  Why:        Raw counts mostly reflect population. Dividing by population
+              (calculated in the spec) shows which states have more businesses
+              for their size. One map per industry on a shared colour scale.
+
+Chart 11: South Australia gained architects; Tasmania and the NT lost advertisers
+  Idiom:      Tile grid map, two panels
+  Spec file:  specs/chart11_tile_map_change_2007_2012.json
+  Data files: data/design_businesses_by_state_long.csv
+              data/state_tiles.csv (tile positions, made by me)
+  Why:        Equal-sized tiles let the ACT and Tasmania be read as easily as
+              Queensland. Colour shows percentage change 2007 to 2012, calculated
+              in the spec. Only architecture and advertising are shown because
+              the third industry's definition changed between the two years.
+
+Chart 12: Dense and growing: Victoria stands out
+  Idiom:      Bivariate choropleth map
+  Spec file:  specs/chart12_bivariate_map_density_growth.json
+  Data files: data/design_businesses_by_state_long.csv
+              data/state_population_2012.csv
+              data/state_labels.csv, data/australia_states.geojson
+  Why:        Shows two measures at once: businesses per 100,000 residents (2012)
+              and growth since 2007, for architecture and advertising combined.
+              The class cut-offs (85 and 110 per 100,000; 4% and 8% growth) are
+              my own choice.
+
+Chart 13: Design skills cluster around the capital cities
+  Idiom:      Dot map (dot density)
+  Spec file:  specs/chart13_dot_map_design_qualifications.json
+  Data files: data/design_qualification_dots_2016.csv, data/lga_boundaries_2016.geojson
+  Why:        One dot is about 250 residents with a qualification in architecture
+              and building (blue) or creative arts (orange), so clusters show
+              where the skills are. The dots are made from the LGA counts in
+              data/lga_design_qualifications_2016.csv.
+  Note:       Dot positions are random inside each local government area (seeded
+              so the file does not change). Counts are real, positions are not.
+
+Chart 14: Creative arts training is most common in the Sydney and Melbourne areas
+  Idiom:      Bin map (hexagon bins)
+  Spec file:  specs/chart14_hex_bin_map_creative_share.json
+  Data files: data/creative_arts_hexbins_2016.geojson, data/australia_states.geojson
+  Why:        Local government areas vary hugely in size, which makes a plain
+              choropleth hard to read. Equal-sized hexagons (about 80 km) give
+              every part of the country the same visual weight.
+  Note:       Hexagons were calculated by me: each LGA's centre point is assigned
+              to a hexagon on an equal-area grid and the LGA counts are added up.
+              Hexagons with fewer than 2,000 qualified residents are left grey.
+              City dots and names in the spec are plain coordinates.
+
+Chart 15: Creative arts graduates favour the inner city
+  Idiom:      Choropleth map at local government area level (three panels)
+  Spec file:  specs/chart15_choropleth_creative_share_metros.json
+  Data files: data/lga_boundaries_2016.geojson
+              data/lga_design_qualifications_2016.csv
+  Why:        A rate (creative arts qualifications as a share of all qualified
+              residents), so big and small areas are comparable. Close-ups of
+              Sydney and Melbourne show the inner-city pattern that the national
+              map hides.
+
+Chart 16: Inner cities lean creative; the outer suburbs lean towards building
+  Idiom:      Proportional symbol map (three city panels)
+  Spec file:  specs/chart16_symbol_map_metro_lgas.json
+  Data files: data/lga_boundaries_2016.geojson, data/lga_centroids.csv,
+              data/lga_design_qualifications_2016.csv
+  Why:        Circle size is the number of residents in the two fields and colour
+              is the creative arts share of those two fields (orange creative,
+              blue building). Circle positions are LGA centre points that I
+              calculated from the boundary file.
+
+Advanced idioms: bump, butterfly, heatmap + bars, lollipop, slope, connected
+dot plot, treemap, waffle, proportional symbol map (twice), choropleth map (twice),
+tile grid map, bivariate map, dot map and bin map = 16 charts, with 6 map idioms
+(symbol, choropleth, tile grid, bivariate, dot, bin) across 8 map charts. Check the
+assignment for which idioms count as "advanced".
+
+A flow map was not made: I could not find real origin-destination flow data for
+design (for example people or work moving between places) that I could read from
+here. If you find one, a flow map would fit section 5 or 7.
+
+THE STORY (how the page's eight sections use the charts)
+  1. Design is a $61 billion industry ........ chart 8 (waffle)
+  2. A country of small design businesses .... chart 9 (symbol map)
+  3. Where design is most common ............. charts 10 (choropleth), 3 (heatmap + bars)
+  4. Where design is growing ................. charts 11 (tile map), 12 (bivariate map)
+  5. Where design skills are trained ......... charts 13 (dot map), 14 (bin map)
+  6. Zooming in on the cities ................ charts 15 (choropleth), 16 (symbol map)
+  7. The people behind the businesses ........ charts 1 (bump), 4 (lollipop), 2 (butterfly),
+                                               5 (slope), 6 (connected dot plot)
+  8. Inside the industry ..................... chart 7 (treemap)
+
+
+2. DATA FILES
+=============
+
+design_participation.csv
+  Holds:   People who did design work in the 12 months to April: graphic design,
+           advertising, fashion design, other design (2001, 2004, 2007).
+  Source:  ABS Survey of Work in Selected Culture and Leisure Activities,
+           published in ABS 4172.0 Arts and Culture in Australia.
+
+participation_by_gender.csv
+  Holds:   Graphic, fashion and other design split by sex (older file, used by
+           chart 2). Men in fashion design are flagged as a high margin of error.
+  Source:  Same ABS survey.
+
+participation_by_sex_all.csv   (NEW)
+  Holds:   All five activities (graphic design, fashion design, architecture,
+           advertising, other design) by sex, 2001, 2004, 2007, in people.
+  Source:  Same ABS survey: 2001 and 2004 editions, and 4172.0 (2009) Table 15.4
+           for 2007. Published in thousands; multiplied by 1,000.
+  Note:    Components do not add to the total number of people because some
+           people did more than one activity.
+  Correction: an earlier note said advertising is not split by sex. It is, in these
+           tables. Chart 2 still leaves it out, but it could be added.
+
+income_from_design_by_sex.csv   (NEW)
+  Holds:   Paid design workers by annual income from design, by sex, 2001 and 2007.
+  Source:  Same ABS survey, Table 15.4 in the 2001 and 2009 editions.
+  Notes:   The 2001 tables have five bands ($5,000 to $19,999 and $20,000 to
+           $39,999 are separate); I added those two so they match 2007's
+           "$5,000 to $39,999". People paid nothing (2001) and goods-and-services-only
+           (2007) are left out. Dollar bands are not adjusted for inflation.
+           Women $40,000+ in 2001 has a high margin of error (RSE 25 to 50%).
+           I did not use the 2004 table: its published persons totals for two
+           bands do not match males plus females.
+
+census2011_occupations_by_industry.csv   (NEW)
+  Holds:   People employed in architectural services, advertising services and
+           other specialised design services, by occupation (2011 Census main job).
+  Source:  ABS 4172.0 (2014 edition), Census 2011.
+  Notes:   "Not stated or not adequately described" is calculated by me:
+           published all-occupations total minus cultural minus non-cultural.
+           The ABS randomly adjusted small cells.
+
+design_value_added_ip_australia.csv   (NEW, second publisher)
+  Holds:   Value added ($ millions, constant 2019 dollars) by design industry,
+           and by designers working in other industries ("embedded designers").
+  Source:  IP Australia, Defining design: Design's role in the Australian economy
+           (2020), Table 1, p. 10. IP Australia uses BCAR (2018), IBISWorld (2019)
+           and the Census.
+  Notes:   Design industries: average 2008 to 2016. Embedded designers: average of
+           2011 and 2016, which IP Australia calls experimental.
+           The report gives $61.1bn (3.4% of GDP) for design industries and about
+           $67.5bn (more than 3.5%) with embedded designers.
+
+lga_design_qualifications_2016.csv   (NEW)
+  Holds:   Residents (persons) by field of their non-school qualification, by local
+           government area (LGA 2016): architecture and building, creative arts, and
+           the total of all fields. 543 rows.
+  Source:  ABS Census of Population and Housing 2016, table G47 "Non-school
+           Qualification: Field of Study by age by sex (LGA)", read from the ABS Data
+           API (dataflow ABS_C16_G47_LGA; ages: total; persons).
+  Notes:   The API marks this dataflow as non-production. I spot-checked Sydney,
+           Moreland, Brisbane and Stirling with separate single-LGA queries and all
+           values matched. National totals: 633,308 architecture and building,
+           401,161 creative arts, out of 11,412,288 with a qualification (3.5% creative arts).
+           "Total" includes every field plus inadequately described and not stated.
+           The ABS names the merged Cootamundra-Gundagai area "Gundagai (A)".
+           Botany Bay (C) and Rockdale (C) are added together (coded BAYSIDE_NSW)
+           to match the boundary file's Bayside. The ACT has no LGAs, so its whole
+           value is the row coded 89399. Broome (S) has no creative arts value.
+           "No usual address" and "Migratory" rows are left out. The ABS says field
+           of study is a broad classification: architecture and building includes
+           building trades, and creative arts includes music, visual and performing arts.
+
+lga_boundaries_2016.geojson   (NEW, map)
+  Holds:   Local government area boundaries, simplified (finer detail inside the five
+           city windows). Properties: code, name, state, metro (my city window).
+  Source:  geoBoundaries (wmgeolab), ADM2 simplified, Australia, open licence.
+           https://github.com/wmgeolab/geoBoundaries
+  Notes:   geoBoundaries has some post-2016 names; I matched them to the 2016 ABS names
+           by hand (for example Dubbo = Western Plains Regional). The "metro" windows
+           are boxes around Sydney, Melbourne, Brisbane, Adelaide and Perth, not
+           official Greater Capital City boundaries.
+
+lga_centroids.csv, design_qualification_dots_2016.csv, creative_arts_hexbins_2016.geojson   (NEW, calculated by me)
+  Holds:   LGA centre points; the dot map's dots (1 dot is about 250 people,
+           placed randomly inside each LGA); and the hexagon sums.
+  Source:  Calculated from the two files above. See the notes on charts 13 to 16.
+
+design_businesses_by_state_2007.csv   (NEW)
+  Holds:   Businesses by state for architectural services, advertising services,
+           and commercial art and display services, June 2007.
+  Source:  ABS Counts of Australian Businesses, Table 15.1 in ABS 4172.0 (2009).
+  Note:    State figures add exactly to the published national totals.
+
+design_businesses_by_state_long.csv   (NEW)
+  Holds:   The 2007 and 2012 state counts in one long table (year, state,
+           industry, businesses), used by charts 10 to 12. "Other design services"
+           is commercial art and display (2007) or other specialised design (2012).
+           These are different industries, so only architecture and advertising
+           are compared between the two years.
+  Source:  The two files above.
+
+state_population_2012.csv   (NEW)
+  Holds:   State population at end of June 2012 in thousands, and in people
+           (thousands x 1,000).
+  Source:  ABS Australian Demographic Statistics 3101.0, June 2012 issue,
+           June key figures. The figures are marked preliminary.
+
+australia_states.geojson, state_tiles.csv, state_labels.csv   (maps)
+  Holds:   State boundaries (Natural Earth admin-1, public domain, filtered to
+           Australia, simplified), tile positions and label positions.
+  Note:    The tile and label positions are my own layout, not data.
+
+design_businesses_by_state_2001.csv
+  Holds:   Businesses in architectural services, advertising services, and
+           commercial art and display services, by state, June 2001.
+  Source:  ABS Australian Business Register counts, published in ABS 4172.0.
+
+design_businesses_by_state_2012.csv   (NEW; state codes used from now)
+  Holds:   Businesses by state: architectural services, advertising services,
+           other specialised design services, June 2012.
+  Source:  ABS Counts of Australian Businesses, in ABS 4172.0 (2014 edition).
+  Note:    States do not add to the national total because some businesses have
+           no state recorded.
+
+design_businesses_by_size_2012.csv   (NEW)
+  Holds:   2012 businesses by employment size (non-employing, 1 to 19, 20 to 199,
+           200+) for the same three industries.
+  Source:  Same.
+  Note:    The page prints 14,442 for other specialised design services, but its
+           parts add to 14,342, and so do its state figures, so 14,342 is used.
+
+design_businesses_national.csv, architectural_services_employment.csv,
+creative_arts_students.csv, paid_participation_2010_11.csv, state_population_2001.csv
+  Holds:   National business counts (2001, 2007, 2012); architectural services
+           employment (Census 2001, 2011); creative arts university students
+           (2003 to 2007); paid participation in design-related activities 2010-11;
+           state population June 2001.
+  Source:  ABS (see links). Persons population = males + females (added by me).
+  Note:    2001 business counts and 2007/2012 counts use different counting bases.
+           Creative arts students includes music, visual arts and media.
+
+
+3. LINKS
+========
+
+ABS design participation 2001:
+https://www.abs.gov.au/AUSSTATS/abs@.nsf/Previousproducts/BDF2D86997A51BBDCA2571E000068F5C
+
+ABS design participation 2004:
+https://www.abs.gov.au/AUSSTATS/abs@.nsf/Latestproducts/DF3ABA4E19C80BD9CA2572FA00218D1D
+
+ABS design participation 2007 (4172.0, 2009 edition):
+https://www.abs.gov.au/AUSSTATS/abs@.nsf/0/A866EC8350CF0724CA2576550014084F
+
+ABS 4172.0 (2009 edition): 2007 business counts by state (Table 15.1) are on the 2007 page above
+
+ABS 4172.0 (2014 edition): 2012 business counts, 2011 Census occupations, 2010-11 participation:
+https://www.abs.gov.au/ausstats/abs@.nsf/Lookup/4172.0main+features232014
+
+ABS business register counts, June 2001:
+https://www.abs.gov.au/AUSSTATS/abs@.nsf/Previousproducts/4737207436C423D7CA2571E000067234
+
+ABS business counts, June 2007:
+https://www.abs.gov.au/ausstats/abs@.nsf/Products/6E0D4EC6D348FFC8CA2574E9001329F7
+
+ABS state population (Table 4):
+https://www.ausstats.abs.gov.au/ausstats/subscriber.nsf/0/D6EDD57581A05F75CA2572F0001CADFF/$File/31010_dec%202006.pdf
+
+IP Australia, Defining design (2020):
+https://www.ipaustralia.gov.au/about-us/our-agency/our-research/~/-/media/Project/IPA/IPAustralia/PDF/defining-design-ip-australia-report.pdf
+
+ABS Census 2016 G47 (data API, dataflow structure):
+https://data.api.abs.gov.au/rest/dataflow/ABS/ABS_C16_G47_LGA/1.0.0?references=all
+
+geoBoundaries Australia ADM2:
+https://github.com/wmgeolab/geoBoundaries
+
+ABS population, June 2012:
+https://www.abs.gov.au/AUSSTATS/abs@.nsf/Lookup/3101.0Main+Features1Jun 2012
+
+ABS business counts, June 2007 (Table 15.1):
+https://www.abs.gov.au/ausstats/abs@.nsf/Products/6E0D4EC6D348FFC8CA2574E9001329F7
+
+Natural Earth state boundaries:
+https://github.com/nvkelso/natural-earth-vector
+
+Vega-Lite online editor (paste a file from online_editor/):
+https://vega.github.io/editor
+
+Vega-Lite documentation:
+https://vega.github.io/vega-lite/
+
+Vega documentation (treemap):
+https://vega.github.io/vega/docs/transforms/treemap/
+
+
+4. KNOWN LIMITS (mention these in your write-up)
+================================================
+
+- Charts 13 to 16 use Census 2016 data. They are broader fields of study, not
+  designers, and the API dataflow is marked non-production (see above).
+- Maps 9 to 12 are at state level because the design-specific counts are only published
+  for states. The 2012 population figures are preliminary. State figures for
+  small places (ACT, NT, Tasmania) change a lot with a few businesses.
+- The newest design-specific data is from 2012 (businesses) and 2011 (Census). The
+  assignment asks for the most recent data. The Census 2021 and Jobs and Skills
+  Australia occupation profiles are the next places to look; I could not open
+  those pages from here.
+- Two publishers are used (ABS and IP Australia). IP Australia's value added
+  figures draw on BCAR and IBISWorld as well as the Census.
+- Survey participation counts people who did any design activity, including
+  unpaid, so they are not the same as design jobs.
+- The 2007 income bands and the 2001 bands only match after merging two 2001 bands,
+  and they are not adjusted for inflation.
+- The treemap's "Other occupations" group mixes non-cultural occupations with
+  a small not-stated group.
+- Advertising is missing from the butterfly chart (chart 2), although the tables
+  do split it by sex.
+
+
+5. USING THE ONLINE EDITOR
+==========================
+
+Files in online_editor/ have the data pasted inside, so they work when pasted into
+https://vega.github.io/editor. Charts 13 to 16 are not included because their
+boundary files are too large for the editor; run them from the project folder. For chart 7 choose "Vega" at the top of the editor
+instead of "Vega-Lite".

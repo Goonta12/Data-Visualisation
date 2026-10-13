@@ -1,0 +1,109 @@
+{
+  "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+  "title": {
+    "text": "Design skills cluster around the capital cities",
+    "subtitle": [
+      "Census 2016: each dot is about 250 residents.",
+      "Blue: architecture and building. Orange: creative arts.",
+      "Dots are placed randomly inside each area."
+    ]
+  },
+  "width": "container",
+  "height": 500,
+  "projection": {
+    "type": "conicEqualArea",
+    "rotate": [
+      -132,
+      0
+    ],
+    "center": [
+      0,
+      -27
+    ],
+    "parallels": [
+      -18,
+      -36
+    ]
+  },
+  "layer": [
+    {
+      "data": {
+        "url": "data/lga_boundaries_2016.geojson",
+        "format": {
+          "property": "features"
+        }
+      },
+      "mark": {
+        "type": "geoshape",
+        "fill": "#f1efe9",
+        "stroke": "#d9d6cc",
+        "strokeWidth": 0.4
+      }
+    },
+    {
+      "data": {
+        "url": "data/design_qualification_dots_2016.csv"
+      },
+      "mark": {
+        "type": "circle",
+        "size": 9,
+        "opacity": 0.75
+      },
+      "encoding": {
+        "longitude": {
+          "field": "lon",
+          "type": "quantitative"
+        },
+        "latitude": {
+          "field": "lat",
+          "type": "quantitative"
+        },
+        "color": {
+          "field": "type",
+          "type": "nominal",
+          "title": "1 dot = about 250 people",
+          "scale": {
+            "domain": [
+              "Architecture and building",
+              "Creative arts"
+            ],
+            "range": [
+              "#1f78b4",
+              "#d95f02"
+            ]
+          },
+          "legend": {
+            "orient": "bottom-left",
+            "symbolSize": 120,
+            "symbolOpacity": 1
+          }
+        },
+        "tooltip": [
+          {
+            "field": "type",
+            "title": "Qualification field"
+          },
+          {
+            "field": "lga_code",
+            "title": "LGA code"
+          }
+        ]
+      }
+    }
+  ],
+  "config": {
+    "view": {
+      "stroke": null
+    },
+    "title": {
+      "font": "Playfair Display, Georgia, serif",
+      "fontSize": 20,
+      "fontWeight": 700,
+      "anchor": "start",
+      "subtitleFontSize": 13,
+      "subtitleColor": "#555",
+      "subtitlePadding": 4,
+      "offset": 10
+    }
+  }
+}

@@ -1,0 +1,181 @@
+{
+  "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+  "title": {
+    "text": "Women dominate fashion; men lead the rest",
+    "subtitle": [
+      "People doing each type of design work.",
+      "* High margin of error (ABS)."
+    ]
+  },
+  "data": {
+    "url": "data/participation_by_gender.csv"
+  },
+  "transform": [
+    {
+      "calculate": "datum.sex == 'Men' ? -datum.people : datum.people",
+      "as": "signed"
+    },
+    {
+      "calculate": "format(datum.people, ',') + (datum.unreliable == 'yes' ? ' *' : '')",
+      "as": "label"
+    }
+  ],
+  "facet": {
+    "row": {
+      "field": "year",
+      "type": "ordinal",
+      "title": null,
+      "header": {
+        "labelAngle": 0,
+        "labelAlign": "left",
+        "labelOrient": "top",
+        "labelFontSize": 14,
+        "labelFontWeight": "bold"
+      }
+    }
+  },
+  "spec": {
+    "width": 520,
+    "height": {
+      "step": 26
+    },
+    "encoding": {
+      "y": {
+        "field": "activity",
+        "type": "nominal",
+        "title": null,
+        "sort": [
+          "Graphic design",
+          "Other design",
+          "Fashion design"
+        ],
+        "axis": {
+          "domain": false,
+          "ticks": false,
+          "labelPadding": 8
+        }
+      }
+    },
+    "layer": [
+      {
+        "mark": {
+          "type": "bar"
+        },
+        "encoding": {
+          "x": {
+            "field": "signed",
+            "type": "quantitative",
+            "title": "People (thousands)",
+            "scale": {
+              "domain": [
+                -140000,
+                140000
+              ]
+            },
+            "axis": {
+              "values": [
+                -120000,
+                -80000,
+                -40000,
+                0,
+                40000,
+                80000,
+                120000
+              ],
+              "labelExpr": "abs(datum.value) / 1000 + 'k'"
+            }
+          },
+          "color": {
+            "field": "sex",
+            "type": "nominal",
+            "title": null,
+            "scale": {
+              "domain": [
+                "Men",
+                "Women"
+              ],
+              "range": [
+                "#3b6ea8",
+                "#e08a1e"
+              ]
+            }
+          },
+          "tooltip": [
+            {
+              "field": "activity",
+              "title": "Activity"
+            },
+            {
+              "field": "sex",
+              "title": "Sex"
+            },
+            {
+              "field": "people",
+              "title": "People",
+              "format": ","
+            }
+          ]
+        }
+      },
+      {
+        "transform": [
+          {
+            "filter": "datum.sex == 'Men'"
+          }
+        ],
+        "mark": {
+          "type": "text",
+          "align": "right",
+          "dx": -4,
+          "fontSize": 11
+        },
+        "encoding": {
+          "x": {
+            "field": "signed",
+            "type": "quantitative"
+          },
+          "text": {
+            "field": "label"
+          }
+        }
+      },
+      {
+        "transform": [
+          {
+            "filter": "datum.sex == 'Women'"
+          }
+        ],
+        "mark": {
+          "type": "text",
+          "align": "left",
+          "dx": 4,
+          "fontSize": 11
+        },
+        "encoding": {
+          "x": {
+            "field": "signed",
+            "type": "quantitative"
+          },
+          "text": {
+            "field": "label"
+          }
+        }
+      }
+    ]
+  },
+  "config": {
+    "view": {
+      "stroke": null
+    },
+    "title": {
+      "font": "Playfair Display, Georgia, serif",
+      "fontSize": 20,
+      "fontWeight": 700,
+      "anchor": "start",
+      "subtitleFontSize": 13,
+      "subtitleColor": "#555",
+      "subtitlePadding": 4,
+      "offset": 10
+    }
+  }
+}

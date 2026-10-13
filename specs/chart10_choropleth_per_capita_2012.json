@@ -1,0 +1,291 @@
+{
+  "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+  "title": {
+    "text": "Architecture thrives in Victoria and WA",
+    "subtitle": [
+      "Businesses per 100,000 residents, June 2012.",
+      "Numbers show each state's rate.",
+      "The ACT is shown as a circle."
+    ]
+  },
+  "data": {
+    "url": "data/design_businesses_by_state_long.csv",
+    "format": {
+      "parse": {
+        "year": "number",
+        "businesses": "number"
+      }
+    }
+  },
+  "transform": [
+    {
+      "filter": "datum.year == 2012"
+    },
+    {
+      "lookup": "state",
+      "from": {
+        "data": {
+          "url": "data/state_population_2012.csv"
+        },
+        "key": "state",
+        "fields": [
+          "population"
+        ]
+      }
+    },
+    {
+      "lookup": "state",
+      "from": {
+        "data": {
+          "url": "data/state_labels.csv"
+        },
+        "key": "state",
+        "fields": [
+          "lon",
+          "lat"
+        ]
+      }
+    },
+    {
+      "lookup": "state",
+      "from": {
+        "data": {
+          "url": "data/australia_states.geojson",
+          "format": {
+            "property": "features"
+          }
+        },
+        "key": "properties.state",
+        "fields": [
+          "geometry",
+          "properties"
+        ]
+      }
+    },
+    {
+      "calculate": "toNumber(datum.population)",
+      "as": "pop"
+    },
+    {
+      "calculate": "datum.businesses / datum.pop * 100000",
+      "as": "rate"
+    }
+  ],
+  "facet": {
+    "column": {
+      "field": "industry",
+      "type": "nominal",
+      "title": null,
+      "sort": [
+        "Architectural services",
+        "Advertising services",
+        "Other design services"
+      ],
+      "header": {
+        "labelFontSize": 14,
+        "labelFontWeight": 500,
+        "labelExpr": "datum.value == 'Other design services' ? 'Other specialised design' : datum.value"
+      }
+    }
+  },
+  "spec": {
+    "width": 180,
+    "height": 196,
+    "projection": {
+      "type": "conicEqualArea",
+      "rotate": [
+        -132,
+        0
+      ],
+      "center": [
+        0,
+        -27
+      ],
+      "parallels": [
+        -18,
+        -36
+      ],
+      "scale": 274,
+      "translate": [
+        90,
+        92
+      ]
+    },
+    "layer": [
+      {
+        "mark": {
+          "type": "geoshape",
+          "stroke": "white",
+          "strokeWidth": 1
+        },
+        "encoding": {
+          "shape": {
+            "field": "geometry",
+            "type": "geojson"
+          },
+          "color": {
+            "field": "rate",
+            "type": "quantitative",
+            "title": "Businesses per 100,000 people",
+            "scale": {
+              "scheme": "teals",
+              "domain": [
+                0,
+                80
+              ]
+            },
+            "legend": {
+              "orient": "bottom",
+              "direction": "horizontal",
+              "gradientLength": 260
+            }
+          },
+          "tooltip": [
+            {
+              "field": "properties.name",
+              "title": "State"
+            },
+            {
+              "field": "industry",
+              "title": "Industry"
+            },
+            {
+              "field": "businesses",
+              "title": "Businesses",
+              "format": ","
+            },
+            {
+              "field": "pop",
+              "title": "Residents (preliminary)",
+              "format": ","
+            },
+            {
+              "field": "rate",
+              "title": "Per 100,000 people",
+              "format": ".0f"
+            }
+          ]
+        }
+      },
+      {
+        "transform": [
+          {
+            "filter": "datum.state == 'ACT'"
+          }
+        ],
+        "mark": {
+          "type": "circle",
+          "size": 420,
+          "stroke": "white",
+          "strokeWidth": 1.5
+        },
+        "encoding": {
+          "longitude": {
+            "field": "lon",
+            "type": "quantitative"
+          },
+          "latitude": {
+            "field": "lat",
+            "type": "quantitative"
+          },
+          "color": {
+            "field": "rate",
+            "type": "quantitative",
+            "scale": {
+              "scheme": "teals",
+              "domain": [
+                0,
+                80
+              ]
+            },
+            "legend": null
+          }
+        }
+      },
+      {
+        "mark": {
+          "type": "text",
+          "fontSize": 11,
+          "fontWeight": "bold"
+        },
+        "encoding": {
+          "longitude": {
+            "field": "lon",
+            "type": "quantitative"
+          },
+          "latitude": {
+            "field": "lat",
+            "type": "quantitative"
+          },
+          "text": {
+            "field": "rate",
+            "type": "quantitative",
+            "format": ".0f"
+          },
+          "color": {
+            "condition": {
+              "test": "datum.rate > 50",
+              "value": "white"
+            },
+            "value": "#1a1a1a"
+          }
+        },
+        "transform": [
+          {
+            "filter": "datum.state != 'TAS'"
+          }
+        ]
+      },
+      {
+        "mark": {
+          "type": "text",
+          "fontSize": 11,
+          "fontWeight": "bold",
+          "dy": 9
+        },
+        "encoding": {
+          "longitude": {
+            "field": "lon",
+            "type": "quantitative"
+          },
+          "latitude": {
+            "field": "lat",
+            "type": "quantitative"
+          },
+          "text": {
+            "field": "rate",
+            "type": "quantitative",
+            "format": ".0f"
+          },
+          "color": {
+            "condition": {
+              "test": "datum.rate > 50",
+              "value": "white"
+            },
+            "value": "#1a1a1a"
+          }
+        },
+        "transform": [
+          {
+            "filter": "datum.state == 'TAS'"
+          }
+        ]
+      }
+    ]
+  },
+  "config": {
+    "view": {
+      "stroke": null
+    },
+    "title": {
+      "font": "Playfair Display, Georgia, serif",
+      "fontSize": 20,
+      "fontWeight": 700,
+      "anchor": "start",
+      "subtitleFontSize": 13,
+      "subtitleColor": "#555",
+      "subtitlePadding": 4,
+      "offset": 10
+    }
+  }
+}

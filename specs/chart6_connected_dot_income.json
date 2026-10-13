@@ -1,0 +1,183 @@
+{
+  "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+  "title": {
+    "text": "Men far likelier to earn $40,000 or more",
+    "subtitle": [
+      "Share of paid design workers by income.",
+      "Dollar bands not adjusted for inflation.",
+      "2001 bands merged to match 2007."
+    ]
+  },
+  "data": {
+    "url": "data/income_from_design_by_sex.csv",
+    "format": {
+      "parse": {
+        "year": "number",
+        "people": "number"
+      }
+    }
+  },
+  "transform": [
+    {
+      "joinaggregate": [
+        {
+          "op": "sum",
+          "field": "people",
+          "as": "total"
+        }
+      ],
+      "groupby": [
+        "year",
+        "sex"
+      ]
+    },
+    {
+      "calculate": "datum.people / datum.total",
+      "as": "share"
+    },
+    {
+      "calculate": "'Survey year ' + datum.year",
+      "as": "panel"
+    }
+  ],
+  "facet": {
+    "column": {
+      "field": "panel",
+      "type": "ordinal",
+      "title": null,
+      "header": {
+        "labelFontSize": 14,
+        "labelFontWeight": 500
+      }
+    }
+  },
+  "spec": {
+    "width": 210,
+    "height": 160,
+    "encoding": {
+      "y": {
+        "field": "band",
+        "type": "ordinal",
+        "title": null,
+        "sort": [
+          "Under $5,000",
+          "$5,000 to $39,999",
+          "$40,000 or more"
+        ],
+        "axis": {
+          "domain": false,
+          "ticks": false,
+          "labelFontSize": 12,
+          "labelLimit": 160
+        }
+      }
+    },
+    "layer": [
+      {
+        "mark": {
+          "type": "rule",
+          "strokeWidth": 4,
+          "color": "#bbb"
+        },
+        "encoding": {
+          "x": {
+            "aggregate": "min",
+            "field": "share",
+            "type": "quantitative",
+            "title": "Share of paid workers of that sex",
+            "scale": {
+              "domain": [
+                0,
+                0.6
+              ]
+            },
+            "axis": {
+              "format": "%",
+              "tickCount": 6
+            }
+          },
+          "x2": {
+            "aggregate": "max",
+            "field": "share"
+          }
+        }
+      },
+      {
+        "mark": {
+          "type": "point",
+          "filled": true,
+          "size": 170,
+          "opacity": 1
+        },
+        "encoding": {
+          "x": {
+            "field": "share",
+            "type": "quantitative"
+          },
+          "color": {
+            "field": "sex",
+            "type": "nominal",
+            "title": null,
+            "scale": {
+              "domain": [
+                "men",
+                "women"
+              ],
+              "range": [
+                "#1f78b4",
+                "#d95f02"
+              ]
+            },
+            "legend": {
+              "orient": "bottom",
+              "labelExpr": "datum.label == 'men' ? 'Men' : 'Women'"
+            }
+          },
+          "tooltip": [
+            {
+              "field": "year",
+              "title": "Year"
+            },
+            {
+              "field": "band",
+              "title": "Income band"
+            },
+            {
+              "field": "sex",
+              "title": "Sex"
+            },
+            {
+              "field": "people",
+              "title": "People",
+              "format": ","
+            },
+            {
+              "field": "share",
+              "title": "Share of that sex",
+              "format": ".1%"
+            }
+          ]
+        }
+      }
+    ]
+  },
+  "config": {
+    "view": {
+      "stroke": null
+    },
+    "axis": {
+      "grid": true,
+      "gridColor": "#eee"
+    },
+    "title": {
+      "font": "Playfair Display, Georgia, serif",
+      "fontSize": 20,
+      "fontWeight": 700,
+      "anchor": "start",
+      "subtitleFontSize": 13,
+      "subtitleColor": "#555",
+      "subtitlePadding": 4,
+      "offset": 10
+    }
+  }
+}
