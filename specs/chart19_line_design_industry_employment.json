@@ -1,0 +1,366 @@
+{
+  "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+  "title": {
+    "text": "The design industry is growing",
+    "subtitle": [
+      "People employed in Australia's architecture and design industry,",
+      "by Census year. Includes everyone working in design firms."
+    ]
+  },
+  "width": "container",
+  "height": 340,
+  "data": {
+    "url": "data/design_industry_employment_2006_2016.csv"
+  },
+  "transform": [
+    {
+      "calculate": "toNumber(datum.year)",
+      "as": "yr"
+    },
+    {
+      "calculate": "toNumber(datum.employed)",
+      "as": "n"
+    }
+  ],
+  "encoding": {
+    "x": {
+      "field": "yr",
+      "type": "quantitative",
+      "title": null,
+      "scale": {
+        "domain": [
+          2004.6,
+          2017.4
+        ]
+      },
+      "axis": {
+        "values": [
+          2006,
+          2011,
+          2016
+        ],
+        "format": "d",
+        "grid": false,
+        "labelFontSize": 12,
+        "ticks": false,
+        "domainColor": "#999"
+      }
+    },
+    "y": {
+      "field": "n",
+      "type": "quantitative",
+      "title": "People employed",
+      "scale": {
+        "domain": [
+          0,
+          100000
+        ]
+      },
+      "axis": {
+        "format": ",d",
+        "tickCount": 5,
+        "gridColor": "#eee",
+        "domain": false,
+        "ticks": false,
+        "labelColor": "#777",
+        "titleColor": "#777",
+        "titleFontWeight": "normal"
+      }
+    }
+  },
+  "layer": [
+    {
+      "mark": {
+        "type": "area",
+        "color": "#16294a",
+        "opacity": 0.08
+      }
+    },
+    {
+      "mark": {
+        "type": "line",
+        "color": "#16294a",
+        "strokeWidth": 3
+      }
+    },
+    {
+      "mark": {
+        "type": "point",
+        "filled": true,
+        "size": 110,
+        "color": "#16294a",
+        "opacity": 1,
+        "stroke": "white",
+        "strokeWidth": 2
+      },
+      "encoding": {
+        "tooltip": [
+          {
+            "field": "yr",
+            "title": "Census year",
+            "format": "d"
+          },
+          {
+            "field": "n",
+            "title": "People employed",
+            "format": ",d"
+          },
+          {
+            "field": "source",
+            "title": "Source"
+          }
+        ]
+      }
+    },
+    {
+      "mark": {
+        "type": "text",
+        "dy": -18,
+        "fontSize": 14,
+        "fontWeight": "bold",
+        "color": "#16294a"
+      },
+      "encoding": {
+        "text": {
+          "field": "n",
+          "type": "quantitative",
+          "format": ","
+        }
+      }
+    },
+    {
+      "transform": [
+        {
+          "window": [
+            {
+              "op": "lag",
+              "field": "n",
+              "as": "prev"
+            },
+            {
+              "op": "lag",
+              "field": "yr",
+              "as": "prevYr"
+            }
+          ]
+        },
+        {
+          "filter": "isValid(datum.prev)"
+        },
+        {
+          "calculate": "(datum.yr + datum.prevYr) / 2",
+          "as": "midYr"
+        },
+        {
+          "calculate": "(datum.n + datum.prev) / 2",
+          "as": "midN"
+        },
+        {
+          "calculate": "['+' + format(datum.n - datum.prev, ',') + ' people', '(+' + format(datum.n / datum.prev - 1, '.0%') + ' in 5 years)']",
+          "as": "growth"
+        }
+      ],
+      "mark": {
+        "type": "text",
+        "dy": 26,
+        "fontSize": 11,
+        "fontStyle": "italic",
+        "color": "#4a6a9e"
+      },
+      "encoding": {
+        "x": {
+          "field": "midYr",
+          "type": "quantitative"
+        },
+        "y": {
+          "field": "midN",
+          "type": "quantitative"
+        },
+        "text": {
+          "field": "growth"
+        }
+      }
+    },
+    {
+      "data": {
+        "values": [
+          {
+            "x": 2006,
+            "x2": 2016,
+            "y": 90000
+          }
+        ]
+      },
+      "mark": {
+        "type": "rule",
+        "color": "#16294a",
+        "strokeWidth": 1
+      },
+      "encoding": {
+        "x": {
+          "field": "x",
+          "type": "quantitative"
+        },
+        "x2": {
+          "field": "x2"
+        },
+        "y": {
+          "field": "y",
+          "type": "quantitative"
+        }
+      }
+    },
+    {
+      "data": {
+        "values": [
+          {
+            "x": 2006,
+            "y": 90000,
+            "y2": 86500
+          },
+          {
+            "x": 2016,
+            "y": 90000,
+            "y2": 86500
+          }
+        ]
+      },
+      "mark": {
+        "type": "rule",
+        "color": "#16294a",
+        "strokeWidth": 1
+      },
+      "encoding": {
+        "x": {
+          "field": "x",
+          "type": "quantitative"
+        },
+        "y": {
+          "field": "y",
+          "type": "quantitative"
+        },
+        "y2": {
+          "field": "y2"
+        }
+      }
+    },
+    {
+      "data": {
+        "values": [
+          {
+            "x": 2011,
+            "y": 90000,
+            "t": "+38% in 10 years: about 2,100 more people every year"
+          }
+        ]
+      },
+      "mark": {
+        "type": "text",
+        "dy": -9,
+        "fontSize": 12,
+        "fontWeight": "bold",
+        "color": "#16294a"
+      },
+      "encoding": {
+        "x": {
+          "field": "x",
+          "type": "quantitative"
+        },
+        "y": {
+          "field": "y",
+          "type": "quantitative"
+        },
+        "text": {
+          "field": "t"
+        }
+      }
+    },
+    {
+      "data": {
+        "values": [
+          {
+            "x": 2013.6,
+            "y": 30000,
+            "t": [
+              "Steady growth of about",
+              "3.3% a year, with no",
+              "slowdown after 2011"
+            ]
+          }
+        ]
+      },
+      "mark": {
+        "type": "text",
+        "align": "center",
+        "fontSize": 11,
+        "fontStyle": "italic",
+        "color": "#555"
+      },
+      "encoding": {
+        "x": {
+          "field": "x",
+          "type": "quantitative"
+        },
+        "y": {
+          "field": "y",
+          "type": "quantitative"
+        },
+        "text": {
+          "field": "t"
+        }
+      }
+    },
+    {
+      "data": {
+        "values": [
+          {
+            "x": 2006,
+            "y": 8000,
+            "t": "Includes designers and support staff such as managers and admin"
+          }
+        ]
+      },
+      "mark": {
+        "type": "text",
+        "align": "left",
+        "fontSize": 10,
+        "color": "#777"
+      },
+      "encoding": {
+        "x": {
+          "field": "x",
+          "type": "quantitative"
+        },
+        "y": {
+          "field": "y",
+          "type": "quantitative"
+        },
+        "text": {
+          "field": "t"
+        }
+      }
+    }
+  ],
+  "config": {
+    "view": {
+      "stroke": null
+    },
+    "axis": {
+      "labelFont": "Inter, system-ui, sans-serif",
+      "titleFont": "Inter, system-ui, sans-serif"
+    },
+    "title": {
+      "font": "Playfair Display, Georgia, serif",
+      "fontSize": 20,
+      "fontWeight": 700,
+      "anchor": "start",
+      "subtitleFontSize": 13,
+      "subtitleColor": "#555",
+      "subtitlePadding": 4,
+      "offset": 10
+    },
+    "axisY": {
+      "format": ",d"
+    }
+  }
+}

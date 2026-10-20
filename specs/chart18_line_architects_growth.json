@@ -1,0 +1,421 @@
+{
+  "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+  "title": {
+    "text": "Australia's architects keep growing",
+    "subtitle": [
+      "Number of people working as architects, by Census year.",
+      "Labels under the line show the share who were women."
+    ]
+  },
+  "width": "container",
+  "height": 340,
+  "data": {
+    "url": "data/architects_australia_2001_2021.csv"
+  },
+  "transform": [
+    {
+      "calculate": "toNumber(datum.year)",
+      "as": "yr"
+    },
+    {
+      "calculate": "toNumber(datum.architects)",
+      "as": "n"
+    }
+  ],
+  "encoding": {
+    "x": {
+      "field": "yr",
+      "type": "quantitative",
+      "title": null,
+      "scale": {
+        "domain": [
+          1999.5,
+          2022.5
+        ]
+      },
+      "axis": {
+        "values": [
+          2001,
+          2006,
+          2011,
+          2016,
+          2021
+        ],
+        "format": "d",
+        "grid": false,
+        "labelFontSize": 12,
+        "ticks": false,
+        "domainColor": "#999"
+      }
+    },
+    "y": {
+      "field": "n",
+      "type": "quantitative",
+      "title": "Architects",
+      "scale": {
+        "domain": [
+          0,
+          24000
+        ]
+      },
+      "axis": {
+        "format": ",d",
+        "tickCount": 4,
+        "gridColor": "#eee",
+        "domain": false,
+        "ticks": false,
+        "labelColor": "#777",
+        "titleColor": "#777",
+        "titleFontWeight": "normal"
+      }
+    }
+  },
+  "layer": [
+    {
+      "mark": {
+        "type": "area",
+        "color": "#16294a",
+        "opacity": 0.08
+      }
+    },
+    {
+      "transform": [
+        {
+          "filter": "datum.yr <= 2016"
+        }
+      ],
+      "mark": {
+        "type": "line",
+        "color": "#16294a",
+        "strokeWidth": 3
+      }
+    },
+    {
+      "transform": [
+        {
+          "filter": "datum.yr >= 2016"
+        }
+      ],
+      "mark": {
+        "type": "line",
+        "color": "#16294a",
+        "strokeWidth": 3,
+        "strokeDash": [
+          6,
+          4
+        ]
+      }
+    },
+    {
+      "mark": {
+        "type": "point",
+        "filled": true,
+        "size": 90,
+        "color": "#16294a",
+        "stroke": "white",
+        "strokeWidth": 2,
+        "opacity": 1
+      },
+      "encoding": {
+        "tooltip": [
+          {
+            "field": "yr",
+            "title": "Census year",
+            "format": "d"
+          },
+          {
+            "field": "n",
+            "title": "Architects",
+            "format": ",d"
+          },
+          {
+            "field": "women_share",
+            "type": "quantitative",
+            "title": "Women",
+            "format": ".0%"
+          },
+          {
+            "field": "source",
+            "title": "Source"
+          }
+        ]
+      }
+    },
+    {
+      "mark": {
+        "type": "text",
+        "dy": -16,
+        "fontSize": 13,
+        "fontWeight": "bold",
+        "color": "#16294a"
+      },
+      "encoding": {
+        "text": {
+          "field": "n",
+          "type": "quantitative",
+          "format": ",d"
+        }
+      }
+    },
+    {
+      "transform": [
+        {
+          "calculate": "format(toNumber(datum.women_share), '.0%') + ' women'",
+          "as": "lab"
+        }
+      ],
+      "mark": {
+        "type": "text",
+        "fontSize": 11,
+        "color": "#b5487a",
+        "fontWeight": "bold"
+      },
+      "encoding": {
+        "y": {
+          "datum": 1400,
+          "type": "quantitative"
+        },
+        "text": {
+          "field": "lab"
+        }
+      }
+    },
+    {
+      "transform": [
+        {
+          "window": [
+            {
+              "op": "lag",
+              "field": "n",
+              "as": "prev"
+            },
+            {
+              "op": "lag",
+              "field": "yr",
+              "as": "prevYr"
+            }
+          ]
+        },
+        {
+          "filter": "isValid(datum.prev)"
+        },
+        {
+          "calculate": "(datum.yr + datum.prevYr) / 2",
+          "as": "midYr"
+        },
+        {
+          "calculate": "(datum.n + datum.prev) / 2",
+          "as": "midN"
+        },
+        {
+          "calculate": "'+' + format(datum.n / datum.prev - 1, '.0%')",
+          "as": "growth"
+        }
+      ],
+      "mark": {
+        "type": "text",
+        "dy": 18,
+        "fontSize": 11,
+        "fontStyle": "italic",
+        "color": "#4a6a9e"
+      },
+      "encoding": {
+        "x": {
+          "field": "midYr",
+          "type": "quantitative"
+        },
+        "y": {
+          "field": "midN",
+          "type": "quantitative"
+        },
+        "text": {
+          "field": "growth"
+        }
+      }
+    },
+    {
+      "data": {
+        "values": [
+          {
+            "x": 2001,
+            "x2": 2016,
+            "y": 21300
+          }
+        ]
+      },
+      "mark": {
+        "type": "rule",
+        "color": "#16294a",
+        "strokeWidth": 1
+      },
+      "encoding": {
+        "x": {
+          "field": "x",
+          "type": "quantitative"
+        },
+        "x2": {
+          "field": "x2"
+        },
+        "y": {
+          "field": "y",
+          "type": "quantitative"
+        }
+      }
+    },
+    {
+      "data": {
+        "values": [
+          {
+            "x": 2001,
+            "y": 21300,
+            "y2": 20500
+          },
+          {
+            "x": 2016,
+            "y": 21300,
+            "y2": 20500
+          }
+        ]
+      },
+      "mark": {
+        "type": "rule",
+        "color": "#16294a",
+        "strokeWidth": 1
+      },
+      "encoding": {
+        "x": {
+          "field": "x",
+          "type": "quantitative"
+        },
+        "y": {
+          "field": "y",
+          "type": "quantitative"
+        },
+        "y2": {
+          "field": "y2"
+        }
+      }
+    },
+    {
+      "data": {
+        "values": [
+          {
+            "x": 2008.5,
+            "y": 21300,
+            "t": "+51% in 15 years, 2001 to 2016"
+          }
+        ]
+      },
+      "mark": {
+        "type": "text",
+        "dy": -9,
+        "fontSize": 12,
+        "fontWeight": "bold",
+        "color": "#16294a"
+      },
+      "encoding": {
+        "x": {
+          "field": "x",
+          "type": "quantitative"
+        },
+        "y": {
+          "field": "y",
+          "type": "quantitative"
+        },
+        "text": {
+          "field": "t"
+        }
+      }
+    },
+    {
+      "data": {
+        "values": [
+          {
+            "x": 2021,
+            "y": 22600,
+            "t": [
+              "Dashed: 2021 figure is",
+              "rounded, from a newer source"
+            ]
+          }
+        ]
+      },
+      "mark": {
+        "type": "text",
+        "align": "right",
+        "fontSize": 10,
+        "fontStyle": "italic",
+        "color": "#666"
+      },
+      "encoding": {
+        "x": {
+          "field": "x",
+          "type": "quantitative"
+        },
+        "y": {
+          "field": "y",
+          "type": "quantitative"
+        },
+        "text": {
+          "field": "t"
+        }
+      }
+    },
+    {
+      "data": {
+        "values": [
+          {
+            "x": 2016,
+            "y": 8200,
+            "t": [
+              "Women's share grew faster:",
+              "from 1 in 5 to about 1 in 3"
+            ]
+          }
+        ]
+      },
+      "mark": {
+        "type": "text",
+        "align": "center",
+        "fontSize": 11,
+        "fontStyle": "italic",
+        "color": "#b5487a"
+      },
+      "encoding": {
+        "x": {
+          "field": "x",
+          "type": "quantitative"
+        },
+        "y": {
+          "field": "y",
+          "type": "quantitative"
+        },
+        "text": {
+          "field": "t"
+        }
+      }
+    }
+  ],
+  "config": {
+    "view": {
+      "stroke": null
+    },
+    "axis": {
+      "labelFont": "Inter, system-ui, sans-serif",
+      "titleFont": "Inter, system-ui, sans-serif"
+    },
+    "title": {
+      "font": "Playfair Display, Georgia, serif",
+      "fontSize": 20,
+      "fontWeight": 700,
+      "anchor": "start",
+      "subtitleFontSize": 13,
+      "subtitleColor": "#555",
+      "subtitlePadding": 4,
+      "offset": 10
+    },
+    "axisY": {
+      "format": ",d"
+    }
+  }
+}

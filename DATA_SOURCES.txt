@@ -1,6 +1,5 @@
-
-DESIGN INDUSTRIES: THE SIXTEEN CHARTS, THEIR DATA AND SOURCES
-Last updated: 13 October 2026
+DESIGN INDUSTRIES: THE NINETEEN CHARTS, THEIR DATA AND SOURCES
+Last updated: 21 October 2026
 
 "Note": this page file I used AI inorder to make it
 more structured and to help me keep track of what data sources I used
@@ -151,10 +150,40 @@ Chart 16: Inner cities lean creative; the outer suburbs lean towards building
               blue building). Circle positions are LGA centre points that I
               calculated from the boundary file.
 
+Chart 17: Architects working alone
+  Idiom:      Choropleth map
+  Spec file:  specs/chart17_choropleth_architects_working_alone_2011.json
+  Data files: data/architects_employment_by_state_2011.csv
+              data/australia_states.geojson (boundaries)
+  Why:        Shades each state by the share of its architects who work on their
+              own account with no employees (2011 Census), which backs up section 2's
+              point that most design businesses are very small. Share is calculated
+              in the spec. Label positions are in the CSV (lon, lat), made by me.
+
+Chart 18: Australia's architects keep growing
+  Idiom:      Line chart (annotated)
+  Spec file:  specs/chart18_line_architects_growth.json
+  Data file:  data/architects_australia_2001_2021.csv
+  Why:        Five Census years show steady growth in one design profession.
+              Annotations give each count, the growth between Censuses, the
+              +51% rise from 2001 to 2016, and women's share each year. The
+              2016 to 2021 segment is dashed because the 2021 figure is rounded
+              and comes from a different publisher.
+
+Chart 19: The design industry is growing
+  Idiom:      Line chart (annotated)
+  Spec file:  specs/chart19_line_design_industry_employment.json
+  Data file:  data/design_industry_employment_2006_2016.csv
+  Why:        Shows growth across the whole architecture and design industry,
+              not just one profession. Annotations give each count, the people
+              added in each five-year period, and the +38% rise from 2006 to 2016.
+
 Advanced idioms: bump, butterfly, heatmap + bars, lollipop, slope, connected
 dot plot, treemap, waffle, proportional symbol map (twice), choropleth map (twice),
 tile grid map, bivariate map, dot map and bin map = 16 charts, with 6 map idioms
-(symbol, choropleth, tile grid, bivariate, dot, bin) across 8 map charts. Check the
+(symbol, choropleth, tile grid, bivariate, dot, bin) across 8 map charts.
+Added later: a third choropleth map (chart 17) and two annotated line charts
+(charts 18 and 19) = 19 charts, 9 of them maps. Check the
 assignment for which idioms count as "advanced".
 
 A flow map was not made: I could not find real origin-destination flow data for
@@ -162,8 +191,8 @@ design (for example people or work moving between places) that I could read from
 here. If you find one, a flow map would fit section 5 or 7.
 
 THE STORY (how the page's eight sections use the charts)
-  1. Design is a $61 billion industry ........ chart 8 (waffle)
-  2. A country of small design businesses .... chart 9 (symbol map)
+  1. Design is a $61 billion industry ........ charts 8 (waffle), 19 (line), 18 (line)
+  2. A country of small design businesses .... charts 9 (symbol map), 17 (choropleth)
   3. Where design is most common ............. charts 10 (choropleth), 3 (heatmap + bars)
   4. Where design is growing ................. charts 11 (tile map), 12 (bivariate map)
   5. Where design skills are trained ......... charts 13 (dot map), 14 (bin map)
@@ -175,6 +204,38 @@ THE STORY (how the page's eight sections use the charts)
 
 2. DATA FILES
 =============
+
+architects_employment_by_state_2011.csv   (NEW)
+  Holds:   Architects by employment situation (employees, own account workers,
+           employers) for each state and territory, 2011 Census, plus label
+           positions (lon, lat) for chart 17.
+  Source:  Association of Consulting Architects (ACA), Architects in Australia state
+           and territory reports by Gill Matthewson, Table 3 in each report.
+  Notes:   "Working alone" = own account worker (no employees). Totals are the three
+           categories added together, so they leave out a few architects whose
+           employment situation was not stated (e.g. NSW 5,119 vs 5,185 in Table 1).
+           The 2011 Census changed how owner-managers were categorised.
+
+architects_australia_2001_2021.csv   (NEW, Parlour and Jobs and Skills Australia)
+  Holds:   Architects in Australia by Census year, with women and women's share.
+  Source:  2001 to 2016: Gill Matthewson, Parlour Census Report 2001-2016: Women in
+           Architecture in Australia (Parlour, 2018), Table 1.1 (men and women; total
+           = men + women). 2021: Jobs and Skills Australia, Labour Market Insights,
+           Architects (ANZSCO 232111), from the 2021 Census.
+  Notes:   The 2021 total (19,300) is rounded to the nearest 100 and its 34% women is
+           a rounded share, so there is no 2021 count of women. It may not use exactly
+           the same definition as Parlour.
+
+design_industry_employment_2006_2016.csv   (NEW, QUT)
+  Holds:   People employed in the architecture and design industry sector, 2006,
+           2011, 2016.
+  Source:  QUT Digital Media Research Centre (S. Cunningham and M. McCutcheon), The
+           Creative Economy in Australia, Factsheet 2: Employment by sector (2018),
+           Table 4, from the Census.
+  Notes:   Counts everyone in the sector, including support staff, not only designers.
+           The source gives 3.3% average yearly growth (2006-2016). A 2021 figure is in
+           Creative Australia's "The Creative Economy in Australia: Briefing paper 1"
+           (2023), which I could not open from here.
 
 design_participation.csv
   Holds:   People who did design work in the 12 months to April: graphic design,
@@ -361,6 +422,22 @@ https://www.abs.gov.au/ausstats/abs@.nsf/Products/6E0D4EC6D348FFC8CA2574E9001329
 Natural Earth state boundaries:
 https://github.com/nvkelso/natural-earth-vector
 
+QUT, The Creative Economy in Australia, Factsheet 2 (chart 19):
+https://research.qut.edu.au/dmrc/wp-content/uploads/sites/5/2018/10/Factsheet-2-Employment-by-sector-V6.pdf
+
+Parlour Census Report 2001-2016 (chart 18):
+https://parlour.org.au/wp-content/uploads/2018/11/Parlour_Census_Report_Final2.pdf
+
+Jobs and Skills Australia, Architects (chart 18, 2021 figure):
+https://www.jobsandskills.gov.au/data/labour-market-insights/occupations/232111-architects
+
+ACA, Architects in Australia, state reports (chart 17):
+https://aca.org.au/architects-in-australia/
+
+Creative Australia, The Creative Economy in Australia: What Census 2021 tells us
+(has 2021 figures, not used yet):
+https://creative.gov.au/research/creative-economy-australia-what-census-2021-tells-us
+
 Vega-Lite online editor (paste a file from online_editor/):
 https://vega.github.io/editor
 
@@ -370,35 +447,3 @@ https://vega.github.io/vega-lite/
 Vega documentation (treemap):
 https://vega.github.io/vega/docs/transforms/treemap/
 
-
-4. KNOWN LIMITS (mention these in your write-up)
-================================================
-
-- Charts 13 to 16 use Census 2016 data. They are broader fields of study, not
-  designers, and the API dataflow is marked non-production (see above).
-- Maps 9 to 12 are at state level because the design-specific counts are only published
-  for states. The 2012 population figures are preliminary. State figures for
-  small places (ACT, NT, Tasmania) change a lot with a few businesses.
-- The newest design-specific data is from 2012 (businesses) and 2011 (Census). The
-  assignment asks for the most recent data. The Census 2021 and Jobs and Skills
-  Australia occupation profiles are the next places to look; I could not open
-  those pages from here.
-- Two publishers are used (ABS and IP Australia). IP Australia's value added
-  figures draw on BCAR and IBISWorld as well as the Census.
-- Survey participation counts people who did any design activity, including
-  unpaid, so they are not the same as design jobs.
-- The 2007 income bands and the 2001 bands only match after merging two 2001 bands,
-  and they are not adjusted for inflation.
-- The treemap's "Other occupations" group mixes non-cultural occupations with
-  a small not-stated group.
-- Advertising is missing from the butterfly chart (chart 2), although the tables
-  do split it by sex.
-
-
-5. USING THE ONLINE EDITOR
-==========================
-
-Files in online_editor/ have the data pasted inside, so they work when pasted into
-https://vega.github.io/editor. Charts 13 to 16 are not included because their
-boundary files are too large for the editor; run them from the project folder. For chart 7 choose "Vega" at the top of the editor
-instead of "Vega-Lite".

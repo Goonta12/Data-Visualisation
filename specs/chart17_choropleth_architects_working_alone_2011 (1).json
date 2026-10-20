@@ -1,0 +1,264 @@
+{
+  "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+  "title": {
+    "text": "Architects working alone",
+    "subtitle": [
+      "Share of architects working on their own account,",
+      "with no employees, 2011 Census. Darker = more work alone."
+    ]
+  },
+  "width": "container",
+  "height": 380,
+  "projection": {
+    "type": "conicEqualArea",
+    "rotate": [
+      -132,
+      0
+    ],
+    "center": [
+      0,
+      -27
+    ],
+    "parallels": [
+      -18,
+      -36
+    ]
+  },
+  "layer": [
+    {
+      "data": {
+        "url": "data/australia_states.geojson",
+        "format": {
+          "property": "features"
+        }
+      },
+      "transform": [
+        {
+          "lookup": "properties.name",
+          "from": {
+            "data": {
+              "url": "data/architects_employment_by_state_2011.csv"
+            },
+            "key": "state",
+            "fields": [
+              "employees",
+              "own_account",
+              "employers"
+            ]
+          }
+        },
+        {
+          "calculate": "isValid(datum.own_account) ? toNumber(datum.employees) + toNumber(datum.own_account) + toNumber(datum.employers) : null",
+          "as": "total"
+        },
+        {
+          "calculate": "isValid(datum.total) ? toNumber(datum.own_account) / datum.total : null",
+          "as": "alone"
+        }
+      ],
+      "mark": {
+        "type": "geoshape",
+        "stroke": "white",
+        "strokeWidth": 1.5
+      },
+      "encoding": {
+        "color": {
+          "field": "alone",
+          "type": "quantitative",
+          "title": "Share working alone",
+          "scale": {
+            "scheme": "blues",
+            "domain": [
+              0,
+              0.3
+            ]
+          },
+          "legend": {
+            "orient": "bottom",
+            "direction": "horizontal",
+            "format": ".0%",
+            "values": [
+              0,
+              0.1,
+              0.2,
+              0.3
+            ],
+            "gradientLength": 160,
+            "gradientThickness": 10,
+            "labelFontSize": 10,
+            "titleFontSize": 10,
+            "offset": 12
+          }
+        },
+        "tooltip": [
+          {
+            "field": "properties.name",
+            "title": "State"
+          },
+          {
+            "field": "total",
+            "title": "Architects (employment stated)",
+            "format": ","
+          },
+          {
+            "field": "own_account",
+            "title": "Working alone",
+            "format": ","
+          },
+          {
+            "field": "employers",
+            "title": "Employing others",
+            "format": ","
+          },
+          {
+            "field": "employees",
+            "title": "Employees",
+            "format": ","
+          },
+          {
+            "field": "alone",
+            "title": "Share working alone",
+            "format": ".1%"
+          }
+        ]
+      }
+    },
+    {
+      "data": {
+        "url": "data/architects_employment_by_state_2011.csv"
+      },
+      "transform": [
+        {
+          "calculate": "toNumber(datum.employees) + toNumber(datum.own_account) + toNumber(datum.employers)",
+          "as": "total"
+        },
+        {
+          "calculate": "toNumber(datum.own_account) / datum.total",
+          "as": "alone"
+        },
+        {
+          "calculate": "datum.abbr + ' ' + format(datum.alone, '.0%')",
+          "as": "label"
+        }
+      ],
+      "mark": {
+        "type": "text",
+        "fontSize": 11,
+        "fontWeight": "bold"
+      },
+      "encoding": {
+        "longitude": {
+          "field": "lon",
+          "type": "quantitative"
+        },
+        "latitude": {
+          "field": "lat",
+          "type": "quantitative"
+        },
+        "text": {
+          "field": "label"
+        },
+        "color": {
+          "condition": {
+            "test": "datum.alone > 0.2 && datum.abbr != 'ACT'",
+            "value": "white"
+          },
+          "value": "#1a1a1a"
+        }
+      }
+    },
+    {
+      "data": {
+        "values": [
+          {
+            "lon": 139.5,
+            "lat": -40.6,
+            "lon2": 144.6,
+            "lat2": -41.6
+          }
+        ]
+      },
+      "mark": {
+        "type": "rule",
+        "color": "#16294a",
+        "strokeWidth": 1.2,
+        "strokeDash": [
+          3,
+          2
+        ]
+      },
+      "encoding": {
+        "longitude": {
+          "field": "lon",
+          "type": "quantitative"
+        },
+        "latitude": {
+          "field": "lat",
+          "type": "quantitative"
+        },
+        "longitude2": {
+          "field": "lon2"
+        },
+        "latitude2": {
+          "field": "lat2"
+        }
+      }
+    },
+    {
+      "data": {
+        "values": [
+          {
+            "lon": 133.5,
+            "lat": -39.6,
+            "note": [
+              "More than 1 in 4",
+              "Tasmanian architects"
+            ]
+          },
+          {
+            "lon": 131,
+            "lat": -35.6,
+            "note": [
+              "Australia: about 1 in 7",
+              "architects work alone"
+            ]
+          }
+        ]
+      },
+      "mark": {
+        "type": "text",
+        "fontSize": 11,
+        "fontStyle": "italic",
+        "color": "#16294a"
+      },
+      "encoding": {
+        "longitude": {
+          "field": "lon",
+          "type": "quantitative"
+        },
+        "latitude": {
+          "field": "lat",
+          "type": "quantitative"
+        },
+        "text": {
+          "field": "note"
+        }
+      }
+    }
+  ],
+  "config": {
+    "view": {
+      "stroke": null
+    },
+    "title": {
+      "font": "Playfair Display, Georgia, serif",
+      "fontSize": 20,
+      "fontWeight": 700,
+      "anchor": "start",
+      "subtitleFontSize": 13,
+      "subtitleColor": "#555",
+      "subtitlePadding": 4,
+      "offset": 10
+    }
+  }
+}
