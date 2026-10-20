@@ -108,6 +108,39 @@
     },
     {
       "data": {
+        "url": "data/creative_arts_hexbins_2016.geojson",
+        "format": {
+          "property": "features"
+        }
+      },
+      "transform": [
+        {
+          "calculate": "datum.properties.total >= 2000 ? datum.properties.creative_share : null",
+          "as": "share"
+        },
+        {
+          "joinaggregate": [
+            {
+              "op": "max",
+              "field": "share",
+              "as": "mx"
+            }
+          ]
+        },
+        {
+          "filter": "datum.share == datum.mx"
+        }
+      ],
+      "mark": {
+        "type": "geoshape",
+        "fill": null,
+        "filled": false,
+        "stroke": "#16294a",
+        "strokeWidth": 2.5
+      }
+    },
+    {
+      "data": {
         "values": [
           {
             "city": "Sydney",
@@ -194,6 +227,141 @@
           }
         }
       ]
+    },
+    {
+      "data": {
+        "url": "data/creative_arts_hexbins_2016.geojson",
+        "format": {
+          "property": "features"
+        }
+      },
+      "transform": [
+        {
+          "calculate": "datum.properties.total >= 2000 ? datum.properties.creative_share : null",
+          "as": "share"
+        },
+        {
+          "calculate": "datum.properties.creative_arts",
+          "as": "c"
+        },
+        {
+          "calculate": "datum.properties.total",
+          "as": "n"
+        },
+        {
+          "aggregate": [
+            {
+              "op": "sum",
+              "field": "c",
+              "as": "C"
+            },
+            {
+              "op": "sum",
+              "field": "n",
+              "as": "N"
+            },
+            {
+              "op": "max",
+              "field": "share",
+              "as": "mx"
+            }
+          ]
+        },
+        {
+          "calculate": "['Australia: ' + format(datum.C/datum.N,'.1%') + ' of qualified residents', 'Outlined hexagon: highest share, ' + format(datum.mx,'.1%')]",
+          "as": "t"
+        }
+      ],
+      "mark": {
+        "type": "text",
+        "align": "left",
+        "baseline": "top",
+        "fontSize": 11,
+        "fontStyle": "italic",
+        "fontWeight": "bold",
+        "color": "#16294a"
+      },
+      "encoding": {
+        "x": {
+          "value": 0
+        },
+        "y": {
+          "value": 0
+        },
+        "text": {
+          "field": "t"
+        }
+      }
+    },
+    {
+      "data": {
+        "values": [
+          {
+            "lon": 133.5,
+            "lat": -40.2,
+            "t": [
+              "Over half of creative arts graduates",
+              "live around Sydney and Melbourne"
+            ]
+          }
+        ]
+      },
+      "mark": {
+        "type": "text",
+        "fontSize": 11,
+        "fontStyle": "italic",
+        "color": "#16294a"
+      },
+      "encoding": {
+        "longitude": {
+          "field": "lon",
+          "type": "quantitative"
+        },
+        "latitude": {
+          "field": "lat",
+          "type": "quantitative"
+        },
+        "text": {
+          "field": "t"
+        }
+      }
+    },
+    {
+      "data": {
+        "values": [
+          {
+            "lon": 139,
+            "lat": -38.9,
+            "lon2": 144.6,
+            "lat2": -37.9
+          }
+        ]
+      },
+      "mark": {
+        "type": "rule",
+        "color": "#16294a",
+        "strokeWidth": 1,
+        "strokeDash": [
+          3,
+          2
+        ]
+      },
+      "encoding": {
+        "longitude": {
+          "field": "lon",
+          "type": "quantitative"
+        },
+        "latitude": {
+          "field": "lat",
+          "type": "quantitative"
+        },
+        "longitude2": {
+          "field": "lon2"
+        },
+        "latitude2": {
+          "field": "lat2"
+        }
+      }
     }
   ],
   "config": {

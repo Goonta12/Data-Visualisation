@@ -3,9 +3,8 @@
   "title": {
     "text": "SA gained architects; Tasmania and NT lost advertisers",
     "subtitle": [
-      "Change in businesses, June 2007 to June 2012.",
-      "Each tile is one state.",
-      "A third industry is left out (definition changed)."
+      "Change in businesses, June 2007 to June 2012. Each tile is one state.",
+      "Outlined: biggest gain and biggest fall. A third industry is left out (definition changed)."
     ]
   },
   "data": {
@@ -111,7 +110,8 @@
               "orient": "bottom",
               "direction": "horizontal",
               "gradientLength": 300,
-              "format": "+.0%"
+              "format": "+.0%",
+              "offset": 34
             }
           },
           "tooltip": [
@@ -138,6 +138,38 @@
               "title": "Change"
             }
           ]
+        }
+      },
+      {
+        "transform": [
+          {
+            "joinaggregate": [
+              {
+                "op": "max",
+                "field": "change",
+                "as": "mx"
+              },
+              {
+                "op": "min",
+                "field": "change",
+                "as": "mn"
+              }
+            ],
+            "groupby": [
+              "industry"
+            ]
+          },
+          {
+            "filter": "datum.change == datum.mx || datum.change == datum.mn"
+          }
+        ],
+        "mark": {
+          "type": "rect",
+          "fill": null,
+          "filled": false,
+          "stroke": "#16294a",
+          "strokeWidth": 3,
+          "cornerRadius": 6
         }
       },
       {
@@ -176,6 +208,97 @@
               "value": "white"
             },
             "value": "#222"
+          }
+        }
+      },
+      {
+        "transform": [
+          {
+            "joinaggregate": [
+              {
+                "op": "max",
+                "field": "change",
+                "as": "mx"
+              },
+              {
+                "op": "min",
+                "field": "change",
+                "as": "mn"
+              }
+            ],
+            "groupby": [
+              "industry"
+            ]
+          },
+          {
+            "filter": "datum.change == datum.mx || datum.change == datum.mn"
+          },
+          {
+            "calculate": "datum.change == datum.mx ? 'biggest gain' : 'biggest fall'",
+            "as": "tag"
+          }
+        ],
+        "mark": {
+          "type": "text",
+          "fontSize": 9,
+          "fontStyle": "italic",
+          "dy": 24
+        },
+        "encoding": {
+          "text": {
+            "field": "tag"
+          },
+          "color": {
+            "condition": {
+              "test": "abs(datum.change) > 0.2",
+              "value": "white"
+            },
+            "value": "#222"
+          }
+        }
+      },
+      {
+        "transform": [
+          {
+            "aggregate": [
+              {
+                "op": "sum",
+                "field": "2007",
+                "as": "a"
+              },
+              {
+                "op": "sum",
+                "field": "2012",
+                "as": "b"
+              }
+            ],
+            "groupby": [
+              "industry"
+            ]
+          },
+          {
+            "calculate": "'Australia overall: ' + (datum.b >= datum.a ? '+' : '') + format((datum.b-datum.a)/datum.a,'.0%') + ' (' + format(datum.a,',') + ' to ' + format(datum.b,',') + ' businesses)'",
+            "as": "t"
+          }
+        ],
+        "mark": {
+          "type": "text",
+          "align": "left",
+          "baseline": "top",
+          "fontSize": 11,
+          "fontStyle": "italic",
+          "fontWeight": "bold",
+          "color": "#16294a"
+        },
+        "encoding": {
+          "x": {
+            "value": 0
+          },
+          "y": {
+            "value": 310
+          },
+          "text": {
+            "field": "t"
           }
         }
       }

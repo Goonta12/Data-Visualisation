@@ -3,9 +3,8 @@
   "title": {
     "text": "Architecture thrives in Victoria and WA",
     "subtitle": [
-      "Businesses per 100,000 residents, June 2012.",
-      "Numbers show each state's rate.",
-      "The ACT is shown as a circle."
+      "Businesses per 100,000 residents, June 2012. Numbers show each state's rate.",
+      "Outlined: the highest state in each industry. The ACT is shown as a circle."
     ]
   },
   "data": {
@@ -90,7 +89,7 @@
   },
   "spec": {
     "width": 180,
-    "height": 196,
+    "height": 236,
     "projection": {
       "type": "conicEqualArea",
       "rotate": [
@@ -137,7 +136,8 @@
             "legend": {
               "orient": "bottom",
               "direction": "horizontal",
-              "gradientLength": 260
+              "gradientLength": 260,
+              "titleLimit": 320
             }
           },
           "tooltip": [
@@ -199,6 +199,42 @@
               ]
             },
             "legend": null
+          }
+        }
+      },
+      {
+        "transform": [
+          {
+            "joinaggregate": [
+              {
+                "op": "max",
+                "field": "rate",
+                "as": "maxRate"
+              }
+            ],
+            "groupby": [
+              "industry"
+            ]
+          },
+          {
+            "filter": "datum.rate == datum.maxRate && datum.state == 'ACT'"
+          }
+        ],
+        "mark": {
+          "type": "circle",
+          "size": 420,
+          "filled": false,
+          "stroke": "#16294a",
+          "strokeWidth": 2.5
+        },
+        "encoding": {
+          "longitude": {
+            "field": "lon",
+            "type": "quantitative"
+          },
+          "latitude": {
+            "field": "lat",
+            "type": "quantitative"
           }
         }
       },
@@ -270,6 +306,137 @@
             "filter": "datum.state == 'TAS'"
           }
         ]
+      },
+      {
+        "transform": [
+          {
+            "joinaggregate": [
+              {
+                "op": "max",
+                "field": "rate",
+                "as": "maxRate"
+              }
+            ],
+            "groupby": [
+              "industry"
+            ]
+          },
+          {
+            "filter": "datum.rate == datum.maxRate && datum.state != 'ACT'"
+          }
+        ],
+        "mark": {
+          "type": "geoshape",
+          "fill": null,
+          "filled": false,
+          "stroke": "#16294a",
+          "strokeWidth": 2.5
+        },
+        "encoding": {
+          "shape": {
+            "field": "geometry",
+            "type": "geojson"
+          }
+        }
+      },
+      {
+        "transform": [
+          {
+            "joinaggregate": [
+              {
+                "op": "max",
+                "field": "rate",
+                "as": "maxRate"
+              },
+              {
+                "op": "min",
+                "field": "rate",
+                "as": "minRate"
+              },
+              {
+                "op": "sum",
+                "field": "businesses",
+                "as": "natB"
+              },
+              {
+                "op": "sum",
+                "field": "pop",
+                "as": "natP"
+              }
+            ],
+            "groupby": [
+              "industry"
+            ]
+          },
+          {
+            "filter": "datum.rate == datum.maxRate"
+          },
+          {
+            "calculate": "['Highest: ' + datum.state + ' (' + format(datum.rate,'.0f') + ')', 'Australia: ' + format(datum.natB/datum.natP*100000,'.0f')]",
+            "as": "t"
+          }
+        ],
+        "mark": {
+          "type": "text",
+          "align": "left",
+          "baseline": "top",
+          "fontSize": 10,
+          "color": "#16294a",
+          "fontStyle": "italic"
+        },
+        "encoding": {
+          "x": {
+            "value": 2
+          },
+          "y": {
+            "value": 200
+          },
+          "text": {
+            "field": "t"
+          }
+        }
+      },
+      {
+        "transform": [
+          {
+            "joinaggregate": [
+              {
+                "op": "min",
+                "field": "rate",
+                "as": "minRate"
+              }
+            ],
+            "groupby": [
+              "industry"
+            ]
+          },
+          {
+            "filter": "datum.rate == datum.minRate"
+          },
+          {
+            "calculate": "'Lowest: ' + datum.state + ' (' + format(datum.rate,'.0f') + ')'",
+            "as": "t"
+          }
+        ],
+        "mark": {
+          "type": "text",
+          "align": "left",
+          "baseline": "top",
+          "fontSize": 10,
+          "color": "#8a4b0f",
+          "fontStyle": "italic"
+        },
+        "encoding": {
+          "x": {
+            "value": 2
+          },
+          "y": {
+            "value": 226
+          },
+          "text": {
+            "field": "t"
+          }
+        }
       }
     ]
   },

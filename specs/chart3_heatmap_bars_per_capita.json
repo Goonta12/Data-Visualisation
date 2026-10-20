@@ -4,7 +4,8 @@
     "text": "Per person, NSW, Victoria and WA lead",
     "subtitle": [
       "Design businesses per 100,000 residents, June 2001.",
-      "Bars add the three industries together."
+      "Outlined: the highest state for each industry. Bars add the three",
+      "industries together; the dashed line is the national rate."
     ]
   },
   "data": {
@@ -41,6 +42,14 @@
     {
       "calculate": "toNumber(datum.businesses) / toNumber(datum.population) * 100000",
       "as": "rate"
+    },
+    {
+      "calculate": "toNumber(datum.businesses)",
+      "as": "businesses"
+    },
+    {
+      "calculate": "toNumber(datum.population)",
+      "as": "population"
     }
   ],
   "hconcat": [
@@ -98,7 +107,8 @@
               "legend": {
                 "orient": "bottom",
                 "direction": "horizontal",
-                "gradientLength": 200
+                "gradientLength": 200,
+                "titleLimit": 320
               }
             },
             "tooltip": [
@@ -129,6 +139,32 @@
           }
         },
         {
+          "transform": [
+            {
+              "joinaggregate": [
+                {
+                  "op": "max",
+                  "field": "rate",
+                  "as": "maxRate"
+                }
+              ],
+              "groupby": [
+                "industry"
+              ]
+            },
+            {
+              "filter": "datum.rate == datum.maxRate"
+            }
+          ],
+          "mark": {
+            "type": "rect",
+            "fill": null,
+            "filled": false,
+            "stroke": "#16294a",
+            "strokeWidth": 3
+          }
+        },
+        {
           "mark": {
             "type": "text",
             "fontSize": 12
@@ -138,6 +174,43 @@
               "field": "rate",
               "type": "quantitative",
               "format": ".0f"
+            },
+            "color": {
+              "condition": {
+                "test": "datum.rate > 75",
+                "value": "white"
+              },
+              "value": "#222"
+            }
+          }
+        },
+        {
+          "transform": [
+            {
+              "joinaggregate": [
+                {
+                  "op": "max",
+                  "field": "rate",
+                  "as": "maxRate"
+                }
+              ],
+              "groupby": [
+                "industry"
+              ]
+            },
+            {
+              "filter": "datum.rate == datum.maxRate"
+            }
+          ],
+          "mark": {
+            "type": "text",
+            "dy": 12,
+            "fontSize": 9,
+            "fontStyle": "italic"
+          },
+          "encoding": {
+            "text": {
+              "value": "highest"
             },
             "color": {
               "condition": {
@@ -202,6 +275,148 @@
               "field": "rate",
               "type": "quantitative",
               "format": ".0f"
+            }
+          }
+        },
+        {
+          "transform": [
+            {
+              "aggregate": [
+                {
+                  "op": "sum",
+                  "field": "businesses",
+                  "as": "b"
+                },
+                {
+                  "op": "max",
+                  "field": "population",
+                  "as": "p"
+                }
+              ],
+              "groupby": [
+                "state"
+              ]
+            },
+            {
+              "calculate": "toNumber(datum.b)",
+              "as": "b"
+            },
+            {
+              "calculate": "toNumber(datum.p)",
+              "as": "p"
+            },
+            {
+              "aggregate": [
+                {
+                  "op": "sum",
+                  "field": "b",
+                  "as": "B"
+                },
+                {
+                  "op": "sum",
+                  "field": "p",
+                  "as": "P"
+                }
+              ]
+            },
+            {
+              "calculate": "datum.B / datum.P * 100000",
+              "as": "natRate"
+            }
+          ],
+          "mark": {
+            "type": "rule",
+            "color": "#b5487a",
+            "strokeDash": [
+              4,
+              3
+            ],
+            "strokeWidth": 1.5
+          },
+          "encoding": {
+            "x": {
+              "field": "natRate",
+              "type": "quantitative"
+            },
+            "y": {
+              "value": 0
+            },
+            "y2": {
+              "value": 320
+            }
+          }
+        },
+        {
+          "transform": [
+            {
+              "aggregate": [
+                {
+                  "op": "sum",
+                  "field": "businesses",
+                  "as": "b"
+                },
+                {
+                  "op": "max",
+                  "field": "population",
+                  "as": "p"
+                }
+              ],
+              "groupby": [
+                "state"
+              ]
+            },
+            {
+              "calculate": "toNumber(datum.b)",
+              "as": "b"
+            },
+            {
+              "calculate": "toNumber(datum.p)",
+              "as": "p"
+            },
+            {
+              "aggregate": [
+                {
+                  "op": "sum",
+                  "field": "b",
+                  "as": "B"
+                },
+                {
+                  "op": "sum",
+                  "field": "p",
+                  "as": "P"
+                }
+              ]
+            },
+            {
+              "calculate": "datum.B / datum.P * 100000",
+              "as": "natRate"
+            },
+            {
+              "calculate": "'Australia: ' + format(datum.natRate,'.0f')",
+              "as": "t"
+            }
+          ],
+          "mark": {
+            "type": "text",
+            "align": "left",
+            "dx": 3,
+            "dy": -4,
+            "baseline": "bottom",
+            "fontSize": 10,
+            "fontStyle": "italic",
+            "fontWeight": "bold",
+            "color": "#b5487a"
+          },
+          "encoding": {
+            "x": {
+              "field": "natRate",
+              "type": "quantitative"
+            },
+            "y": {
+              "value": 0
+            },
+            "text": {
+              "field": "t"
             }
           }
         }

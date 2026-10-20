@@ -4,14 +4,14 @@
     "text": "Dense and growing: Victoria stands out",
     "subtitle": [
       "Architecture and advertising businesses combined.",
-      "Colour shows density and growth together.",
+      "Colour shows density (2012) and growth since 2007 together.",
       "Cut-offs are my own choice."
     ]
   },
   "hconcat": [
     {
       "width": 365,
-      "height": 357,
+      "height": 400,
       "data": {
         "url": "data/design_businesses_by_state_long.csv",
         "format": {
@@ -107,6 +107,10 @@
           }
         },
         {
+          "calculate": "toNumber(datum.population)",
+          "as": "pop"
+        },
+        {
           "calculate": "datum['2012'] / toNumber(datum.population) * 100000",
           "as": "rate"
         },
@@ -197,6 +201,26 @@
                 "title": "Change since 2007"
               }
             ]
+          }
+        },
+        {
+          "transform": [
+            {
+              "filter": "datum.key == 8 && datum.state != 'ACT'"
+            }
+          ],
+          "mark": {
+            "type": "geoshape",
+            "fill": null,
+            "filled": false,
+            "stroke": "#f2b134",
+            "strokeWidth": 3
+          },
+          "encoding": {
+            "shape": {
+              "field": "geometry",
+              "type": "geojson"
+            }
           }
         },
         {
@@ -303,6 +327,114 @@
                 "value": "white"
               },
               "value": "#1a1a1a"
+            }
+          }
+        },
+        {
+          "mark": {
+            "type": "text",
+            "fontSize": 10,
+            "dy": 19
+          },
+          "encoding": {
+            "longitude": {
+              "field": "lon",
+              "type": "quantitative"
+            },
+            "latitude": {
+              "field": "lat",
+              "type": "quantitative"
+            },
+            "text": {
+              "field": "rate",
+              "type": "quantitative",
+              "format": ".0f"
+            },
+            "color": {
+              "condition": {
+                "test": "datum.key == 8 || datum.key == 7 || datum.key == 5",
+                "value": "white"
+              },
+              "value": "#1a1a1a"
+            }
+          }
+        },
+        {
+          "transform": [
+            {
+              "aggregate": [
+                {
+                  "op": "sum",
+                  "field": "2007",
+                  "as": "a"
+                },
+                {
+                  "op": "sum",
+                  "field": "2012",
+                  "as": "b"
+                },
+                {
+                  "op": "sum",
+                  "field": "pop",
+                  "as": "p"
+                }
+              ]
+            },
+            {
+              "calculate": "['Australia: ' + format(datum.b/datum.p*100000,'.0f') + ' per 100,000 people,', (datum.b>=datum.a?'+':'') + format((datum.b-datum.a)/datum.a,'.0%') + ' since 2007']",
+              "as": "t"
+            }
+          ],
+          "mark": {
+            "type": "text",
+            "align": "left",
+            "baseline": "top",
+            "fontSize": 11,
+            "fontStyle": "italic",
+            "fontWeight": "bold",
+            "color": "#16294a"
+          },
+          "encoding": {
+            "x": {
+              "value": 0
+            },
+            "y": {
+              "value": 360
+            },
+            "text": {
+              "field": "t"
+            }
+          }
+        },
+        {
+          "data": {
+            "values": [
+              {
+                "t": [
+                  "Each state: name, growth since 2007,",
+                  "then businesses per 100,000 people.",
+                  "Gold outline: dense and fast-growing."
+                ]
+              }
+            ]
+          },
+          "mark": {
+            "type": "text",
+            "align": "left",
+            "baseline": "top",
+            "fontSize": 10,
+            "fontStyle": "italic",
+            "color": "#555"
+          },
+          "encoding": {
+            "x": {
+              "value": 0
+            },
+            "y": {
+              "value": 296
+            },
+            "text": {
+              "field": "t"
             }
           }
         }
