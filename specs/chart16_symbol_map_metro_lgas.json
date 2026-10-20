@@ -3,9 +3,9 @@
   "title": {
     "text": "Inner cities lean creative; outer suburbs lean building",
     "subtitle": [
-      "Circle size: residents in the two fields.",
-      "Orange: more creative arts. Blue: more building.",
-      "Census 2016, by local government area."
+      "Circle size: residents in the two fields. Orange: more creative arts. Blue: more building.",
+      "Census 2016, by local government area. + marks each city centre.",
+      "Ringed: the most creative and most building-leaning areas (1,000+ residents in the two fields)."
     ]
   },
   "hconcat": [
@@ -16,7 +16,7 @@
         "anchor": "start"
       },
       "width": 230,
-      "height": 270,
+      "height": 310,
       "projection": {
         "type": "mercator",
         "center": [
@@ -170,6 +170,709 @@
               }
             ]
           }
+        },
+        {
+          "data": {
+            "url": "data/lga_centroids.csv"
+          },
+          "transform": [
+            {
+              "filter": "datum.metro == 'Brisbane'"
+            },
+            {
+              "lookup": "code",
+              "from": {
+                "data": {
+                  "url": "data/lga_design_qualifications_2016.csv"
+                },
+                "key": "code",
+                "fields": [
+                  "name",
+                  "architecture_building",
+                  "creative_arts",
+                  "total"
+                ]
+              }
+            },
+            {
+              "calculate": "toNumber(datum.architecture_building) + toNumber(datum.creative_arts)",
+              "as": "design"
+            },
+            {
+              "calculate": "toNumber(datum.creative_arts) / datum.design",
+              "as": "cshare"
+            },
+            {
+              "filter": "datum.design >= 1000"
+            },
+            {
+              "joinaggregate": [
+                {
+                  "op": "max",
+                  "field": "cshare",
+                  "as": "mx"
+                },
+                {
+                  "op": "min",
+                  "field": "cshare",
+                  "as": "mn"
+                }
+              ]
+            },
+            {
+              "filter": "datum.cshare == datum.mx || datum.cshare == datum.mn"
+            },
+            {
+              "calculate": "datum.name + ' ' + format(datum.cshare,'.0%')",
+              "as": "lab"
+            },
+            {
+              "calculate": "datum.cshare == datum.mx ? 'Most creative: ' : 'Most building: '",
+              "as": "tag"
+            }
+          ],
+          "mark": {
+            "type": "circle",
+            "filled": false,
+            "stroke": "#16294a",
+            "strokeWidth": 2,
+            "size": 900,
+            "clip": true
+          },
+          "encoding": {
+            "longitude": {
+              "field": "lon",
+              "type": "quantitative"
+            },
+            "latitude": {
+              "field": "lat",
+              "type": "quantitative"
+            }
+          }
+        },
+        {
+          "data": {
+            "url": "data/lga_centroids.csv"
+          },
+          "transform": [
+            {
+              "filter": "datum.metro == 'Brisbane'"
+            },
+            {
+              "lookup": "code",
+              "from": {
+                "data": {
+                  "url": "data/lga_design_qualifications_2016.csv"
+                },
+                "key": "code",
+                "fields": [
+                  "name",
+                  "architecture_building",
+                  "creative_arts",
+                  "total"
+                ]
+              }
+            },
+            {
+              "calculate": "toNumber(datum.architecture_building) + toNumber(datum.creative_arts)",
+              "as": "design"
+            },
+            {
+              "calculate": "toNumber(datum.creative_arts) / datum.design",
+              "as": "cshare"
+            },
+            {
+              "filter": "datum.design >= 1000"
+            },
+            {
+              "joinaggregate": [
+                {
+                  "op": "max",
+                  "field": "cshare",
+                  "as": "mx"
+                },
+                {
+                  "op": "min",
+                  "field": "cshare",
+                  "as": "mn"
+                }
+              ]
+            },
+            {
+              "filter": "datum.cshare == datum.mx || datum.cshare == datum.mn"
+            },
+            {
+              "calculate": "datum.name + ' ' + format(datum.cshare,'.0%')",
+              "as": "lab"
+            },
+            {
+              "calculate": "datum.cshare == datum.mx ? 'Most creative: ' : 'Most building: '",
+              "as": "tag"
+            },
+            {
+              "filter": "datum.lon <= 153.05"
+            }
+          ],
+          "mark": {
+            "type": "text",
+            "align": "left",
+            "dx": 16,
+            "dy": 2,
+            "fontSize": 10,
+            "fontWeight": "bold",
+            "color": "#16294a",
+            "stroke": "white",
+            "strokeWidth": 3,
+            "strokeOpacity": 0.85
+          },
+          "encoding": {
+            "longitude": {
+              "field": "lon",
+              "type": "quantitative"
+            },
+            "latitude": {
+              "field": "lat",
+              "type": "quantitative"
+            },
+            "text": {
+              "field": "lab"
+            }
+          }
+        },
+        {
+          "data": {
+            "url": "data/lga_centroids.csv"
+          },
+          "transform": [
+            {
+              "filter": "datum.metro == 'Brisbane'"
+            },
+            {
+              "lookup": "code",
+              "from": {
+                "data": {
+                  "url": "data/lga_design_qualifications_2016.csv"
+                },
+                "key": "code",
+                "fields": [
+                  "name",
+                  "architecture_building",
+                  "creative_arts",
+                  "total"
+                ]
+              }
+            },
+            {
+              "calculate": "toNumber(datum.architecture_building) + toNumber(datum.creative_arts)",
+              "as": "design"
+            },
+            {
+              "calculate": "toNumber(datum.creative_arts) / datum.design",
+              "as": "cshare"
+            },
+            {
+              "filter": "datum.design >= 1000"
+            },
+            {
+              "joinaggregate": [
+                {
+                  "op": "max",
+                  "field": "cshare",
+                  "as": "mx"
+                },
+                {
+                  "op": "min",
+                  "field": "cshare",
+                  "as": "mn"
+                }
+              ]
+            },
+            {
+              "filter": "datum.cshare == datum.mx || datum.cshare == datum.mn"
+            },
+            {
+              "calculate": "datum.name + ' ' + format(datum.cshare,'.0%')",
+              "as": "lab"
+            },
+            {
+              "calculate": "datum.cshare == datum.mx ? 'Most creative: ' : 'Most building: '",
+              "as": "tag"
+            },
+            {
+              "filter": "datum.lon > 153.05"
+            }
+          ],
+          "mark": {
+            "type": "text",
+            "align": "right",
+            "dx": -16,
+            "dy": 2,
+            "fontSize": 10,
+            "fontWeight": "bold",
+            "color": "#16294a",
+            "stroke": "white",
+            "strokeWidth": 3,
+            "strokeOpacity": 0.85
+          },
+          "encoding": {
+            "longitude": {
+              "field": "lon",
+              "type": "quantitative"
+            },
+            "latitude": {
+              "field": "lat",
+              "type": "quantitative"
+            },
+            "text": {
+              "field": "lab"
+            }
+          }
+        },
+        {
+          "data": {
+            "url": "data/lga_centroids.csv"
+          },
+          "transform": [
+            {
+              "filter": "datum.metro == 'Brisbane'"
+            },
+            {
+              "lookup": "code",
+              "from": {
+                "data": {
+                  "url": "data/lga_design_qualifications_2016.csv"
+                },
+                "key": "code",
+                "fields": [
+                  "name",
+                  "architecture_building",
+                  "creative_arts",
+                  "total"
+                ]
+              }
+            },
+            {
+              "calculate": "toNumber(datum.architecture_building) + toNumber(datum.creative_arts)",
+              "as": "design"
+            },
+            {
+              "calculate": "toNumber(datum.creative_arts) / datum.design",
+              "as": "cshare"
+            },
+            {
+              "filter": "datum.design >= 1000"
+            },
+            {
+              "joinaggregate": [
+                {
+                  "op": "max",
+                  "field": "cshare",
+                  "as": "mx"
+                },
+                {
+                  "op": "min",
+                  "field": "cshare",
+                  "as": "mn"
+                }
+              ]
+            },
+            {
+              "filter": "datum.cshare == datum.mx || datum.cshare == datum.mn"
+            },
+            {
+              "calculate": "datum.name + ' ' + format(datum.cshare,'.0%')",
+              "as": "lab"
+            },
+            {
+              "calculate": "datum.cshare == datum.mx ? 'Most creative: ' : 'Most building: '",
+              "as": "tag"
+            },
+            {
+              "filter": "datum.lon <= 153.05"
+            }
+          ],
+          "mark": {
+            "type": "text",
+            "align": "left",
+            "dx": 16,
+            "dy": 2,
+            "fontSize": 10,
+            "fontWeight": "bold",
+            "color": "#16294a"
+          },
+          "encoding": {
+            "longitude": {
+              "field": "lon",
+              "type": "quantitative"
+            },
+            "latitude": {
+              "field": "lat",
+              "type": "quantitative"
+            },
+            "text": {
+              "field": "lab"
+            }
+          }
+        },
+        {
+          "data": {
+            "url": "data/lga_centroids.csv"
+          },
+          "transform": [
+            {
+              "filter": "datum.metro == 'Brisbane'"
+            },
+            {
+              "lookup": "code",
+              "from": {
+                "data": {
+                  "url": "data/lga_design_qualifications_2016.csv"
+                },
+                "key": "code",
+                "fields": [
+                  "name",
+                  "architecture_building",
+                  "creative_arts",
+                  "total"
+                ]
+              }
+            },
+            {
+              "calculate": "toNumber(datum.architecture_building) + toNumber(datum.creative_arts)",
+              "as": "design"
+            },
+            {
+              "calculate": "toNumber(datum.creative_arts) / datum.design",
+              "as": "cshare"
+            },
+            {
+              "filter": "datum.design >= 1000"
+            },
+            {
+              "joinaggregate": [
+                {
+                  "op": "max",
+                  "field": "cshare",
+                  "as": "mx"
+                },
+                {
+                  "op": "min",
+                  "field": "cshare",
+                  "as": "mn"
+                }
+              ]
+            },
+            {
+              "filter": "datum.cshare == datum.mx || datum.cshare == datum.mn"
+            },
+            {
+              "calculate": "datum.name + ' ' + format(datum.cshare,'.0%')",
+              "as": "lab"
+            },
+            {
+              "calculate": "datum.cshare == datum.mx ? 'Most creative: ' : 'Most building: '",
+              "as": "tag"
+            },
+            {
+              "filter": "datum.lon > 153.05"
+            }
+          ],
+          "mark": {
+            "type": "text",
+            "align": "right",
+            "dx": -16,
+            "dy": 2,
+            "fontSize": 10,
+            "fontWeight": "bold",
+            "color": "#16294a"
+          },
+          "encoding": {
+            "longitude": {
+              "field": "lon",
+              "type": "quantitative"
+            },
+            "latitude": {
+              "field": "lat",
+              "type": "quantitative"
+            },
+            "text": {
+              "field": "lab"
+            }
+          }
+        },
+        {
+          "data": {
+            "url": "data/lga_centroids.csv"
+          },
+          "transform": [
+            {
+              "filter": "datum.metro == 'Brisbane'"
+            },
+            {
+              "lookup": "code",
+              "from": {
+                "data": {
+                  "url": "data/lga_design_qualifications_2016.csv"
+                },
+                "key": "code",
+                "fields": [
+                  "name",
+                  "architecture_building",
+                  "creative_arts",
+                  "total"
+                ]
+              }
+            },
+            {
+              "calculate": "toNumber(datum.architecture_building) + toNumber(datum.creative_arts)",
+              "as": "design"
+            },
+            {
+              "calculate": "toNumber(datum.creative_arts) / datum.design",
+              "as": "cshare"
+            },
+            {
+              "filter": "datum.design >= 1000"
+            },
+            {
+              "joinaggregate": [
+                {
+                  "op": "max",
+                  "field": "cshare",
+                  "as": "mx"
+                },
+                {
+                  "op": "min",
+                  "field": "cshare",
+                  "as": "mn"
+                }
+              ]
+            },
+            {
+              "filter": "datum.cshare == datum.mx || datum.cshare == datum.mn"
+            },
+            {
+              "calculate": "datum.name + ' ' + format(datum.cshare,'.0%')",
+              "as": "lab"
+            },
+            {
+              "calculate": "datum.cshare == datum.mx ? 'Most creative: ' : 'Most building: '",
+              "as": "tag"
+            },
+            {
+              "filter": "datum.cshare == datum.mx"
+            },
+            {
+              "calculate": "'Most creative: ' + datum.lab",
+              "as": "t"
+            }
+          ],
+          "mark": {
+            "type": "text",
+            "align": "left",
+            "baseline": "top",
+            "fontSize": 10,
+            "fontStyle": "italic",
+            "fontWeight": "bold",
+            "color": "#b34700"
+          },
+          "encoding": {
+            "x": {
+              "value": 0
+            },
+            "y": {
+              "value": 276
+            },
+            "text": {
+              "field": "t"
+            }
+          }
+        },
+        {
+          "data": {
+            "url": "data/lga_centroids.csv"
+          },
+          "transform": [
+            {
+              "filter": "datum.metro == 'Brisbane'"
+            },
+            {
+              "lookup": "code",
+              "from": {
+                "data": {
+                  "url": "data/lga_design_qualifications_2016.csv"
+                },
+                "key": "code",
+                "fields": [
+                  "name",
+                  "architecture_building",
+                  "creative_arts",
+                  "total"
+                ]
+              }
+            },
+            {
+              "calculate": "toNumber(datum.architecture_building) + toNumber(datum.creative_arts)",
+              "as": "design"
+            },
+            {
+              "calculate": "toNumber(datum.creative_arts) / datum.design",
+              "as": "cshare"
+            },
+            {
+              "filter": "datum.design >= 1000"
+            },
+            {
+              "joinaggregate": [
+                {
+                  "op": "max",
+                  "field": "cshare",
+                  "as": "mx"
+                },
+                {
+                  "op": "min",
+                  "field": "cshare",
+                  "as": "mn"
+                }
+              ]
+            },
+            {
+              "filter": "datum.cshare == datum.mx || datum.cshare == datum.mn"
+            },
+            {
+              "calculate": "datum.name + ' ' + format(datum.cshare,'.0%')",
+              "as": "lab"
+            },
+            {
+              "calculate": "datum.cshare == datum.mx ? 'Most creative: ' : 'Most building: '",
+              "as": "tag"
+            },
+            {
+              "filter": "datum.cshare == datum.mn"
+            },
+            {
+              "calculate": "'Most building: ' + datum.lab",
+              "as": "t"
+            }
+          ],
+          "mark": {
+            "type": "text",
+            "align": "left",
+            "baseline": "top",
+            "fontSize": 10,
+            "fontStyle": "italic",
+            "fontWeight": "bold",
+            "color": "#1f5f8b"
+          },
+          "encoding": {
+            "x": {
+              "value": 0
+            },
+            "y": {
+              "value": 291
+            },
+            "text": {
+              "field": "t"
+            }
+          }
+        },
+        {
+          "data": {
+            "values": [
+              {
+                "lon": 153.03,
+                "lat": -27.47,
+                "t": "Brisbane CBD"
+              }
+            ]
+          },
+          "mark": {
+            "type": "point",
+            "shape": "cross",
+            "size": 70,
+            "filled": true,
+            "color": "#111",
+            "strokeWidth": 0
+          },
+          "encoding": {
+            "longitude": {
+              "field": "lon",
+              "type": "quantitative"
+            },
+            "latitude": {
+              "field": "lat",
+              "type": "quantitative"
+            }
+          }
+        },
+        {
+          "data": {
+            "values": [
+              {
+                "lon": 153.03,
+                "lat": -27.47,
+                "t": "Brisbane CBD"
+              }
+            ]
+          },
+          "mark": {
+            "type": "text",
+            "align": "center",
+            "dx": 0,
+            "dy": 13,
+            "fontSize": 10,
+            "fontWeight": "bold",
+            "color": "#111",
+            "stroke": "white",
+            "strokeWidth": 3,
+            "strokeOpacity": 0.85
+          },
+          "encoding": {
+            "longitude": {
+              "field": "lon",
+              "type": "quantitative"
+            },
+            "latitude": {
+              "field": "lat",
+              "type": "quantitative"
+            },
+            "text": {
+              "field": "t"
+            }
+          }
+        },
+        {
+          "data": {
+            "values": [
+              {
+                "lon": 153.03,
+                "lat": -27.47,
+                "t": "Brisbane CBD"
+              }
+            ]
+          },
+          "mark": {
+            "type": "text",
+            "align": "center",
+            "dx": 0,
+            "dy": 13,
+            "fontSize": 10,
+            "fontWeight": "bold",
+            "color": "#111"
+          },
+          "encoding": {
+            "longitude": {
+              "field": "lon",
+              "type": "quantitative"
+            },
+            "latitude": {
+              "field": "lat",
+              "type": "quantitative"
+            },
+            "text": {
+              "field": "t"
+            }
+          }
         }
       ]
     },
@@ -180,7 +883,7 @@
         "anchor": "start"
       },
       "width": 230,
-      "height": 270,
+      "height": 310,
       "projection": {
         "type": "mercator",
         "center": [
@@ -334,6 +1037,709 @@
               }
             ]
           }
+        },
+        {
+          "data": {
+            "url": "data/lga_centroids.csv"
+          },
+          "transform": [
+            {
+              "filter": "datum.metro == 'Adelaide'"
+            },
+            {
+              "lookup": "code",
+              "from": {
+                "data": {
+                  "url": "data/lga_design_qualifications_2016.csv"
+                },
+                "key": "code",
+                "fields": [
+                  "name",
+                  "architecture_building",
+                  "creative_arts",
+                  "total"
+                ]
+              }
+            },
+            {
+              "calculate": "toNumber(datum.architecture_building) + toNumber(datum.creative_arts)",
+              "as": "design"
+            },
+            {
+              "calculate": "toNumber(datum.creative_arts) / datum.design",
+              "as": "cshare"
+            },
+            {
+              "filter": "datum.design >= 1000"
+            },
+            {
+              "joinaggregate": [
+                {
+                  "op": "max",
+                  "field": "cshare",
+                  "as": "mx"
+                },
+                {
+                  "op": "min",
+                  "field": "cshare",
+                  "as": "mn"
+                }
+              ]
+            },
+            {
+              "filter": "datum.cshare == datum.mx || datum.cshare == datum.mn"
+            },
+            {
+              "calculate": "datum.name + ' ' + format(datum.cshare,'.0%')",
+              "as": "lab"
+            },
+            {
+              "calculate": "datum.cshare == datum.mx ? 'Most creative: ' : 'Most building: '",
+              "as": "tag"
+            }
+          ],
+          "mark": {
+            "type": "circle",
+            "filled": false,
+            "stroke": "#16294a",
+            "strokeWidth": 2,
+            "size": 900,
+            "clip": true
+          },
+          "encoding": {
+            "longitude": {
+              "field": "lon",
+              "type": "quantitative"
+            },
+            "latitude": {
+              "field": "lat",
+              "type": "quantitative"
+            }
+          }
+        },
+        {
+          "data": {
+            "url": "data/lga_centroids.csv"
+          },
+          "transform": [
+            {
+              "filter": "datum.metro == 'Adelaide'"
+            },
+            {
+              "lookup": "code",
+              "from": {
+                "data": {
+                  "url": "data/lga_design_qualifications_2016.csv"
+                },
+                "key": "code",
+                "fields": [
+                  "name",
+                  "architecture_building",
+                  "creative_arts",
+                  "total"
+                ]
+              }
+            },
+            {
+              "calculate": "toNumber(datum.architecture_building) + toNumber(datum.creative_arts)",
+              "as": "design"
+            },
+            {
+              "calculate": "toNumber(datum.creative_arts) / datum.design",
+              "as": "cshare"
+            },
+            {
+              "filter": "datum.design >= 1000"
+            },
+            {
+              "joinaggregate": [
+                {
+                  "op": "max",
+                  "field": "cshare",
+                  "as": "mx"
+                },
+                {
+                  "op": "min",
+                  "field": "cshare",
+                  "as": "mn"
+                }
+              ]
+            },
+            {
+              "filter": "datum.cshare == datum.mx || datum.cshare == datum.mn"
+            },
+            {
+              "calculate": "datum.name + ' ' + format(datum.cshare,'.0%')",
+              "as": "lab"
+            },
+            {
+              "calculate": "datum.cshare == datum.mx ? 'Most creative: ' : 'Most building: '",
+              "as": "tag"
+            },
+            {
+              "filter": "datum.lon <= 138.725"
+            }
+          ],
+          "mark": {
+            "type": "text",
+            "align": "left",
+            "dx": 16,
+            "dy": 2,
+            "fontSize": 10,
+            "fontWeight": "bold",
+            "color": "#16294a",
+            "stroke": "white",
+            "strokeWidth": 3,
+            "strokeOpacity": 0.85
+          },
+          "encoding": {
+            "longitude": {
+              "field": "lon",
+              "type": "quantitative"
+            },
+            "latitude": {
+              "field": "lat",
+              "type": "quantitative"
+            },
+            "text": {
+              "field": "lab"
+            }
+          }
+        },
+        {
+          "data": {
+            "url": "data/lga_centroids.csv"
+          },
+          "transform": [
+            {
+              "filter": "datum.metro == 'Adelaide'"
+            },
+            {
+              "lookup": "code",
+              "from": {
+                "data": {
+                  "url": "data/lga_design_qualifications_2016.csv"
+                },
+                "key": "code",
+                "fields": [
+                  "name",
+                  "architecture_building",
+                  "creative_arts",
+                  "total"
+                ]
+              }
+            },
+            {
+              "calculate": "toNumber(datum.architecture_building) + toNumber(datum.creative_arts)",
+              "as": "design"
+            },
+            {
+              "calculate": "toNumber(datum.creative_arts) / datum.design",
+              "as": "cshare"
+            },
+            {
+              "filter": "datum.design >= 1000"
+            },
+            {
+              "joinaggregate": [
+                {
+                  "op": "max",
+                  "field": "cshare",
+                  "as": "mx"
+                },
+                {
+                  "op": "min",
+                  "field": "cshare",
+                  "as": "mn"
+                }
+              ]
+            },
+            {
+              "filter": "datum.cshare == datum.mx || datum.cshare == datum.mn"
+            },
+            {
+              "calculate": "datum.name + ' ' + format(datum.cshare,'.0%')",
+              "as": "lab"
+            },
+            {
+              "calculate": "datum.cshare == datum.mx ? 'Most creative: ' : 'Most building: '",
+              "as": "tag"
+            },
+            {
+              "filter": "datum.lon > 138.725"
+            }
+          ],
+          "mark": {
+            "type": "text",
+            "align": "right",
+            "dx": -16,
+            "dy": 2,
+            "fontSize": 10,
+            "fontWeight": "bold",
+            "color": "#16294a",
+            "stroke": "white",
+            "strokeWidth": 3,
+            "strokeOpacity": 0.85
+          },
+          "encoding": {
+            "longitude": {
+              "field": "lon",
+              "type": "quantitative"
+            },
+            "latitude": {
+              "field": "lat",
+              "type": "quantitative"
+            },
+            "text": {
+              "field": "lab"
+            }
+          }
+        },
+        {
+          "data": {
+            "url": "data/lga_centroids.csv"
+          },
+          "transform": [
+            {
+              "filter": "datum.metro == 'Adelaide'"
+            },
+            {
+              "lookup": "code",
+              "from": {
+                "data": {
+                  "url": "data/lga_design_qualifications_2016.csv"
+                },
+                "key": "code",
+                "fields": [
+                  "name",
+                  "architecture_building",
+                  "creative_arts",
+                  "total"
+                ]
+              }
+            },
+            {
+              "calculate": "toNumber(datum.architecture_building) + toNumber(datum.creative_arts)",
+              "as": "design"
+            },
+            {
+              "calculate": "toNumber(datum.creative_arts) / datum.design",
+              "as": "cshare"
+            },
+            {
+              "filter": "datum.design >= 1000"
+            },
+            {
+              "joinaggregate": [
+                {
+                  "op": "max",
+                  "field": "cshare",
+                  "as": "mx"
+                },
+                {
+                  "op": "min",
+                  "field": "cshare",
+                  "as": "mn"
+                }
+              ]
+            },
+            {
+              "filter": "datum.cshare == datum.mx || datum.cshare == datum.mn"
+            },
+            {
+              "calculate": "datum.name + ' ' + format(datum.cshare,'.0%')",
+              "as": "lab"
+            },
+            {
+              "calculate": "datum.cshare == datum.mx ? 'Most creative: ' : 'Most building: '",
+              "as": "tag"
+            },
+            {
+              "filter": "datum.lon <= 138.725"
+            }
+          ],
+          "mark": {
+            "type": "text",
+            "align": "left",
+            "dx": 16,
+            "dy": 2,
+            "fontSize": 10,
+            "fontWeight": "bold",
+            "color": "#16294a"
+          },
+          "encoding": {
+            "longitude": {
+              "field": "lon",
+              "type": "quantitative"
+            },
+            "latitude": {
+              "field": "lat",
+              "type": "quantitative"
+            },
+            "text": {
+              "field": "lab"
+            }
+          }
+        },
+        {
+          "data": {
+            "url": "data/lga_centroids.csv"
+          },
+          "transform": [
+            {
+              "filter": "datum.metro == 'Adelaide'"
+            },
+            {
+              "lookup": "code",
+              "from": {
+                "data": {
+                  "url": "data/lga_design_qualifications_2016.csv"
+                },
+                "key": "code",
+                "fields": [
+                  "name",
+                  "architecture_building",
+                  "creative_arts",
+                  "total"
+                ]
+              }
+            },
+            {
+              "calculate": "toNumber(datum.architecture_building) + toNumber(datum.creative_arts)",
+              "as": "design"
+            },
+            {
+              "calculate": "toNumber(datum.creative_arts) / datum.design",
+              "as": "cshare"
+            },
+            {
+              "filter": "datum.design >= 1000"
+            },
+            {
+              "joinaggregate": [
+                {
+                  "op": "max",
+                  "field": "cshare",
+                  "as": "mx"
+                },
+                {
+                  "op": "min",
+                  "field": "cshare",
+                  "as": "mn"
+                }
+              ]
+            },
+            {
+              "filter": "datum.cshare == datum.mx || datum.cshare == datum.mn"
+            },
+            {
+              "calculate": "datum.name + ' ' + format(datum.cshare,'.0%')",
+              "as": "lab"
+            },
+            {
+              "calculate": "datum.cshare == datum.mx ? 'Most creative: ' : 'Most building: '",
+              "as": "tag"
+            },
+            {
+              "filter": "datum.lon > 138.725"
+            }
+          ],
+          "mark": {
+            "type": "text",
+            "align": "right",
+            "dx": -16,
+            "dy": 2,
+            "fontSize": 10,
+            "fontWeight": "bold",
+            "color": "#16294a"
+          },
+          "encoding": {
+            "longitude": {
+              "field": "lon",
+              "type": "quantitative"
+            },
+            "latitude": {
+              "field": "lat",
+              "type": "quantitative"
+            },
+            "text": {
+              "field": "lab"
+            }
+          }
+        },
+        {
+          "data": {
+            "url": "data/lga_centroids.csv"
+          },
+          "transform": [
+            {
+              "filter": "datum.metro == 'Adelaide'"
+            },
+            {
+              "lookup": "code",
+              "from": {
+                "data": {
+                  "url": "data/lga_design_qualifications_2016.csv"
+                },
+                "key": "code",
+                "fields": [
+                  "name",
+                  "architecture_building",
+                  "creative_arts",
+                  "total"
+                ]
+              }
+            },
+            {
+              "calculate": "toNumber(datum.architecture_building) + toNumber(datum.creative_arts)",
+              "as": "design"
+            },
+            {
+              "calculate": "toNumber(datum.creative_arts) / datum.design",
+              "as": "cshare"
+            },
+            {
+              "filter": "datum.design >= 1000"
+            },
+            {
+              "joinaggregate": [
+                {
+                  "op": "max",
+                  "field": "cshare",
+                  "as": "mx"
+                },
+                {
+                  "op": "min",
+                  "field": "cshare",
+                  "as": "mn"
+                }
+              ]
+            },
+            {
+              "filter": "datum.cshare == datum.mx || datum.cshare == datum.mn"
+            },
+            {
+              "calculate": "datum.name + ' ' + format(datum.cshare,'.0%')",
+              "as": "lab"
+            },
+            {
+              "calculate": "datum.cshare == datum.mx ? 'Most creative: ' : 'Most building: '",
+              "as": "tag"
+            },
+            {
+              "filter": "datum.cshare == datum.mx"
+            },
+            {
+              "calculate": "'Most creative: ' + datum.lab",
+              "as": "t"
+            }
+          ],
+          "mark": {
+            "type": "text",
+            "align": "left",
+            "baseline": "top",
+            "fontSize": 10,
+            "fontStyle": "italic",
+            "fontWeight": "bold",
+            "color": "#b34700"
+          },
+          "encoding": {
+            "x": {
+              "value": 0
+            },
+            "y": {
+              "value": 276
+            },
+            "text": {
+              "field": "t"
+            }
+          }
+        },
+        {
+          "data": {
+            "url": "data/lga_centroids.csv"
+          },
+          "transform": [
+            {
+              "filter": "datum.metro == 'Adelaide'"
+            },
+            {
+              "lookup": "code",
+              "from": {
+                "data": {
+                  "url": "data/lga_design_qualifications_2016.csv"
+                },
+                "key": "code",
+                "fields": [
+                  "name",
+                  "architecture_building",
+                  "creative_arts",
+                  "total"
+                ]
+              }
+            },
+            {
+              "calculate": "toNumber(datum.architecture_building) + toNumber(datum.creative_arts)",
+              "as": "design"
+            },
+            {
+              "calculate": "toNumber(datum.creative_arts) / datum.design",
+              "as": "cshare"
+            },
+            {
+              "filter": "datum.design >= 1000"
+            },
+            {
+              "joinaggregate": [
+                {
+                  "op": "max",
+                  "field": "cshare",
+                  "as": "mx"
+                },
+                {
+                  "op": "min",
+                  "field": "cshare",
+                  "as": "mn"
+                }
+              ]
+            },
+            {
+              "filter": "datum.cshare == datum.mx || datum.cshare == datum.mn"
+            },
+            {
+              "calculate": "datum.name + ' ' + format(datum.cshare,'.0%')",
+              "as": "lab"
+            },
+            {
+              "calculate": "datum.cshare == datum.mx ? 'Most creative: ' : 'Most building: '",
+              "as": "tag"
+            },
+            {
+              "filter": "datum.cshare == datum.mn"
+            },
+            {
+              "calculate": "'Most building: ' + datum.lab",
+              "as": "t"
+            }
+          ],
+          "mark": {
+            "type": "text",
+            "align": "left",
+            "baseline": "top",
+            "fontSize": 10,
+            "fontStyle": "italic",
+            "fontWeight": "bold",
+            "color": "#1f5f8b"
+          },
+          "encoding": {
+            "x": {
+              "value": 0
+            },
+            "y": {
+              "value": 291
+            },
+            "text": {
+              "field": "t"
+            }
+          }
+        },
+        {
+          "data": {
+            "values": [
+              {
+                "lon": 138.6,
+                "lat": -34.93,
+                "t": "Adelaide CBD"
+              }
+            ]
+          },
+          "mark": {
+            "type": "point",
+            "shape": "cross",
+            "size": 70,
+            "filled": true,
+            "color": "#111",
+            "strokeWidth": 0
+          },
+          "encoding": {
+            "longitude": {
+              "field": "lon",
+              "type": "quantitative"
+            },
+            "latitude": {
+              "field": "lat",
+              "type": "quantitative"
+            }
+          }
+        },
+        {
+          "data": {
+            "values": [
+              {
+                "lon": 138.6,
+                "lat": -34.93,
+                "t": "Adelaide CBD"
+              }
+            ]
+          },
+          "mark": {
+            "type": "text",
+            "align": "center",
+            "dx": 0,
+            "dy": 13,
+            "fontSize": 10,
+            "fontWeight": "bold",
+            "color": "#111",
+            "stroke": "white",
+            "strokeWidth": 3,
+            "strokeOpacity": 0.85
+          },
+          "encoding": {
+            "longitude": {
+              "field": "lon",
+              "type": "quantitative"
+            },
+            "latitude": {
+              "field": "lat",
+              "type": "quantitative"
+            },
+            "text": {
+              "field": "t"
+            }
+          }
+        },
+        {
+          "data": {
+            "values": [
+              {
+                "lon": 138.6,
+                "lat": -34.93,
+                "t": "Adelaide CBD"
+              }
+            ]
+          },
+          "mark": {
+            "type": "text",
+            "align": "center",
+            "dx": 0,
+            "dy": 13,
+            "fontSize": 10,
+            "fontWeight": "bold",
+            "color": "#111"
+          },
+          "encoding": {
+            "longitude": {
+              "field": "lon",
+              "type": "quantitative"
+            },
+            "latitude": {
+              "field": "lat",
+              "type": "quantitative"
+            },
+            "text": {
+              "field": "t"
+            }
+          }
         }
       ]
     },
@@ -344,7 +1750,7 @@
         "anchor": "start"
       },
       "width": 230,
-      "height": 270,
+      "height": 310,
       "projection": {
         "type": "mercator",
         "center": [
@@ -498,6 +1904,709 @@
               }
             ]
           }
+        },
+        {
+          "data": {
+            "url": "data/lga_centroids.csv"
+          },
+          "transform": [
+            {
+              "filter": "datum.metro == 'Perth'"
+            },
+            {
+              "lookup": "code",
+              "from": {
+                "data": {
+                  "url": "data/lga_design_qualifications_2016.csv"
+                },
+                "key": "code",
+                "fields": [
+                  "name",
+                  "architecture_building",
+                  "creative_arts",
+                  "total"
+                ]
+              }
+            },
+            {
+              "calculate": "toNumber(datum.architecture_building) + toNumber(datum.creative_arts)",
+              "as": "design"
+            },
+            {
+              "calculate": "toNumber(datum.creative_arts) / datum.design",
+              "as": "cshare"
+            },
+            {
+              "filter": "datum.design >= 1000"
+            },
+            {
+              "joinaggregate": [
+                {
+                  "op": "max",
+                  "field": "cshare",
+                  "as": "mx"
+                },
+                {
+                  "op": "min",
+                  "field": "cshare",
+                  "as": "mn"
+                }
+              ]
+            },
+            {
+              "filter": "datum.cshare == datum.mx || datum.cshare == datum.mn"
+            },
+            {
+              "calculate": "datum.name + ' ' + format(datum.cshare,'.0%')",
+              "as": "lab"
+            },
+            {
+              "calculate": "datum.cshare == datum.mx ? 'Most creative: ' : 'Most building: '",
+              "as": "tag"
+            }
+          ],
+          "mark": {
+            "type": "circle",
+            "filled": false,
+            "stroke": "#16294a",
+            "strokeWidth": 2,
+            "size": 900,
+            "clip": true
+          },
+          "encoding": {
+            "longitude": {
+              "field": "lon",
+              "type": "quantitative"
+            },
+            "latitude": {
+              "field": "lat",
+              "type": "quantitative"
+            }
+          }
+        },
+        {
+          "data": {
+            "url": "data/lga_centroids.csv"
+          },
+          "transform": [
+            {
+              "filter": "datum.metro == 'Perth'"
+            },
+            {
+              "lookup": "code",
+              "from": {
+                "data": {
+                  "url": "data/lga_design_qualifications_2016.csv"
+                },
+                "key": "code",
+                "fields": [
+                  "name",
+                  "architecture_building",
+                  "creative_arts",
+                  "total"
+                ]
+              }
+            },
+            {
+              "calculate": "toNumber(datum.architecture_building) + toNumber(datum.creative_arts)",
+              "as": "design"
+            },
+            {
+              "calculate": "toNumber(datum.creative_arts) / datum.design",
+              "as": "cshare"
+            },
+            {
+              "filter": "datum.design >= 1000"
+            },
+            {
+              "joinaggregate": [
+                {
+                  "op": "max",
+                  "field": "cshare",
+                  "as": "mx"
+                },
+                {
+                  "op": "min",
+                  "field": "cshare",
+                  "as": "mn"
+                }
+              ]
+            },
+            {
+              "filter": "datum.cshare == datum.mx || datum.cshare == datum.mn"
+            },
+            {
+              "calculate": "datum.name + ' ' + format(datum.cshare,'.0%')",
+              "as": "lab"
+            },
+            {
+              "calculate": "datum.cshare == datum.mx ? 'Most creative: ' : 'Most building: '",
+              "as": "tag"
+            },
+            {
+              "filter": "datum.lon <= 116.05"
+            }
+          ],
+          "mark": {
+            "type": "text",
+            "align": "left",
+            "dx": 16,
+            "dy": 2,
+            "fontSize": 10,
+            "fontWeight": "bold",
+            "color": "#16294a",
+            "stroke": "white",
+            "strokeWidth": 3,
+            "strokeOpacity": 0.85
+          },
+          "encoding": {
+            "longitude": {
+              "field": "lon",
+              "type": "quantitative"
+            },
+            "latitude": {
+              "field": "lat",
+              "type": "quantitative"
+            },
+            "text": {
+              "field": "lab"
+            }
+          }
+        },
+        {
+          "data": {
+            "url": "data/lga_centroids.csv"
+          },
+          "transform": [
+            {
+              "filter": "datum.metro == 'Perth'"
+            },
+            {
+              "lookup": "code",
+              "from": {
+                "data": {
+                  "url": "data/lga_design_qualifications_2016.csv"
+                },
+                "key": "code",
+                "fields": [
+                  "name",
+                  "architecture_building",
+                  "creative_arts",
+                  "total"
+                ]
+              }
+            },
+            {
+              "calculate": "toNumber(datum.architecture_building) + toNumber(datum.creative_arts)",
+              "as": "design"
+            },
+            {
+              "calculate": "toNumber(datum.creative_arts) / datum.design",
+              "as": "cshare"
+            },
+            {
+              "filter": "datum.design >= 1000"
+            },
+            {
+              "joinaggregate": [
+                {
+                  "op": "max",
+                  "field": "cshare",
+                  "as": "mx"
+                },
+                {
+                  "op": "min",
+                  "field": "cshare",
+                  "as": "mn"
+                }
+              ]
+            },
+            {
+              "filter": "datum.cshare == datum.mx || datum.cshare == datum.mn"
+            },
+            {
+              "calculate": "datum.name + ' ' + format(datum.cshare,'.0%')",
+              "as": "lab"
+            },
+            {
+              "calculate": "datum.cshare == datum.mx ? 'Most creative: ' : 'Most building: '",
+              "as": "tag"
+            },
+            {
+              "filter": "datum.lon > 116.05"
+            }
+          ],
+          "mark": {
+            "type": "text",
+            "align": "right",
+            "dx": -16,
+            "dy": 2,
+            "fontSize": 10,
+            "fontWeight": "bold",
+            "color": "#16294a",
+            "stroke": "white",
+            "strokeWidth": 3,
+            "strokeOpacity": 0.85
+          },
+          "encoding": {
+            "longitude": {
+              "field": "lon",
+              "type": "quantitative"
+            },
+            "latitude": {
+              "field": "lat",
+              "type": "quantitative"
+            },
+            "text": {
+              "field": "lab"
+            }
+          }
+        },
+        {
+          "data": {
+            "url": "data/lga_centroids.csv"
+          },
+          "transform": [
+            {
+              "filter": "datum.metro == 'Perth'"
+            },
+            {
+              "lookup": "code",
+              "from": {
+                "data": {
+                  "url": "data/lga_design_qualifications_2016.csv"
+                },
+                "key": "code",
+                "fields": [
+                  "name",
+                  "architecture_building",
+                  "creative_arts",
+                  "total"
+                ]
+              }
+            },
+            {
+              "calculate": "toNumber(datum.architecture_building) + toNumber(datum.creative_arts)",
+              "as": "design"
+            },
+            {
+              "calculate": "toNumber(datum.creative_arts) / datum.design",
+              "as": "cshare"
+            },
+            {
+              "filter": "datum.design >= 1000"
+            },
+            {
+              "joinaggregate": [
+                {
+                  "op": "max",
+                  "field": "cshare",
+                  "as": "mx"
+                },
+                {
+                  "op": "min",
+                  "field": "cshare",
+                  "as": "mn"
+                }
+              ]
+            },
+            {
+              "filter": "datum.cshare == datum.mx || datum.cshare == datum.mn"
+            },
+            {
+              "calculate": "datum.name + ' ' + format(datum.cshare,'.0%')",
+              "as": "lab"
+            },
+            {
+              "calculate": "datum.cshare == datum.mx ? 'Most creative: ' : 'Most building: '",
+              "as": "tag"
+            },
+            {
+              "filter": "datum.lon <= 116.05"
+            }
+          ],
+          "mark": {
+            "type": "text",
+            "align": "left",
+            "dx": 16,
+            "dy": 2,
+            "fontSize": 10,
+            "fontWeight": "bold",
+            "color": "#16294a"
+          },
+          "encoding": {
+            "longitude": {
+              "field": "lon",
+              "type": "quantitative"
+            },
+            "latitude": {
+              "field": "lat",
+              "type": "quantitative"
+            },
+            "text": {
+              "field": "lab"
+            }
+          }
+        },
+        {
+          "data": {
+            "url": "data/lga_centroids.csv"
+          },
+          "transform": [
+            {
+              "filter": "datum.metro == 'Perth'"
+            },
+            {
+              "lookup": "code",
+              "from": {
+                "data": {
+                  "url": "data/lga_design_qualifications_2016.csv"
+                },
+                "key": "code",
+                "fields": [
+                  "name",
+                  "architecture_building",
+                  "creative_arts",
+                  "total"
+                ]
+              }
+            },
+            {
+              "calculate": "toNumber(datum.architecture_building) + toNumber(datum.creative_arts)",
+              "as": "design"
+            },
+            {
+              "calculate": "toNumber(datum.creative_arts) / datum.design",
+              "as": "cshare"
+            },
+            {
+              "filter": "datum.design >= 1000"
+            },
+            {
+              "joinaggregate": [
+                {
+                  "op": "max",
+                  "field": "cshare",
+                  "as": "mx"
+                },
+                {
+                  "op": "min",
+                  "field": "cshare",
+                  "as": "mn"
+                }
+              ]
+            },
+            {
+              "filter": "datum.cshare == datum.mx || datum.cshare == datum.mn"
+            },
+            {
+              "calculate": "datum.name + ' ' + format(datum.cshare,'.0%')",
+              "as": "lab"
+            },
+            {
+              "calculate": "datum.cshare == datum.mx ? 'Most creative: ' : 'Most building: '",
+              "as": "tag"
+            },
+            {
+              "filter": "datum.lon > 116.05"
+            }
+          ],
+          "mark": {
+            "type": "text",
+            "align": "right",
+            "dx": -16,
+            "dy": 2,
+            "fontSize": 10,
+            "fontWeight": "bold",
+            "color": "#16294a"
+          },
+          "encoding": {
+            "longitude": {
+              "field": "lon",
+              "type": "quantitative"
+            },
+            "latitude": {
+              "field": "lat",
+              "type": "quantitative"
+            },
+            "text": {
+              "field": "lab"
+            }
+          }
+        },
+        {
+          "data": {
+            "url": "data/lga_centroids.csv"
+          },
+          "transform": [
+            {
+              "filter": "datum.metro == 'Perth'"
+            },
+            {
+              "lookup": "code",
+              "from": {
+                "data": {
+                  "url": "data/lga_design_qualifications_2016.csv"
+                },
+                "key": "code",
+                "fields": [
+                  "name",
+                  "architecture_building",
+                  "creative_arts",
+                  "total"
+                ]
+              }
+            },
+            {
+              "calculate": "toNumber(datum.architecture_building) + toNumber(datum.creative_arts)",
+              "as": "design"
+            },
+            {
+              "calculate": "toNumber(datum.creative_arts) / datum.design",
+              "as": "cshare"
+            },
+            {
+              "filter": "datum.design >= 1000"
+            },
+            {
+              "joinaggregate": [
+                {
+                  "op": "max",
+                  "field": "cshare",
+                  "as": "mx"
+                },
+                {
+                  "op": "min",
+                  "field": "cshare",
+                  "as": "mn"
+                }
+              ]
+            },
+            {
+              "filter": "datum.cshare == datum.mx || datum.cshare == datum.mn"
+            },
+            {
+              "calculate": "datum.name + ' ' + format(datum.cshare,'.0%')",
+              "as": "lab"
+            },
+            {
+              "calculate": "datum.cshare == datum.mx ? 'Most creative: ' : 'Most building: '",
+              "as": "tag"
+            },
+            {
+              "filter": "datum.cshare == datum.mx"
+            },
+            {
+              "calculate": "'Most creative: ' + datum.lab",
+              "as": "t"
+            }
+          ],
+          "mark": {
+            "type": "text",
+            "align": "left",
+            "baseline": "top",
+            "fontSize": 10,
+            "fontStyle": "italic",
+            "fontWeight": "bold",
+            "color": "#b34700"
+          },
+          "encoding": {
+            "x": {
+              "value": 0
+            },
+            "y": {
+              "value": 276
+            },
+            "text": {
+              "field": "t"
+            }
+          }
+        },
+        {
+          "data": {
+            "url": "data/lga_centroids.csv"
+          },
+          "transform": [
+            {
+              "filter": "datum.metro == 'Perth'"
+            },
+            {
+              "lookup": "code",
+              "from": {
+                "data": {
+                  "url": "data/lga_design_qualifications_2016.csv"
+                },
+                "key": "code",
+                "fields": [
+                  "name",
+                  "architecture_building",
+                  "creative_arts",
+                  "total"
+                ]
+              }
+            },
+            {
+              "calculate": "toNumber(datum.architecture_building) + toNumber(datum.creative_arts)",
+              "as": "design"
+            },
+            {
+              "calculate": "toNumber(datum.creative_arts) / datum.design",
+              "as": "cshare"
+            },
+            {
+              "filter": "datum.design >= 1000"
+            },
+            {
+              "joinaggregate": [
+                {
+                  "op": "max",
+                  "field": "cshare",
+                  "as": "mx"
+                },
+                {
+                  "op": "min",
+                  "field": "cshare",
+                  "as": "mn"
+                }
+              ]
+            },
+            {
+              "filter": "datum.cshare == datum.mx || datum.cshare == datum.mn"
+            },
+            {
+              "calculate": "datum.name + ' ' + format(datum.cshare,'.0%')",
+              "as": "lab"
+            },
+            {
+              "calculate": "datum.cshare == datum.mx ? 'Most creative: ' : 'Most building: '",
+              "as": "tag"
+            },
+            {
+              "filter": "datum.cshare == datum.mn"
+            },
+            {
+              "calculate": "'Most building: ' + datum.lab",
+              "as": "t"
+            }
+          ],
+          "mark": {
+            "type": "text",
+            "align": "left",
+            "baseline": "top",
+            "fontSize": 10,
+            "fontStyle": "italic",
+            "fontWeight": "bold",
+            "color": "#1f5f8b"
+          },
+          "encoding": {
+            "x": {
+              "value": 0
+            },
+            "y": {
+              "value": 291
+            },
+            "text": {
+              "field": "t"
+            }
+          }
+        },
+        {
+          "data": {
+            "values": [
+              {
+                "lon": 115.86,
+                "lat": -31.95,
+                "t": "Perth CBD"
+              }
+            ]
+          },
+          "mark": {
+            "type": "point",
+            "shape": "cross",
+            "size": 70,
+            "filled": true,
+            "color": "#111",
+            "strokeWidth": 0
+          },
+          "encoding": {
+            "longitude": {
+              "field": "lon",
+              "type": "quantitative"
+            },
+            "latitude": {
+              "field": "lat",
+              "type": "quantitative"
+            }
+          }
+        },
+        {
+          "data": {
+            "values": [
+              {
+                "lon": 115.86,
+                "lat": -31.95,
+                "t": "Perth CBD"
+              }
+            ]
+          },
+          "mark": {
+            "type": "text",
+            "align": "center",
+            "dx": 0,
+            "dy": 13,
+            "fontSize": 10,
+            "fontWeight": "bold",
+            "color": "#111",
+            "stroke": "white",
+            "strokeWidth": 3,
+            "strokeOpacity": 0.85
+          },
+          "encoding": {
+            "longitude": {
+              "field": "lon",
+              "type": "quantitative"
+            },
+            "latitude": {
+              "field": "lat",
+              "type": "quantitative"
+            },
+            "text": {
+              "field": "t"
+            }
+          }
+        },
+        {
+          "data": {
+            "values": [
+              {
+                "lon": 115.86,
+                "lat": -31.95,
+                "t": "Perth CBD"
+              }
+            ]
+          },
+          "mark": {
+            "type": "text",
+            "align": "center",
+            "dx": 0,
+            "dy": 13,
+            "fontSize": 10,
+            "fontWeight": "bold",
+            "color": "#111"
+          },
+          "encoding": {
+            "longitude": {
+              "field": "lon",
+              "type": "quantitative"
+            },
+            "latitude": {
+              "field": "lat",
+              "type": "quantitative"
+            },
+            "text": {
+              "field": "t"
+            }
+          }
         }
       ]
     }
@@ -521,6 +2630,9 @@
       "subtitleColor": "#555",
       "subtitlePadding": 4,
       "offset": 10
+    },
+    "legend": {
+      "titleLimit": 400
     }
   }
 }

@@ -3,9 +3,9 @@
   "title": {
     "text": "Creative arts graduates favour the inner city",
     "subtitle": [
-      "Creative arts share of qualified residents, 2016.",
-      "Close-ups of Sydney and Melbourne on the right.",
-      "One colour scale for all three maps."
+      "Creative arts share of qualified residents, 2016. One colour scale for all three maps.",
+      "Close-ups of Sydney and Melbourne on the right; + marks each city centre.",
+      "Outlined: the area with the highest share (areas with 2,000+ qualified residents)."
     ]
   },
   "hconcat": [
@@ -16,13 +16,7 @@
         "anchor": "start"
       },
       "width": 240,
-      "height": 270,
-      "data": {
-        "url": "data/lga_boundaries_2016.geojson",
-        "format": {
-          "property": "features"
-        }
-      },
+      "height": 310,
       "projection": {
         "type": "conicEqualArea",
         "rotate": [
@@ -43,6 +37,12 @@
           135
         ]
       },
+      "data": {
+        "url": "data/lga_boundaries_2016.geojson",
+        "format": {
+          "property": "features"
+        }
+      },
       "transform": [
         {
           "lookup": "properties.code",
@@ -61,63 +61,189 @@
         {
           "calculate": "toNumber(datum.creative_arts) / toNumber(datum.total)",
           "as": "share"
+        },
+        {
+          "calculate": "toNumber(datum.creative_arts)",
+          "as": "c"
+        },
+        {
+          "calculate": "toNumber(datum.total)",
+          "as": "n"
         }
       ],
-      "mark": {
-        "type": "geoshape",
-        "stroke": "white",
-        "strokeWidth": 0.4,
-        "clip": true
-      },
-      "encoding": {
-        "color": {
-          "field": "share",
-          "type": "quantitative",
-          "title": "Creative arts share of qualified residents",
-          "scale": {
-            "scheme": "oranges",
-            "domain": [
-              0,
-              0.11
-            ],
-            "clamp": true
+      "layer": [
+        {
+          "mark": {
+            "type": "geoshape",
+            "stroke": "white",
+            "strokeWidth": 0.4,
+            "clip": true
           },
-          "legend": {
-            "format": ".0%",
-            "orient": "bottom",
-            "direction": "horizontal",
-            "gradientLength": 260,
-            "title": "Creative arts share of qualified residents",
-            "titleLimit": 300
+          "encoding": {
+            "color": {
+              "field": "share",
+              "type": "quantitative",
+              "title": "Creative arts share of qualified residents",
+              "scale": {
+                "scheme": "oranges",
+                "domain": [
+                  0,
+                  0.11
+                ],
+                "clamp": true
+              },
+              "legend": {
+                "format": ".0%",
+                "orient": "bottom",
+                "direction": "horizontal",
+                "gradientLength": 260,
+                "title": "Creative arts share of qualified residents",
+                "titleLimit": 300
+              }
+            },
+            "tooltip": [
+              {
+                "field": "properties.name",
+                "title": "Local government area"
+              },
+              {
+                "field": "creative_arts",
+                "title": "Creative arts",
+                "format": ","
+              },
+              {
+                "field": "architecture_building",
+                "title": "Architecture and building",
+                "format": ","
+              },
+              {
+                "field": "total",
+                "title": "Residents with a qualification",
+                "format": ","
+              },
+              {
+                "field": "share",
+                "title": "Creative arts share",
+                "format": ".1%"
+              }
+            ]
           }
         },
-        "tooltip": [
-          {
-            "field": "properties.name",
-            "title": "Local government area"
-          },
-          {
-            "field": "creative_arts",
-            "title": "Creative arts",
-            "format": ","
-          },
-          {
-            "field": "architecture_building",
-            "title": "Architecture and building",
-            "format": ","
-          },
-          {
-            "field": "total",
-            "title": "Residents with a qualification",
-            "format": ","
-          },
-          {
-            "field": "share",
-            "title": "Creative arts share",
-            "format": ".1%"
+        {
+          "transform": [
+            {
+              "filter": "isValid(datum.share) && datum.n >= 2000"
+            },
+            {
+              "joinaggregate": [
+                {
+                  "op": "max",
+                  "field": "share",
+                  "as": "mx"
+                }
+              ]
+            },
+            {
+              "filter": "datum.share == datum.mx"
+            }
+          ],
+          "mark": {
+            "type": "geoshape",
+            "filled": false,
+            "fill": null,
+            "stroke": "#16294a",
+            "strokeWidth": 2,
+            "clip": true
           }
-        ]
-      }
+        },
+        {
+          "transform": [
+            {
+              "filter": "isValid(datum.share) && datum.n >= 2000"
+            },
+            {
+              "joinaggregate": [
+                {
+                  "op": "max",
+                  "field": "share",
+                  "as": "mx"
+                }
+              ]
+            },
+            {
+              "filter": "datum.share == datum.mx"
+            },
+            {
+              "calculate": "'Highest: ' + datum.properties.name + ', ' + format(datum.share,'.1%')",
+              "as": "t"
+            }
+          ],
+          "mark": {
+            "type": "text",
+            "align": "left",
+            "baseline": "top",
+            "fontSize": 10,
+            "fontStyle": "italic",
+            "color": "#16294a",
+            "fontWeight": "bold"
+          },
+          "encoding": {
+            "x": {
+              "value": 0
+            },
+            "y": {
+              "value": 276
+            },
+            "text": {
+              "field": "t"
+            }
+          }
+        },
+        {
+          "transform": [
+            {
+              "filter": "isValid(datum.c) && isValid(datum.n)"
+            },
+            {
+              "aggregate": [
+                {
+                  "op": "sum",
+                  "field": "c",
+                  "as": "C"
+                },
+                {
+                  "op": "sum",
+                  "field": "n",
+                  "as": "N"
+                }
+              ]
+            },
+            {
+              "calculate": "'Australia overall: ' + format(datum.C/datum.N,'.1%')",
+              "as": "t"
+            }
+          ],
+          "mark": {
+            "type": "text",
+            "align": "left",
+            "baseline": "top",
+            "fontSize": 10,
+            "fontStyle": "italic",
+            "color": "#16294a"
+          },
+          "encoding": {
+            "x": {
+              "value": 0
+            },
+            "y": {
+              "value": 291
+            },
+            "text": {
+              "field": "t"
+            }
+          }
+        }
+      ]
     },
     {
       "title": {
@@ -126,13 +252,7 @@
         "anchor": "start"
       },
       "width": 210,
-      "height": 270,
-      "data": {
-        "url": "data/lga_boundaries_2016.geojson",
-        "format": {
-          "property": "features"
-        }
-      },
+      "height": 310,
       "projection": {
         "type": "mercator",
         "center": [
@@ -144,6 +264,12 @@
           105,
           135
         ]
+      },
+      "data": {
+        "url": "data/lga_boundaries_2016.geojson",
+        "format": {
+          "property": "features"
+        }
       },
       "transform": [
         {
@@ -166,63 +292,287 @@
         {
           "calculate": "toNumber(datum.creative_arts) / toNumber(datum.total)",
           "as": "share"
+        },
+        {
+          "calculate": "toNumber(datum.creative_arts)",
+          "as": "c"
+        },
+        {
+          "calculate": "toNumber(datum.total)",
+          "as": "n"
         }
       ],
-      "mark": {
-        "type": "geoshape",
-        "stroke": "white",
-        "strokeWidth": 0.7,
-        "clip": true
-      },
-      "encoding": {
-        "color": {
-          "field": "share",
-          "type": "quantitative",
-          "title": "Creative arts share of qualified residents",
-          "scale": {
-            "scheme": "oranges",
-            "domain": [
-              0,
-              0.11
-            ],
-            "clamp": true
+      "layer": [
+        {
+          "mark": {
+            "type": "geoshape",
+            "stroke": "white",
+            "strokeWidth": 0.7,
+            "clip": true
           },
-          "legend": {
-            "format": ".0%",
-            "orient": "bottom",
-            "direction": "horizontal",
-            "gradientLength": 260,
-            "title": "Creative arts share of qualified residents",
-            "titleLimit": 300
+          "encoding": {
+            "color": {
+              "field": "share",
+              "type": "quantitative",
+              "title": "Creative arts share of qualified residents",
+              "scale": {
+                "scheme": "oranges",
+                "domain": [
+                  0,
+                  0.11
+                ],
+                "clamp": true
+              },
+              "legend": {
+                "format": ".0%",
+                "orient": "bottom",
+                "direction": "horizontal",
+                "gradientLength": 260,
+                "title": "Creative arts share of qualified residents",
+                "titleLimit": 300
+              }
+            },
+            "tooltip": [
+              {
+                "field": "properties.name",
+                "title": "Local government area"
+              },
+              {
+                "field": "creative_arts",
+                "title": "Creative arts",
+                "format": ","
+              },
+              {
+                "field": "architecture_building",
+                "title": "Architecture and building",
+                "format": ","
+              },
+              {
+                "field": "total",
+                "title": "Residents with a qualification",
+                "format": ","
+              },
+              {
+                "field": "share",
+                "title": "Creative arts share",
+                "format": ".1%"
+              }
+            ]
           }
         },
-        "tooltip": [
-          {
-            "field": "properties.name",
-            "title": "Local government area"
-          },
-          {
-            "field": "creative_arts",
-            "title": "Creative arts",
-            "format": ","
-          },
-          {
-            "field": "architecture_building",
-            "title": "Architecture and building",
-            "format": ","
-          },
-          {
-            "field": "total",
-            "title": "Residents with a qualification",
-            "format": ","
-          },
-          {
-            "field": "share",
-            "title": "Creative arts share",
-            "format": ".1%"
+        {
+          "transform": [
+            {
+              "filter": "isValid(datum.share) && datum.n >= 2000"
+            },
+            {
+              "joinaggregate": [
+                {
+                  "op": "max",
+                  "field": "share",
+                  "as": "mx"
+                }
+              ]
+            },
+            {
+              "filter": "datum.share == datum.mx"
+            }
+          ],
+          "mark": {
+            "type": "geoshape",
+            "filled": false,
+            "fill": null,
+            "stroke": "#16294a",
+            "strokeWidth": 2,
+            "clip": true
           }
-        ]
-      }
+        },
+        {
+          "transform": [
+            {
+              "filter": "isValid(datum.share) && datum.n >= 2000"
+            },
+            {
+              "joinaggregate": [
+                {
+                  "op": "max",
+                  "field": "share",
+                  "as": "mx"
+                }
+              ]
+            },
+            {
+              "filter": "datum.share == datum.mx"
+            },
+            {
+              "calculate": "'Highest: ' + datum.properties.name + ', ' + format(datum.share,'.1%')",
+              "as": "t"
+            }
+          ],
+          "mark": {
+            "type": "text",
+            "align": "left",
+            "baseline": "top",
+            "fontSize": 10,
+            "fontStyle": "italic",
+            "color": "#16294a",
+            "fontWeight": "bold"
+          },
+          "encoding": {
+            "x": {
+              "value": 0
+            },
+            "y": {
+              "value": 276
+            },
+            "text": {
+              "field": "t"
+            }
+          }
+        },
+        {
+          "transform": [
+            {
+              "filter": "isValid(datum.c) && isValid(datum.n)"
+            },
+            {
+              "aggregate": [
+                {
+                  "op": "sum",
+                  "field": "c",
+                  "as": "C"
+                },
+                {
+                  "op": "sum",
+                  "field": "n",
+                  "as": "N"
+                }
+              ]
+            },
+            {
+              "calculate": "'Sydney average: ' + format(datum.C/datum.N,'.1%')",
+              "as": "t"
+            }
+          ],
+          "mark": {
+            "type": "text",
+            "align": "left",
+            "baseline": "top",
+            "fontSize": 10,
+            "fontStyle": "italic",
+            "color": "#16294a"
+          },
+          "encoding": {
+            "x": {
+              "value": 0
+            },
+            "y": {
+              "value": 291
+            },
+            "text": {
+              "field": "t"
+            }
+          }
+        },
+        {
+          "data": {
+            "values": [
+              {
+                "lon": 151.21,
+                "lat": -33.87,
+                "t": "Sydney CBD"
+              }
+            ]
+          },
+          "mark": {
+            "type": "point",
+            "shape": "cross",
+            "size": 70,
+            "filled": true,
+            "color": "#111",
+            "strokeWidth": 0
+          },
+          "encoding": {
+            "longitude": {
+              "field": "lon",
+              "type": "quantitative"
+            },
+            "latitude": {
+              "field": "lat",
+              "type": "quantitative"
+            }
+          }
+        },
+        {
+          "data": {
+            "values": [
+              {
+                "lon": 151.21,
+                "lat": -33.87,
+                "t": "Sydney CBD"
+              }
+            ]
+          },
+          "mark": {
+            "type": "text",
+            "align": "center",
+            "dx": 0,
+            "dy": 13,
+            "fontSize": 10,
+            "fontWeight": "bold",
+            "color": "#111",
+            "stroke": "white",
+            "strokeWidth": 3,
+            "strokeOpacity": 0.85
+          },
+          "encoding": {
+            "longitude": {
+              "field": "lon",
+              "type": "quantitative"
+            },
+            "latitude": {
+              "field": "lat",
+              "type": "quantitative"
+            },
+            "text": {
+              "field": "t"
+            }
+          }
+        },
+        {
+          "data": {
+            "values": [
+              {
+                "lon": 151.21,
+                "lat": -33.87,
+                "t": "Sydney CBD"
+              }
+            ]
+          },
+          "mark": {
+            "type": "text",
+            "align": "center",
+            "dx": 0,
+            "dy": 13,
+            "fontSize": 10,
+            "fontWeight": "bold",
+            "color": "#111"
+          },
+          "encoding": {
+            "longitude": {
+              "field": "lon",
+              "type": "quantitative"
+            },
+            "latitude": {
+              "field": "lat",
+              "type": "quantitative"
+            },
+            "text": {
+              "field": "t"
+            }
+          }
+        }
+      ]
     },
     {
       "title": {
@@ -231,13 +581,7 @@
         "anchor": "start"
       },
       "width": 210,
-      "height": 270,
-      "data": {
-        "url": "data/lga_boundaries_2016.geojson",
-        "format": {
-          "property": "features"
-        }
-      },
+      "height": 310,
       "projection": {
         "type": "mercator",
         "center": [
@@ -249,6 +593,12 @@
           105,
           135
         ]
+      },
+      "data": {
+        "url": "data/lga_boundaries_2016.geojson",
+        "format": {
+          "property": "features"
+        }
       },
       "transform": [
         {
@@ -271,63 +621,287 @@
         {
           "calculate": "toNumber(datum.creative_arts) / toNumber(datum.total)",
           "as": "share"
+        },
+        {
+          "calculate": "toNumber(datum.creative_arts)",
+          "as": "c"
+        },
+        {
+          "calculate": "toNumber(datum.total)",
+          "as": "n"
         }
       ],
-      "mark": {
-        "type": "geoshape",
-        "stroke": "white",
-        "strokeWidth": 0.7,
-        "clip": true
-      },
-      "encoding": {
-        "color": {
-          "field": "share",
-          "type": "quantitative",
-          "title": "Creative arts share of qualified residents",
-          "scale": {
-            "scheme": "oranges",
-            "domain": [
-              0,
-              0.11
-            ],
-            "clamp": true
+      "layer": [
+        {
+          "mark": {
+            "type": "geoshape",
+            "stroke": "white",
+            "strokeWidth": 0.7,
+            "clip": true
           },
-          "legend": {
-            "format": ".0%",
-            "orient": "bottom",
-            "direction": "horizontal",
-            "gradientLength": 260,
-            "title": "Creative arts share of qualified residents",
-            "titleLimit": 300
+          "encoding": {
+            "color": {
+              "field": "share",
+              "type": "quantitative",
+              "title": "Creative arts share of qualified residents",
+              "scale": {
+                "scheme": "oranges",
+                "domain": [
+                  0,
+                  0.11
+                ],
+                "clamp": true
+              },
+              "legend": {
+                "format": ".0%",
+                "orient": "bottom",
+                "direction": "horizontal",
+                "gradientLength": 260,
+                "title": "Creative arts share of qualified residents",
+                "titleLimit": 300
+              }
+            },
+            "tooltip": [
+              {
+                "field": "properties.name",
+                "title": "Local government area"
+              },
+              {
+                "field": "creative_arts",
+                "title": "Creative arts",
+                "format": ","
+              },
+              {
+                "field": "architecture_building",
+                "title": "Architecture and building",
+                "format": ","
+              },
+              {
+                "field": "total",
+                "title": "Residents with a qualification",
+                "format": ","
+              },
+              {
+                "field": "share",
+                "title": "Creative arts share",
+                "format": ".1%"
+              }
+            ]
           }
         },
-        "tooltip": [
-          {
-            "field": "properties.name",
-            "title": "Local government area"
-          },
-          {
-            "field": "creative_arts",
-            "title": "Creative arts",
-            "format": ","
-          },
-          {
-            "field": "architecture_building",
-            "title": "Architecture and building",
-            "format": ","
-          },
-          {
-            "field": "total",
-            "title": "Residents with a qualification",
-            "format": ","
-          },
-          {
-            "field": "share",
-            "title": "Creative arts share",
-            "format": ".1%"
+        {
+          "transform": [
+            {
+              "filter": "isValid(datum.share) && datum.n >= 2000"
+            },
+            {
+              "joinaggregate": [
+                {
+                  "op": "max",
+                  "field": "share",
+                  "as": "mx"
+                }
+              ]
+            },
+            {
+              "filter": "datum.share == datum.mx"
+            }
+          ],
+          "mark": {
+            "type": "geoshape",
+            "filled": false,
+            "fill": null,
+            "stroke": "#16294a",
+            "strokeWidth": 2,
+            "clip": true
           }
-        ]
-      }
+        },
+        {
+          "transform": [
+            {
+              "filter": "isValid(datum.share) && datum.n >= 2000"
+            },
+            {
+              "joinaggregate": [
+                {
+                  "op": "max",
+                  "field": "share",
+                  "as": "mx"
+                }
+              ]
+            },
+            {
+              "filter": "datum.share == datum.mx"
+            },
+            {
+              "calculate": "'Highest: ' + datum.properties.name + ', ' + format(datum.share,'.1%')",
+              "as": "t"
+            }
+          ],
+          "mark": {
+            "type": "text",
+            "align": "left",
+            "baseline": "top",
+            "fontSize": 10,
+            "fontStyle": "italic",
+            "color": "#16294a",
+            "fontWeight": "bold"
+          },
+          "encoding": {
+            "x": {
+              "value": 0
+            },
+            "y": {
+              "value": 276
+            },
+            "text": {
+              "field": "t"
+            }
+          }
+        },
+        {
+          "transform": [
+            {
+              "filter": "isValid(datum.c) && isValid(datum.n)"
+            },
+            {
+              "aggregate": [
+                {
+                  "op": "sum",
+                  "field": "c",
+                  "as": "C"
+                },
+                {
+                  "op": "sum",
+                  "field": "n",
+                  "as": "N"
+                }
+              ]
+            },
+            {
+              "calculate": "'Melbourne average: ' + format(datum.C/datum.N,'.1%')",
+              "as": "t"
+            }
+          ],
+          "mark": {
+            "type": "text",
+            "align": "left",
+            "baseline": "top",
+            "fontSize": 10,
+            "fontStyle": "italic",
+            "color": "#16294a"
+          },
+          "encoding": {
+            "x": {
+              "value": 0
+            },
+            "y": {
+              "value": 291
+            },
+            "text": {
+              "field": "t"
+            }
+          }
+        },
+        {
+          "data": {
+            "values": [
+              {
+                "lon": 144.96,
+                "lat": -37.81,
+                "t": "Melbourne CBD"
+              }
+            ]
+          },
+          "mark": {
+            "type": "point",
+            "shape": "cross",
+            "size": 70,
+            "filled": true,
+            "color": "#111",
+            "strokeWidth": 0
+          },
+          "encoding": {
+            "longitude": {
+              "field": "lon",
+              "type": "quantitative"
+            },
+            "latitude": {
+              "field": "lat",
+              "type": "quantitative"
+            }
+          }
+        },
+        {
+          "data": {
+            "values": [
+              {
+                "lon": 144.96,
+                "lat": -37.81,
+                "t": "Melbourne CBD"
+              }
+            ]
+          },
+          "mark": {
+            "type": "text",
+            "align": "center",
+            "dx": 0,
+            "dy": 13,
+            "fontSize": 10,
+            "fontWeight": "bold",
+            "color": "#111",
+            "stroke": "white",
+            "strokeWidth": 3,
+            "strokeOpacity": 0.85
+          },
+          "encoding": {
+            "longitude": {
+              "field": "lon",
+              "type": "quantitative"
+            },
+            "latitude": {
+              "field": "lat",
+              "type": "quantitative"
+            },
+            "text": {
+              "field": "t"
+            }
+          }
+        },
+        {
+          "data": {
+            "values": [
+              {
+                "lon": 144.96,
+                "lat": -37.81,
+                "t": "Melbourne CBD"
+              }
+            ]
+          },
+          "mark": {
+            "type": "text",
+            "align": "center",
+            "dx": 0,
+            "dy": 13,
+            "fontSize": 10,
+            "fontWeight": "bold",
+            "color": "#111"
+          },
+          "encoding": {
+            "longitude": {
+              "field": "lon",
+              "type": "quantitative"
+            },
+            "latitude": {
+              "field": "lat",
+              "type": "quantitative"
+            },
+            "text": {
+              "field": "t"
+            }
+          }
+        }
+      ]
     }
   ],
   "resolve": {
@@ -348,6 +922,9 @@
       "subtitleColor": "#555",
       "subtitlePadding": 4,
       "offset": 10
+    },
+    "legend": {
+      "titleLimit": 400
     }
   }
 }
