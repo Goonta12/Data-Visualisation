@@ -167,7 +167,13 @@
     .side-art svg .win { fill: url(#windows); stroke: none; }
     .side-art svg text { fill: currentColor; stroke: none; font-family: "Inter", sans-serif; font-size: 10px; letter-spacing: 0.15em; }
     .side-art svg text.small { font-size: 11px; letter-spacing: 0; }
-    @media (min-width: 1340px) { .side-art { display: flex; } }
+    @media (min-width: 1400px) { .side-art { display: flex; } }
+    /* Medium screens (most laptops): narrow the content a little so the side panels still fit */
+    @media (min-width: 1180px) and (max-width: 1399.98px) {
+      .wrap, .hero-inner { max-width: 860px; }
+      .side-art { display: flex; width: calc((100vw - 948px) / 2); }
+      .side-art svg { width: min(200px, calc(100% - 32px)); }
+    }
 
     /* ---------- Fixed background (stays still while the page scrolls) ----------
        A faint blueprint-style grid, nodding to design drawings.
