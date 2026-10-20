@@ -210,6 +210,8 @@
        so the shorter chart's white box stretches to match the taller one */
     .pair { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); grid-auto-flow: column; grid-template-rows: auto auto; column-gap: 24px; row-gap: 14px; margin: 24px 0 0; }
     .pair .mapcol { display: contents; }
+    .solo { margin: 24px 0 0; }
+    .solo .chart { margin: 0 0 14px; }
     /* faint grey rule under a row, separating it from what follows */
     :root { --rule: rgba(0, 0, 0, 0.12); }
     .pair.divided, .split.divided { padding-bottom: 28px; margin-bottom: 36px; border-bottom: 1px solid var(--rule); }
@@ -312,6 +314,13 @@
       text-transform: none;
     }
     .lines, .lines.side, .pair .lines { font-family: var(--font-body); font-size: var(--size-chart-text); line-height: 1.6; }
+    /* ---------- Year sliders under maps ----------
+       Vega puts the slider below the chart, outside the map area, so it never overlaps the map. */
+    .chart .vega-bindings { margin-top: 10px; display: flex; justify-content: center; }
+    .chart .vega-bind label { display: flex; align-items: center; gap: 10px; font-family: var(--font-body); font-size: 0.9rem; color: #444; }
+    .chart .vega-bind input[type=range] { width: 200px; accent-color: var(--navy); cursor: pointer; }
+    .chart .vega-bind input[type=range] + span { display: none; } /* the map shows the year, so hide the 0/1/2 index */
+    .chart > div { flex-direction: column; align-items: center; }
   </style>
 </head>
 <body>
@@ -402,7 +411,7 @@
       <li><a href="#section-v" title="V. Where design skills are trained" aria-label="Section V: Where design skills are trained"><span class="toc-num">V</span></a></li>
       <li><a href="#section-vi" title="VI. Zooming in on the cities" aria-label="Section VI: Zooming in on the cities"><span class="toc-num">VI</span></a></li>
       <li><a href="#section-vii" title="VII. The people behind the businesses" aria-label="Section VII: The people behind the businesses"><span class="toc-num">VII</span></a></li>
-      <li><a href="#section-viii" title="VIII. Inside the industry" aria-label="Section VIII: Inside the industry"><span class="toc-num">VIII</span></a></li>
+      <li><a href="#section-viii" title="VIII. Summary of the industry" aria-label="Section VIII: Summary of the industry"><span class="toc-num">VIII</span></a></li>
     </ol>
   </div>
 </nav>
@@ -449,6 +458,8 @@
         <span>The smaller states and territories hold far fewer.</span>
         <span>Colour shows each state's largest design industry.</span>
         <span>Most firms are tiny and have no employees.</span>
+        <span>Drag the slider: NSW and Victoria have held</span>
+        <span>about two thirds of firms since 2001.</span>
       </p>
     </div>
     <div class="mapcol">
@@ -460,6 +471,8 @@
         <span>South Australia followed at 18%.</span>
         <span>The ACT and Northern Territory were lowest, near 9%.</span>
         <span>Over a third of architects ran their own practice.</span>
+        <span>Drag back to 2001 and about 1 in 4 worked alone,</span>
+        <span>with Tasmania highest at 44%.</span>
       </p>
     </div>
   </div>
@@ -607,7 +620,7 @@
   </p>
   <div class="chart"><div id="butterfly"></div></div>
   </div>
-  <div class="split divided">
+  <div class="split">
   <p class="lines side">
     <span>Women's share also rose in advertising.</span>
     <span>It fell in architecture.</span>
@@ -634,8 +647,8 @@
   </div></section>
 
   <section class="band" id="section-viii"><div class="wrap">
-  <h2>VIII. Inside the industry</h2>
-  <div class="split">
+  <h2>VIII. Summary of the industry</h2>
+  <div class="split divided">
   <p class="lines side">
     <span>Design firms employ more than designers.</span>
     <span>In architecture, 71% hold design-related jobs.</span>
@@ -645,6 +658,18 @@
     <span>so fewer of their staff are designers.</span>
   </p>
   <div class="chart"><div id="treemap"></div></div>
+  </div>
+  <div class="solo">
+    <div class="chart"><div id="workforce"></div></div>
+    <p class="lines">
+      <span>The latest figures give the fullest picture.</span>
+      <span>About 125,300 people now work in the four main design occupation groups.</span>
+      <span>Graphic and web design and illustration is the largest, with 56,100 people, 45% of the total.</span>
+      <span>Architects are the best paid, at a median $2,308 a week full-time,</span>
+      <span>and added the most jobs in the past year (+1,000).</span>
+      <span>Interior design is the most female field (73%) and architecture the least (37%),</span>
+      <span>while graphic and web design has reached an even split.</span>
+    </p>
   </div>
   </div></section>
 </main>
@@ -687,8 +712,9 @@
       <li>ABS Australian Demographic Statistics (3101.0): state population at June 2001 (December 2006 issue, Table 4; persons are males plus females) and June 2012 (preliminary, June 2012 issue).</li>
       <li>IP Australia, <em>Defining design: Design's role in the Australian economy</em> (2020), Table 1: value added by design industries and embedded designers, in 2019 dollars. IP Australia draws on BCAR (2018), IBISWorld (2019) and the Census.</li>
       <li>ABS Census of Population and Housing 2016, table G47 (non-school qualification: field of study) by local government area, from the ABS Data API: residents with a qualification in architecture and building and in creative arts.</li>
+      <li>Jobs and Skills Australia, Occupation profiles (ANZSCO unit groups 2321 Architects and Landscape Architects, 2323 Fashion, Industrial and Jewellery Designers and 2325 Interior Designers, February 2026 release; 2324 Graphic and Web Designers, and Illustrators, August 2025 release): employment, women's share, full-time share and median age from the ABS Labour Force Survey, and median full-time weekly earnings from the ABS Survey of Employee Earnings and Hours.</li>
       <li>Queensland University of Technology Digital Media Research Centre (S. Cunningham and M. McCutcheon), <em>The Creative Economy in Australia</em>, Factsheet 2: Employment by sector (2018), Table 4: people employed in the architecture and design industry sector, Census 2006, 2011 and 2016.</li>
-      <li>Association of Consulting Architects (ACA), <em>Architects in Australia</em> state and territory reports (Gill Matthewson), from the ABS Census of Population and Housing 2001 and 2011, Table 3: architects by employment situation (employees, own account workers, employers).</li>
+      <li>Association of Consulting Architects (ACA), <em>Architects in Australia</em> state and territory reports (Gill Matthewson), from the ABS Census of Population and Housing 2001, 2006 and 2011, Table 3: architects by employment situation (employees, own account workers, employers).</li>
       <li>State boundaries: Natural Earth admin-1 boundaries (public domain). Local government area boundaries: geoBoundaries (open licence). Both filtered to Australia and simplified.</li>
     </ul>
     <p>Created by Dean G Park 33156727. Charts built with Vega-Lite and Vega. Ai was used inorder to help find the vast amount of data needed to built the graphs/maps.</p>
@@ -699,7 +725,7 @@
   // Scroll-in animation: each heading, chart row and text block fades up as it enters the screen.
   (function () {
     document.documentElement.classList.add('js');
-    var items = document.querySelectorAll('.toc li, .band h2, .band .split, .band .pair .mapcol > *, .band .wrap > .lines, .conclusion .hero-inner > *');
+    var items = document.querySelectorAll('.toc li, .band h2, .band .solo > *, .band .split, .band .pair .mapcol > *, .band .wrap > .lines, .conclusion .hero-inner > *');
     items.forEach(function (el) {
       el.classList.add('reveal');
       // stagger elements that share a parent so they arrive one after another
@@ -734,6 +760,7 @@
     slope: 'specs/chart5_slope_women_share.json',
     dotplot: 'specs/chart6_connected_dot_income.json',
     treemap: 'specs/chart7_treemap_occupations.json',
+    workforce: 'specs/chart20_design_workforce_latest.json',
     dotmap: 'specs/chart13_dot_map_design_qualifications.json',
     hexmap: 'specs/chart14_hex_bin_map_creative_share.json',
     lgachoropleth: 'specs/chart15_choropleth_creative_share_metros.json',

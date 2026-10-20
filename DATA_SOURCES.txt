@@ -1,3 +1,4 @@
+
 DESIGN INDUSTRIES: THE NINETEEN CHARTS, THEIR DATA AND SOURCES
 Last updated: 21 October 2026
 
@@ -68,13 +69,16 @@ Chart 8: What design adds to the economy
               Squares come from rounded cumulative shares so each panel sums to 100.
 
 Chart 9: About two thirds of design businesses are in NSW and Victoria
-  Idiom:      Proportional symbol map
+  Idiom:      Proportional symbol map with a year slider (2001, 2007, 2012)
   Spec file:  specs/chart9_symbol_map_businesses_2012.json
-  Data files: data/design_businesses_by_state_2012.csv
+  Data files: data/design_businesses_by_state_years.csv (NEW: replaces the 2012-only file here)
               data/state_labels.csv (circle and label positions, made by me)
               data/australia_states.geojson (boundaries)
   Why:        Circle area shows how many businesses each state has, and colour
-              shows its largest industry. Totals are calculated in the spec.
+              shows its largest industry. The slider steps through the three
+              years; the circle scale is fixed so sizes compare across years.
+              Totals, shares and the NSW + Victoria share are calculated in the
+              spec for the chosen year, and a note explains each year's caveat.
 
 Chart 10: Architecture thrives in Victoria and WA; advertising and other design peak in NSW
   Idiom:      Choropleth map, three panels (small multiples)
@@ -151,24 +155,16 @@ Chart 16: Inner cities lean creative; the outer suburbs lean towards building
               calculated from the boundary file.
 
 Chart 17: Architects working alone
-  Idiom:      Choropleth map
+  Idiom:      Choropleth map with a year slider (Census 2001, 2006, 2011)
   Spec file:  specs/chart17_choropleth_architects_working_alone_2011.json
-  Data files: data/architects_employment_by_state_2011.csv
-              data/australia_states.geojson (boundaries)
+  Data files: data/architects_employment_by_state_2001_2011.csv (NEW: replaces the 2011-only file)
+              data/australia_states.geojson (boundaries, matched on properties.state)
   Why:        Shades each state by the share of its architects who work on their
               own account with no employees (2011 Census), which backs up section 2's
               point that most design businesses are very small. Share is calculated
               in the spec. Label positions are in the CSV (lon, lat), made by me.
-
-Chart 18: Australia's architects keep growing
-  Idiom:      Line chart (annotated)
-  Spec file:  specs/chart18_line_architects_growth.json
-  Data file:  data/architects_australia_2001_2021.csv
-  Why:        Five Census years show steady growth in one design profession.
-              Annotations give each count, the growth between Censuses, the
-              +51% rise from 2001 to 2016, and women's share each year. The
-              2016 to 2021 segment is dashed because the 2021 figure is rounded
-              and comes from a different publisher.
+              The slider steps through the three Censuses; the highest state is
+              outlined and the national share is calculated for each year.
 
 Chart 19: The design industry is growing
   Idiom:      Line chart (annotated)
@@ -178,12 +174,24 @@ Chart 19: The design industry is growing
               not just one profession. Annotations give each count, the people
               added in each five-year period, and the +38% rise from 2006 to 2016.
 
+Chart 20: The design workforce today
+  Idiom:      Small multiples: bar chart, dot plot and bar chart side by side
+  Spec file:  specs/chart20_design_workforce_latest.json
+  Data file:  data/design_workforce_latest.csv
+  Why:        The most recent view of the whole design workforce: people employed
+              in the four design occupation groups, the share who are women, and
+              median full-time weekly pay, on one shared row per group. Annotations
+              give each count and its change over the past year, the total, the
+              largest group's share, the most and fewest women, and the highest pay.
+
 Advanced idioms: bump, butterfly, heatmap + bars, lollipop, slope, connected
 dot plot, treemap, waffle, proportional symbol map (twice), choropleth map (twice),
 tile grid map, bivariate map, dot map and bin map = 16 charts, with 6 map idioms
 (symbol, choropleth, tile grid, bivariate, dot, bin) across 8 map charts.
-Added later: a third choropleth map (chart 17) and two annotated line charts
-(charts 18 and 19) = 19 charts, 9 of them maps. Check the
+Added later: a third choropleth map (chart 17) and an annotated line chart
+(chart 19), plus a small-multiples chart of the latest workforce (chart 20)
+= 19 charts, 9 of them maps. (A chart 18, an architects line chart,
+was made and then removed; the number was not reused.) Check the
 assignment for which idioms count as "advanced".
 
 A flow map was not made: I could not find real origin-destination flow data for
@@ -191,7 +199,7 @@ design (for example people or work moving between places) that I could read from
 here. If you find one, a flow map would fit section 5 or 7.
 
 THE STORY (how the page's eight sections use the charts)
-  1. Design is a $61 billion industry ........ charts 8 (waffle), 19 (line), 18 (line)
+  1. Design is a $61 billion industry ........ charts 8 (waffle), 19 (line)
   2. A country of small design businesses .... charts 9 (symbol map), 17 (choropleth)
   3. Where design is most common ............. charts 10 (choropleth), 3 (heatmap + bars)
   4. Where design is growing ................. charts 11 (tile map), 12 (bivariate map)
@@ -199,13 +207,33 @@ THE STORY (how the page's eight sections use the charts)
   6. Zooming in on the cities ................ charts 15 (choropleth), 16 (symbol map)
   7. The people behind the businesses ........ charts 1 (bump), 4 (lollipop), 2 (butterfly),
                                                5 (slope), 6 (connected dot plot)
-  8. Inside the industry ..................... chart 7 (treemap)
+  8. Summary of the industry ................ charts 7 (treemap), 20 (workforce small multiples)
 
 
 2. DATA FILES
 =============
 
-architects_employment_by_state_2011.csv   (NEW)
+design_businesses_by_state_years.csv   (NEW, used by chart 9)
+  Holds:   Businesses by state for architecture, advertising and a third design
+           industry, June 2001, 2007 and 2012 (one row per year and state).
+  Source:  2001: ABS Australian Business Register Counts (4172.0, Table 15.1).
+           2007: ABS Counts of Australian Businesses (4172.0, 2009, Table 15.1).
+           2012: ABS Counts of Australian Businesses (4172.0, 2014).
+  Notes:   The third industry is commercial art and display services (2001, 2007)
+           and other specialised design services (2012), named in a column.
+           2001 uses an older counting basis. The 2012 other specialised design
+           state figures on the ABS page add to 14,339 (my earlier note said 14,342).
+
+architects_employment_by_state_2001_2011.csv   (NEW, used by chart 17)
+  Holds:   Architects by employment situation (employees, own account workers,
+           employers) by state, Census 2001, 2006 and 2011, with label positions.
+  Source:  ACA, Architects in Australia state and territory reports (Gill
+           Matthewson), Table 3 in each report.
+  Notes:   The 2011 Census introduced new owner-manager categories, which the ACA
+           says affects Table 3. State rows add to within a few of the national
+           figures because the ABS randomly adjusts small cells.
+
+architects_employment_by_state_2011.csv   (NEW; no longer used, replaced by the 2001-2011 file)
   Holds:   Architects by employment situation (employees, own account workers,
            employers) for each state and territory, 2011 Census, plus label
            positions (lon, lat) for chart 17.
@@ -215,16 +243,6 @@ architects_employment_by_state_2011.csv   (NEW)
            categories added together, so they leave out a few architects whose
            employment situation was not stated (e.g. NSW 5,119 vs 5,185 in Table 1).
            The 2011 Census changed how owner-managers were categorised.
-
-architects_australia_2001_2021.csv   (NEW, Parlour and Jobs and Skills Australia)
-  Holds:   Architects in Australia by Census year, with women and women's share.
-  Source:  2001 to 2016: Gill Matthewson, Parlour Census Report 2001-2016: Women in
-           Architecture in Australia (Parlour, 2018), Table 1.1 (men and women; total
-           = men + women). 2021: Jobs and Skills Australia, Labour Market Insights,
-           Architects (ANZSCO 232111), from the 2021 Census.
-  Notes:   The 2021 total (19,300) is rounded to the nearest 100 and its 34% women is
-           a rounded share, so there is no 2021 count of women. It may not use exactly
-           the same definition as Parlour.
 
 design_industry_employment_2006_2016.csv   (NEW, QUT)
   Holds:   People employed in the architecture and design industry sector, 2006,
@@ -236,6 +254,22 @@ design_industry_employment_2006_2016.csv   (NEW, QUT)
            The source gives 3.3% average yearly growth (2006-2016). A 2021 figure is in
            Creative Australia's "The Creative Economy in Australia: Briefing paper 1"
            (2023), which I could not open from here.
+
+design_workforce_latest.csv   (NEW, used by chart 20)
+  Holds:   For ANZSCO unit groups 2321 Architects and Landscape Architects, 2323
+           Fashion, Industrial and Jewellery Designers, 2324 Graphic and Web Designers,
+           and Illustrators, and 2325 Interior Designers: employed, women's share,
+           full-time share, median age, median full-time weekly earnings, annual
+           employment growth, and largest state.
+  Source:  Jobs and Skills Australia, Occupation profiles (labour market insights
+           pages). 2321, 2323 and 2325: February 2026 release. 2324: August 2025
+           release (the February 2026 page could not be opened from here).
+  Notes:   Employment and the women, full-time and age figures come from the ABS
+           Labour Force Survey (four-quarter averages, 2024 or 2025); earnings from
+           the ABS Survey of Employee Earnings and Hours (May 2025 for 2321 and 2325).
+           Fashion, industrial and jewellery earnings are not published (high
+           standard error). Figures are rounded by JSA. JSA says these ANZSCO
+           profiles will not be updated again (new OSCA profiles due mid-2026).
 
 design_participation.csv
   Holds:   People who did design work in the 12 months to April: graphic design,
@@ -425,12 +459,6 @@ https://github.com/nvkelso/natural-earth-vector
 QUT, The Creative Economy in Australia, Factsheet 2 (chart 19):
 https://research.qut.edu.au/dmrc/wp-content/uploads/sites/5/2018/10/Factsheet-2-Employment-by-sector-V6.pdf
 
-Parlour Census Report 2001-2016 (chart 18):
-https://parlour.org.au/wp-content/uploads/2018/11/Parlour_Census_Report_Final2.pdf
-
-Jobs and Skills Australia, Architects (chart 18, 2021 figure):
-https://www.jobsandskills.gov.au/data/labour-market-insights/occupations/232111-architects
-
 ACA, Architects in Australia, state reports (chart 17):
 https://aca.org.au/architects-in-australia/
 
@@ -438,12 +466,11 @@ Creative Australia, The Creative Economy in Australia: What Census 2021 tells us
 (has 2021 figures, not used yet):
 https://creative.gov.au/research/creative-economy-australia-what-census-2021-tells-us
 
-Vega-Lite online editor (paste a file from online_editor/):
-https://vega.github.io/editor
+Jobs and Skills Australia, occupation profiles (chart 20), e.g.:
+https://www.jobsandskills.gov.au/data/labour-market-insights/occupations/2321-architects-and-landscape-architects
+https://www.jobsandskills.gov.au/data/occupation-and-industry-profiles/occupations/2323-fashion-industrial-and-jewellery-designers
+https://www.jobsandskills.gov.au/data/labour-market-insights/occupations/2324-graphic-and-web-designers-and-illustrators
+https://www.jobsandskills.gov.au/data/labour-market-insights/occupations/2325-interior-designers
 
-Vega-Lite documentation:
-https://vega.github.io/vega-lite/
 
-Vega documentation (treemap):
-https://vega.github.io/vega/docs/transforms/treemap/
 

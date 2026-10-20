@@ -1,0 +1,25 @@
+year,state,abbr,employees,own_account,employers,lon,lat
+2001,New South Wales,NSW,2618,1071,777,146.6,-32.4
+2006,New South Wales,NSW,2890,596,1431,146.6,-32.4
+2011,New South Wales,NSW,3107,757,1255,146.6,-32.4
+2001,Victoria,VIC,1754,769,607,144.2,-36.9
+2006,Victoria,VIC,2151,454,1079,144.2,-36.9
+2011,Victoria,VIC,2960,631,1037,144.2,-36.9
+2001,Queensland,QLD,1003,383,311,144.6,-22.8
+2006,Queensland,QLD,1360,216,569,144.6,-22.8
+2011,Queensland,QLD,1499,260,515,144.6,-22.8
+2001,South Australia,SA,357,171,100,135.2,-30.2
+2006,South Australia,SA,399,120,170,135.2,-30.2
+2011,South Australia,SA,497,145,142,135.2,-30.2
+2001,Western Australia,WA,496,245,199,122.0,-26.0
+2006,Western Australia,WA,657,168,294,122.0,-26.0
+2011,Western Australia,WA,865,200,287,122.0,-26.0
+2001,Tasmania,TAS,42,60,35,146.6,-42.1
+2006,Tasmania,TAS,96,39,76,146.6,-42.1
+2011,Tasmania,TAS,118,69,63,146.6,-42.1
+2001,Northern Territory,NT,38,11,12,133.4,-19.6
+2006,Northern Territory,NT,30,11,17,133.4,-19.6
+2011,Northern Territory,NT,53,7,18,133.4,-19.6
+2001,Australian Capital Territory,ACT,143,57,40,152.6,-35.6
+2006,Australian Capital Territory,ACT,198,34,65,152.6,-35.6
+2011,Australian Capital Territory,ACT,213,29,68,152.6,-35.6

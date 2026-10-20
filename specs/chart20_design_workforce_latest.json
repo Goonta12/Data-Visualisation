@@ -1,0 +1,774 @@
+{
+  "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+  "title": {
+    "text": "The design workforce today",
+    "subtitle": [
+      "People working in design occupations, latest Jobs and Skills Australia figures (2025-26),",
+      "with the share who are women and typical full-time pay. Hover for more."
+    ]
+  },
+  "data": {
+    "url": "data/design_workforce_latest.csv"
+  },
+  "transform": [
+    {
+      "calculate": "toNumber(datum.employed)",
+      "as": "emp"
+    },
+    {
+      "calculate": "toNumber(datum.women_share)",
+      "as": "women"
+    },
+    {
+      "calculate": "datum.median_weekly_earnings == '' || datum.median_weekly_earnings == null ? null : toNumber(datum.median_weekly_earnings)",
+      "as": "pay"
+    },
+    {
+      "calculate": "toNumber(datum.annual_growth)",
+      "as": "growth"
+    },
+    {
+      "calculate": "toNumber(datum.fulltime_share)",
+      "as": "ft"
+    },
+    {
+      "calculate": "toNumber(datum.top_state_share)",
+      "as": "tss"
+    },
+    {
+      "calculate": "datum.group == 'Graphic & web designers and illustrators' ? 'Graphic, web & illustration' : (datum.group == 'Architects and landscape architects' ? 'Architects & landscape' : (datum.group == 'Interior designers' ? 'Interior designers' : 'Fashion, industrial & jewellery'))",
+      "as": "short"
+    }
+  ],
+  "hconcat": [
+    {
+      "width": 210,
+      "height": 220,
+      "title": {
+        "text": "People employed",
+        "fontSize": 13,
+        "anchor": "start"
+      },
+      "encoding": {
+        "y": {
+          "field": "short",
+          "type": "nominal",
+          "sort": [
+            "Graphic, web & illustration",
+            "Architects & landscape",
+            "Interior designers",
+            "Fashion, industrial & jewellery"
+          ],
+          "title": null,
+          "axis": {
+            "labelLimit": 200,
+            "labelFontSize": 11,
+            "domain": false,
+            "ticks": false,
+            "labelPadding": 8
+          }
+        }
+      },
+      "layer": [
+        {
+          "mark": {
+            "type": "bar",
+            "color": "#16294a",
+            "cornerRadiusEnd": 3,
+            "height": {
+              "band": 0.62
+            }
+          },
+          "encoding": {
+            "x": {
+              "field": "emp",
+              "type": "quantitative",
+              "axis": null,
+              "scale": {
+                "domain": [
+                  0,
+                  80000
+                ]
+              }
+            },
+            "tooltip": [
+              {
+                "field": "group",
+                "title": "Occupation group"
+              },
+              {
+                "field": "code",
+                "title": "ANZSCO code"
+              },
+              {
+                "field": "emp",
+                "title": "Employed",
+                "format": ","
+              },
+              {
+                "field": "growth",
+                "title": "Change over the past year",
+                "format": "+,"
+              },
+              {
+                "field": "women",
+                "title": "Women",
+                "format": ".0%"
+              },
+              {
+                "field": "ft",
+                "title": "Full-time",
+                "format": ".0%"
+              },
+              {
+                "field": "median_age",
+                "title": "Median age"
+              },
+              {
+                "field": "pay",
+                "title": "Median full-time weekly pay",
+                "format": "$,"
+              },
+              {
+                "field": "top_state",
+                "title": "Largest state"
+              },
+              {
+                "field": "tss",
+                "title": "Share in largest state",
+                "format": ".0%"
+              },
+              {
+                "field": "release",
+                "title": "Source"
+              }
+            ]
+          }
+        },
+        {
+          "mark": {
+            "type": "text",
+            "align": "left",
+            "dx": 5,
+            "fontSize": 12,
+            "fontWeight": "bold",
+            "color": "#16294a",
+            "dy": -5
+          },
+          "encoding": {
+            "x": {
+              "field": "emp",
+              "type": "quantitative"
+            },
+            "text": {
+              "field": "emp",
+              "format": ","
+            }
+          }
+        },
+        {
+          "transform": [
+            {
+              "calculate": "datum.growth > 0 ? '+' + format(datum.growth, ',') + ' in a year' : 'no change in a year'",
+              "as": "g"
+            }
+          ],
+          "mark": {
+            "type": "text",
+            "align": "left",
+            "dx": 5,
+            "dy": 8,
+            "fontSize": 10,
+            "fontStyle": "italic",
+            "color": "#4a6a9e"
+          },
+          "encoding": {
+            "x": {
+              "field": "emp",
+              "type": "quantitative"
+            },
+            "text": {
+              "field": "g"
+            }
+          }
+        },
+        {
+          "transform": [
+            {
+              "aggregate": [
+                {
+                  "op": "sum",
+                  "field": "emp",
+                  "as": "T"
+                },
+                {
+                  "op": "sum",
+                  "field": "growth",
+                  "as": "G"
+                }
+              ]
+            },
+            {
+              "calculate": "['Total: about ' + format(datum.T, ',') + ' designers', 'and architects, about ' + format(datum.G, ',') + ' more', 'than a year earlier']",
+              "as": "t"
+            }
+          ],
+          "mark": {
+            "type": "text",
+            "align": "left",
+            "baseline": "top",
+            "fontSize": 11,
+            "fontWeight": "bold",
+            "fontStyle": "italic",
+            "color": "#16294a"
+          },
+          "encoding": {
+            "x": {
+              "value": 0
+            },
+            "y": {
+              "value": 228
+            },
+            "text": {
+              "field": "t"
+            }
+          }
+        },
+        {
+          "transform": [
+            {
+              "joinaggregate": [
+                {
+                  "op": "sum",
+                  "field": "emp",
+                  "as": "T"
+                }
+              ]
+            },
+            {
+              "filter": "datum.code == '2324' || datum.code == 2324"
+            },
+            {
+              "calculate": "'Graphic, web and illustration: ' + format(datum.emp/datum.T,'.0%') + ' of the total'",
+              "as": "t"
+            }
+          ],
+          "mark": {
+            "type": "text",
+            "align": "left",
+            "baseline": "top",
+            "fontSize": 10,
+            "fontStyle": "italic",
+            "color": "#555"
+          },
+          "encoding": {
+            "x": {
+              "value": 0
+            },
+            "y": {
+              "value": 268
+            },
+            "text": {
+              "field": "t"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "width": 125,
+      "height": 220,
+      "title": {
+        "text": "Share who are women",
+        "fontSize": 13,
+        "anchor": "start"
+      },
+      "encoding": {
+        "y": {
+          "field": "short",
+          "type": "nominal",
+          "sort": [
+            "Graphic, web & illustration",
+            "Architects & landscape",
+            "Interior designers",
+            "Fashion, industrial & jewellery"
+          ],
+          "title": null,
+          "axis": null
+        }
+      },
+      "layer": [
+        {
+          "data": {
+            "values": [
+              {}
+            ]
+          },
+          "mark": {
+            "type": "rule",
+            "color": "#d6d6d6",
+            "strokeWidth": 1
+          },
+          "encoding": {
+            "x": {
+              "value": -28.0
+            },
+            "y": {
+              "value": -2
+            },
+            "y2": {
+              "value": 266
+            }
+          }
+        },
+        {
+          "mark": {
+            "type": "rule",
+            "color": "#ddd",
+            "strokeWidth": 6,
+            "strokeCap": "round"
+          },
+          "encoding": {
+            "x": {
+              "datum": 0,
+              "type": "quantitative",
+              "scale": {
+                "domain": [
+                  0,
+                  1
+                ]
+              },
+              "axis": null
+            },
+            "x2": {
+              "datum": 1
+            }
+          }
+        },
+        {
+          "data": {
+            "values": [
+              {
+                "x": 0.5
+              }
+            ]
+          },
+          "mark": {
+            "type": "rule",
+            "color": "#999",
+            "strokeDash": [
+              3,
+              3
+            ]
+          },
+          "encoding": {
+            "x": {
+              "field": "x",
+              "type": "quantitative"
+            },
+            "y": {
+              "value": -4
+            },
+            "y2": {
+              "value": 220
+            }
+          }
+        },
+        {
+          "data": {
+            "values": [
+              {
+                "x": 0.5,
+                "t": "even split"
+              }
+            ]
+          },
+          "mark": {
+            "type": "text",
+            "fontSize": 9,
+            "color": "#777",
+            "baseline": "top",
+            "dy": 2
+          },
+          "encoding": {
+            "x": {
+              "field": "x",
+              "type": "quantitative"
+            },
+            "y": {
+              "value": 220
+            },
+            "text": {
+              "field": "t"
+            }
+          }
+        },
+        {
+          "mark": {
+            "type": "circle",
+            "size": 150,
+            "color": "#b5487a",
+            "opacity": 1,
+            "stroke": "white",
+            "strokeWidth": 1.5
+          },
+          "encoding": {
+            "x": {
+              "field": "women",
+              "type": "quantitative"
+            },
+            "tooltip": [
+              {
+                "field": "group",
+                "title": "Occupation group"
+              },
+              {
+                "field": "code",
+                "title": "ANZSCO code"
+              },
+              {
+                "field": "emp",
+                "title": "Employed",
+                "format": ","
+              },
+              {
+                "field": "growth",
+                "title": "Change over the past year",
+                "format": "+,"
+              },
+              {
+                "field": "women",
+                "title": "Women",
+                "format": ".0%"
+              },
+              {
+                "field": "ft",
+                "title": "Full-time",
+                "format": ".0%"
+              },
+              {
+                "field": "median_age",
+                "title": "Median age"
+              },
+              {
+                "field": "pay",
+                "title": "Median full-time weekly pay",
+                "format": "$,"
+              },
+              {
+                "field": "top_state",
+                "title": "Largest state"
+              },
+              {
+                "field": "tss",
+                "title": "Share in largest state",
+                "format": ".0%"
+              },
+              {
+                "field": "release",
+                "title": "Source"
+              }
+            ]
+          }
+        },
+        {
+          "mark": {
+            "type": "text",
+            "dy": -12,
+            "fontSize": 11,
+            "fontWeight": "bold",
+            "color": "#b5487a"
+          },
+          "encoding": {
+            "x": {
+              "field": "women",
+              "type": "quantitative"
+            },
+            "text": {
+              "field": "women",
+              "format": ".0%"
+            }
+          }
+        },
+        {
+          "transform": [
+            {
+              "joinaggregate": [
+                {
+                  "op": "max",
+                  "field": "women",
+                  "as": "mx"
+                },
+                {
+                  "op": "min",
+                  "field": "women",
+                  "as": "mn"
+                }
+              ]
+            },
+            {
+              "filter": "datum.women == datum.mx || datum.women == datum.mn"
+            },
+            {
+              "calculate": "datum.women == datum.mx ? 'most women' : 'fewest women'",
+              "as": "t"
+            }
+          ],
+          "mark": {
+            "type": "text",
+            "dy": 13,
+            "fontSize": 9,
+            "fontStyle": "italic",
+            "color": "#b5487a"
+          },
+          "encoding": {
+            "x": {
+              "field": "women",
+              "type": "quantitative"
+            },
+            "text": {
+              "field": "t"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "width": 125,
+      "height": 220,
+      "title": {
+        "text": "Median full-time weekly pay",
+        "fontSize": 13,
+        "anchor": "start"
+      },
+      "encoding": {
+        "y": {
+          "field": "short",
+          "type": "nominal",
+          "sort": [
+            "Graphic, web & illustration",
+            "Architects & landscape",
+            "Interior designers",
+            "Fashion, industrial & jewellery"
+          ],
+          "title": null,
+          "axis": null
+        }
+      },
+      "layer": [
+        {
+          "data": {
+            "values": [
+              {}
+            ]
+          },
+          "mark": {
+            "type": "rule",
+            "color": "#d6d6d6",
+            "strokeWidth": 1
+          },
+          "encoding": {
+            "x": {
+              "value": -28.0
+            },
+            "y": {
+              "value": -2
+            },
+            "y2": {
+              "value": 266
+            }
+          }
+        },
+        {
+          "mark": {
+            "type": "bar",
+            "color": "#3f8f7f",
+            "cornerRadiusEnd": 3,
+            "height": {
+              "band": 0.62
+            }
+          },
+          "encoding": {
+            "x": {
+              "field": "pay",
+              "type": "quantitative",
+              "axis": null,
+              "scale": {
+                "domain": [
+                  0,
+                  3000
+                ]
+              }
+            },
+            "tooltip": [
+              {
+                "field": "group",
+                "title": "Occupation group"
+              },
+              {
+                "field": "code",
+                "title": "ANZSCO code"
+              },
+              {
+                "field": "emp",
+                "title": "Employed",
+                "format": ","
+              },
+              {
+                "field": "growth",
+                "title": "Change over the past year",
+                "format": "+,"
+              },
+              {
+                "field": "women",
+                "title": "Women",
+                "format": ".0%"
+              },
+              {
+                "field": "ft",
+                "title": "Full-time",
+                "format": ".0%"
+              },
+              {
+                "field": "median_age",
+                "title": "Median age"
+              },
+              {
+                "field": "pay",
+                "title": "Median full-time weekly pay",
+                "format": "$,"
+              },
+              {
+                "field": "top_state",
+                "title": "Largest state"
+              },
+              {
+                "field": "tss",
+                "title": "Share in largest state",
+                "format": ".0%"
+              },
+              {
+                "field": "release",
+                "title": "Source"
+              }
+            ]
+          }
+        },
+        {
+          "transform": [
+            {
+              "calculate": "isValid(datum.pay) ? '$' + format(datum.pay, ',') : 'not published'",
+              "as": "t"
+            },
+            {
+              "calculate": "isValid(datum.pay) ? datum.pay : 0",
+              "as": "px"
+            }
+          ],
+          "mark": {
+            "type": "text",
+            "align": "left",
+            "dx": 5,
+            "fontSize": 11,
+            "fontWeight": "bold",
+            "color": "#2d6b5f"
+          },
+          "encoding": {
+            "x": {
+              "field": "px",
+              "type": "quantitative"
+            },
+            "text": {
+              "field": "t"
+            }
+          }
+        },
+        {
+          "transform": [
+            {
+              "joinaggregate": [
+                {
+                  "op": "max",
+                  "field": "pay",
+                  "as": "mx"
+                }
+              ]
+            },
+            {
+              "filter": "datum.pay == datum.mx"
+            }
+          ],
+          "mark": {
+            "type": "text",
+            "align": "left",
+            "dx": 5,
+            "dy": 13,
+            "fontSize": 9,
+            "fontStyle": "italic",
+            "color": "#2d6b5f"
+          },
+          "encoding": {
+            "x": {
+              "field": "pay",
+              "type": "quantitative"
+            },
+            "text": {
+              "value": "highest paid"
+            }
+          }
+        },
+        {
+          "data": {
+            "values": [
+              {
+                "t": [
+                  "Before tax. Fashion, industrial",
+                  "and jewellery pay is not",
+                  "published (too uncertain)."
+                ]
+              }
+            ]
+          },
+          "mark": {
+            "type": "text",
+            "align": "left",
+            "baseline": "top",
+            "fontSize": 9,
+            "fontStyle": "italic",
+            "color": "#777"
+          },
+          "encoding": {
+            "x": {
+              "value": 0
+            },
+            "y": {
+              "value": 228
+            },
+            "text": {
+              "field": "t"
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "spacing": 56,
+  "config": {
+    "view": {
+      "stroke": null
+    },
+    "concat": {
+      "spacing": 56
+    },
+    "title": {
+      "font": "Playfair Display, Georgia, serif",
+      "fontSize": 20,
+      "fontWeight": 700,
+      "anchor": "start",
+      "subtitleFontSize": 13,
+      "subtitleColor": "#555",
+      "subtitlePadding": 4,
+      "offset": 10
+    }
+  }
+}

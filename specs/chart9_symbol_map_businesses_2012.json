@@ -3,10 +3,23 @@
   "title": {
     "text": "Where the design firms are",
     "subtitle": [
-      "Design businesses by state, June 2012.",
-      "Bigger circle = more firms. Colour = largest industry."
+      "Design businesses by state. Bigger circle = more firms.",
+      "Colour = largest industry. Drag the slider to change the year."
     ]
   },
+  "params": [
+    {
+      "name": "yi",
+      "value": 2,
+      "bind": {
+        "input": "range",
+        "min": 0,
+        "max": 2,
+        "step": 1,
+        "name": "Drag to change the year  "
+      }
+    }
+  ],
   "width": "container",
   "height": 380,
   "projection": {
@@ -41,30 +54,40 @@
     },
     {
       "data": {
-        "url": "data/state_labels.csv"
+        "url": "data/design_businesses_by_state_years.csv"
       },
       "transform": [
+        {
+          "filter": "datum.year == [2001,2007,2012][yi]"
+        },
         {
           "lookup": "state",
           "from": {
             "data": {
-              "url": "data/design_businesses_by_state_2012.csv"
+              "url": "data/state_labels.csv"
             },
             "key": "state",
             "fields": [
-              "Architectural services",
-              "Advertising services",
-              "Other specialised design services"
+              "lon",
+              "lat",
+              "labelLat"
             ]
-          },
-          "as": [
-            "arch",
-            "adv",
-            "oth"
-          ]
+          }
         },
         {
-          "calculate": "toNumber(datum.arch) + toNumber(datum.adv) + toNumber(datum.oth)",
+          "calculate": "toNumber(datum.architecture)",
+          "as": "arch"
+        },
+        {
+          "calculate": "toNumber(datum.advertising)",
+          "as": "adv"
+        },
+        {
+          "calculate": "toNumber(datum.other_design)",
+          "as": "oth"
+        },
+        {
+          "calculate": "datum.arch + datum.adv + datum.oth",
           "as": "total"
         },
         {
@@ -81,12 +104,24 @@
           "as": "share"
         },
         {
-          "calculate": "toNumber(datum.arch) >= toNumber(datum.adv) && toNumber(datum.arch) >= toNumber(datum.oth) ? 'Architectural services' : (toNumber(datum.adv) >= toNumber(datum.oth) ? 'Advertising services' : 'Other specialised design services')",
+          "calculate": "datum.arch >= datum.adv && datum.arch >= datum.oth ? 'Architecture' : (datum.adv >= datum.oth ? 'Advertising' : 'Other design')",
           "as": "largest"
         },
         {
           "calculate": "datum.state + ' ' + format(datum.total, ',') + ' (' + format(datum.share, '.0%') + ')'",
           "as": "label"
+        },
+        {
+          "calculate": "toNumber(datum.labelLat)",
+          "as": "labelLat"
+        },
+        {
+          "calculate": "toNumber(datum.lon)",
+          "as": "lon"
+        },
+        {
+          "calculate": "toNumber(datum.lat)",
+          "as": "lat"
         }
       ],
       "layer": [
@@ -111,6 +146,10 @@
               "type": "quantitative",
               "title": "Design businesses",
               "scale": {
+                "domain": [
+                  0,
+                  15000
+                ],
                 "range": [
                   0,
                   2800
@@ -126,20 +165,18 @@
                 ],
                 "format": ",.0f",
                 "symbolOpacity": 0.5,
-                "labelFontSize": 10,
-                "titleFontSize": 10,
                 "offset": 12
               }
             },
             "color": {
               "field": "largest",
               "type": "nominal",
-              "title": "Largest industry",
+              "title": null,
               "scale": {
                 "domain": [
-                  "Architectural services",
-                  "Advertising services",
-                  "Other specialised design services"
+                  "Architecture",
+                  "Advertising",
+                  "Other design"
                 ],
                 "range": [
                   "#1f78b4",
@@ -150,15 +187,16 @@
               "legend": {
                 "orient": "top",
                 "direction": "horizontal",
-                "title": null,
-                "labelExpr": "datum.label == 'Architectural services' ? 'Architecture' : datum.label == 'Advertising services' ? 'Advertising' : 'Other design'",
-                "labelFontSize": 10,
                 "symbolSize": 80,
-                "offset": 6,
-                "columnPadding": 12
+                "columnPadding": 12,
+                "offset": 6
               }
             },
             "tooltip": [
+              {
+                "field": "year",
+                "title": "Year"
+              },
               {
                 "field": "state",
                 "title": "State"
@@ -175,8 +213,12 @@
               },
               {
                 "field": "oth",
-                "title": "Other specialised design",
+                "title": "Other design",
                 "format": ","
+              },
+              {
+                "field": "other_design_industry",
+                "title": "'Other design' means"
               },
               {
                 "field": "total",
@@ -220,25 +262,74 @@
                   "op": "sum",
                   "field": "total",
                   "as": "all"
+                },
+                {
+                  "op": "max",
+                  "field": "year",
+                  "as": "y"
                 }
               ]
             },
             {
-              "calculate": "['Australia:', format(datum.all, ',') + ' design firms']",
-              "as": "note"
-            },
-            {
-              "calculate": "113.5",
+              "calculate": "113.2",
               "as": "lon"
             },
             {
-              "calculate": "-13",
+              "calculate": "-11.2",
               "as": "lat"
             }
           ],
           "mark": {
             "type": "text",
             "align": "left",
+            "baseline": "bottom",
+            "fontSize": 26,
+            "fontWeight": "bold",
+            "font": "Playfair Display, Georgia, serif",
+            "color": "#16294a"
+          },
+          "encoding": {
+            "longitude": {
+              "field": "lon",
+              "type": "quantitative"
+            },
+            "latitude": {
+              "field": "lat",
+              "type": "quantitative"
+            },
+            "text": {
+              "field": "y"
+            }
+          }
+        },
+        {
+          "transform": [
+            {
+              "aggregate": [
+                {
+                  "op": "sum",
+                  "field": "total",
+                  "as": "all"
+                }
+              ]
+            },
+            {
+              "calculate": "format(datum.all, ',') + ' design firms'",
+              "as": "t"
+            },
+            {
+              "calculate": "113.2",
+              "as": "lon"
+            },
+            {
+              "calculate": "-12.6",
+              "as": "lat"
+            }
+          ],
+          "mark": {
+            "type": "text",
+            "align": "left",
+            "baseline": "top",
             "fontSize": 12,
             "fontWeight": "bold",
             "color": "#16294a"
@@ -253,7 +344,100 @@
               "type": "quantitative"
             },
             "text": {
-              "field": "note"
+              "field": "t"
+            }
+          }
+        },
+        {
+          "transform": [
+            {
+              "filter": "datum.state == 'NSW' || datum.state == 'VIC'"
+            },
+            {
+              "aggregate": [
+                {
+                  "op": "sum",
+                  "field": "share",
+                  "as": "sv"
+                }
+              ]
+            },
+            {
+              "calculate": "['NSW + Victoria:', format(datum.sv, '.0%') + ' of all firms']",
+              "as": "t"
+            },
+            {
+              "calculate": "131",
+              "as": "lon"
+            },
+            {
+              "calculate": "-37.3",
+              "as": "lat"
+            }
+          ],
+          "mark": {
+            "type": "text",
+            "fontSize": 11,
+            "fontStyle": "italic",
+            "color": "#16294a"
+          },
+          "encoding": {
+            "longitude": {
+              "field": "lon",
+              "type": "quantitative"
+            },
+            "latitude": {
+              "field": "lat",
+              "type": "quantitative"
+            },
+            "text": {
+              "field": "t"
+            }
+          }
+        },
+        {
+          "transform": [
+            {
+              "aggregate": [
+                {
+                  "op": "max",
+                  "field": "year",
+                  "as": "y"
+                }
+              ]
+            },
+            {
+              "calculate": "datum.y == 2001 ? ['Older counting method:','compare patterns, not exact numbers'] : (datum.y == 2007 ? ['Other design = commercial','art and display services'] : ['Other design = other','specialised design services'])",
+              "as": "t"
+            },
+            {
+              "calculate": "131",
+              "as": "lon"
+            },
+            {
+              "calculate": "-39.4",
+              "as": "lat"
+            }
+          ],
+          "mark": {
+            "type": "text",
+            "align": "center",
+            "baseline": "top",
+            "fontSize": 10,
+            "fontStyle": "italic",
+            "color": "#666"
+          },
+          "encoding": {
+            "longitude": {
+              "field": "lon",
+              "type": "quantitative"
+            },
+            "latitude": {
+              "field": "lat",
+              "type": "quantitative"
+            },
+            "text": {
+              "field": "t"
             }
           }
         }
@@ -295,39 +479,6 @@
           "field": "lat2"
         }
       }
-    },
-    {
-      "data": {
-        "values": [
-          {
-            "lon": 131,
-            "lat": -37.3,
-            "note": [
-              "NSW + Victoria:",
-              "two thirds of all firms"
-            ]
-          }
-        ]
-      },
-      "mark": {
-        "type": "text",
-        "fontSize": 11,
-        "fontStyle": "italic",
-        "color": "#16294a"
-      },
-      "encoding": {
-        "longitude": {
-          "field": "lon",
-          "type": "quantitative"
-        },
-        "latitude": {
-          "field": "lat",
-          "type": "quantitative"
-        },
-        "text": {
-          "field": "note"
-        }
-      }
     }
   ],
   "config": {
@@ -336,7 +487,8 @@
     },
     "legend": {
       "labelFontSize": 11,
-      "titleFontSize": 11
+      "titleFontSize": 11,
+      "titleLimit": 400
     },
     "title": {
       "font": "Playfair Display, Georgia, serif",

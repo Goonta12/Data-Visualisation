@@ -3,10 +3,23 @@
   "title": {
     "text": "Architects working alone",
     "subtitle": [
-      "Share of architects working on their own account,",
-      "with no employees, 2011 Census. Darker = more work alone."
+      "Share of architects working on their own account, with no",
+      "employees, by Census year. Drag the slider to change the year."
     ]
   },
+  "params": [
+    {
+      "name": "yi",
+      "value": 2,
+      "bind": {
+        "input": "range",
+        "min": 0,
+        "max": 2,
+        "step": 1,
+        "name": "Drag to change the year  "
+      }
+    }
+  ],
   "width": "container",
   "height": 380,
   "projection": {
@@ -24,44 +37,93 @@
       -36
     ]
   },
-  "layer": [
+  "data": {
+    "url": "data/architects_employment_by_state_2001_2011.csv"
+  },
+  "transform": [
     {
-      "data": {
-        "url": "data/australia_states.geojson",
-        "format": {
-          "property": "features"
-        }
-      },
-      "transform": [
-        {
-          "lookup": "properties.name",
-          "from": {
-            "data": {
-              "url": "data/architects_employment_by_state_2011.csv"
-            },
-            "key": "state",
-            "fields": [
-              "employees",
-              "own_account",
-              "employers"
-            ]
+      "filter": "datum.year == [2001,2006,2011][yi]"
+    },
+    {
+      "lookup": "abbr",
+      "from": {
+        "data": {
+          "url": "data/australia_states.geojson",
+          "format": {
+            "property": "features"
           }
         },
+        "key": "properties.state",
+        "fields": [
+          "geometry",
+          "properties"
+        ]
+      }
+    },
+    {
+      "calculate": "toNumber(datum.employees)",
+      "as": "e"
+    },
+    {
+      "calculate": "toNumber(datum.own_account)",
+      "as": "o"
+    },
+    {
+      "calculate": "toNumber(datum.employers)",
+      "as": "m"
+    },
+    {
+      "calculate": "datum.e + datum.o + datum.m",
+      "as": "total"
+    },
+    {
+      "calculate": "datum.o / datum.total",
+      "as": "alone"
+    },
+    {
+      "calculate": "toNumber(datum.lon)",
+      "as": "lon"
+    },
+    {
+      "calculate": "toNumber(datum.lat)",
+      "as": "lat"
+    },
+    {
+      "calculate": "datum.abbr + ' ' + format(datum.alone, '.0%')",
+      "as": "label"
+    },
+    {
+      "joinaggregate": [
         {
-          "calculate": "isValid(datum.own_account) ? toNumber(datum.employees) + toNumber(datum.own_account) + toNumber(datum.employers) : null",
-          "as": "total"
+          "op": "max",
+          "field": "alone",
+          "as": "mx"
         },
         {
-          "calculate": "isValid(datum.total) ? toNumber(datum.own_account) / datum.total : null",
-          "as": "alone"
+          "op": "sum",
+          "field": "o",
+          "as": "O"
+        },
+        {
+          "op": "sum",
+          "field": "total",
+          "as": "T"
         }
-      ],
+      ]
+    }
+  ],
+  "layer": [
+    {
       "mark": {
         "type": "geoshape",
         "stroke": "white",
         "strokeWidth": 1.5
       },
       "encoding": {
+        "shape": {
+          "field": "geometry",
+          "type": "geojson"
+        },
         "color": {
           "field": "alone",
           "type": "quantitative",
@@ -70,7 +132,7 @@
             "scheme": "blues",
             "domain": [
               0,
-              0.3
+              0.45
             ]
           },
           "legend": {
@@ -79,20 +141,22 @@
             "format": ".0%",
             "values": [
               0,
-              0.1,
-              0.2,
-              0.3
+              0.15,
+              0.3,
+              0.45
             ],
             "gradientLength": 160,
             "gradientThickness": 10,
-            "labelFontSize": 10,
-            "titleFontSize": 10,
             "offset": 12
           }
         },
         "tooltip": [
           {
-            "field": "properties.name",
+            "field": "year",
+            "title": "Census year"
+          },
+          {
+            "field": "state",
             "title": "State"
           },
           {
@@ -101,17 +165,17 @@
             "format": ","
           },
           {
-            "field": "own_account",
+            "field": "o",
             "title": "Working alone",
             "format": ","
           },
           {
-            "field": "employers",
+            "field": "m",
             "title": "Employing others",
             "format": ","
           },
           {
-            "field": "employees",
+            "field": "e",
             "title": "Employees",
             "format": ","
           },
@@ -124,23 +188,25 @@
       }
     },
     {
-      "data": {
-        "url": "data/architects_employment_by_state_2011.csv"
-      },
       "transform": [
         {
-          "calculate": "toNumber(datum.employees) + toNumber(datum.own_account) + toNumber(datum.employers)",
-          "as": "total"
-        },
-        {
-          "calculate": "toNumber(datum.own_account) / datum.total",
-          "as": "alone"
-        },
-        {
-          "calculate": "datum.abbr + ' ' + format(datum.alone, '.0%')",
-          "as": "label"
+          "filter": "datum.alone == datum.mx"
         }
       ],
+      "mark": {
+        "type": "geoshape",
+        "filled": false,
+        "stroke": "#f2b134",
+        "strokeWidth": 3
+      },
+      "encoding": {
+        "shape": {
+          "field": "geometry",
+          "type": "geojson"
+        }
+      }
+    },
+    {
       "mark": {
         "type": "text",
         "fontSize": 11,
@@ -160,7 +226,7 @@
         },
         "color": {
           "condition": {
-            "test": "datum.alone > 0.2 && datum.abbr != 'ACT'",
+            "test": "datum.alone > 0.27 && datum.abbr != 'ACT'",
             "value": "white"
           },
           "value": "#1a1a1a"
@@ -168,24 +234,33 @@
       }
     },
     {
-      "data": {
-        "values": [
-          {
-            "lon": 139.5,
-            "lat": -40.6,
-            "lon2": 144.6,
-            "lat2": -41.6
-          }
-        ]
-      },
+      "transform": [
+        {
+          "aggregate": [
+            {
+              "op": "max",
+              "field": "year",
+              "as": "y"
+            }
+          ]
+        },
+        {
+          "calculate": "113.2",
+          "as": "lon"
+        },
+        {
+          "calculate": "-11.2",
+          "as": "lat"
+        }
+      ],
       "mark": {
-        "type": "rule",
-        "color": "#16294a",
-        "strokeWidth": 1.2,
-        "strokeDash": [
-          3,
-          2
-        ]
+        "type": "text",
+        "align": "left",
+        "baseline": "bottom",
+        "fontSize": 26,
+        "fontWeight": "bold",
+        "font": "Playfair Display, Georgia, serif",
+        "color": "#16294a"
       },
       "encoding": {
         "longitude": {
@@ -196,35 +271,69 @@
           "field": "lat",
           "type": "quantitative"
         },
-        "longitude2": {
-          "field": "lon2"
-        },
-        "latitude2": {
-          "field": "lat2"
+        "text": {
+          "field": "y"
         }
       }
     },
     {
-      "data": {
-        "values": [
-          {
-            "lon": 133.5,
-            "lat": -39.6,
-            "note": [
-              "More than 1 in 4",
-              "Tasmanian architects"
-            ]
-          },
-          {
-            "lon": 131,
-            "lat": -35.6,
-            "note": [
-              "Australia: about 1 in 7",
-              "architects work alone"
-            ]
-          }
-        ]
+      "transform": [
+        {
+          "filter": "datum.alone == datum.mx"
+        },
+        {
+          "calculate": "'Australia: ' + format(datum.O/datum.T,'.0%') + ' worked alone'",
+          "as": "t"
+        },
+        {
+          "calculate": "113.2",
+          "as": "lon2"
+        },
+        {
+          "calculate": "-11.7",
+          "as": "lat2"
+        }
+      ],
+      "mark": {
+        "type": "text",
+        "align": "left",
+        "baseline": "top",
+        "fontSize": 11,
+        "fontWeight": "bold",
+        "color": "#16294a"
       },
+      "encoding": {
+        "longitude": {
+          "field": "lon2",
+          "type": "quantitative"
+        },
+        "latitude": {
+          "field": "lat2",
+          "type": "quantitative"
+        },
+        "text": {
+          "field": "t"
+        }
+      }
+    },
+    {
+      "transform": [
+        {
+          "filter": "datum.alone == datum.mx"
+        },
+        {
+          "calculate": "datum.year == 2011 ? ['Highest: ' + datum.state + ', ' + format(datum.alone,'.0%'), 'The 2011 Census changed how', 'owner-managers were counted'] : (datum.year == 2006 ? ['Highest: ' + datum.state + ', ' + format(datum.alone,'.0%'), 'Fewer worked alone and more', 'employed staff than in 2001'] : ['Highest: ' + datum.state + ', ' + format(datum.alone,'.0%'), 'About 1 in 4 architects', 'worked alone in 2001'])",
+          "as": "t"
+        },
+        {
+          "calculate": "131",
+          "as": "lon"
+        },
+        {
+          "calculate": "-36.6",
+          "as": "lat"
+        }
+      ],
       "mark": {
         "type": "text",
         "fontSize": 11,
@@ -241,7 +350,7 @@
           "type": "quantitative"
         },
         "text": {
-          "field": "note"
+          "field": "t"
         }
       }
     }
@@ -249,6 +358,11 @@
   "config": {
     "view": {
       "stroke": null
+    },
+    "legend": {
+      "labelFontSize": 11,
+      "titleFontSize": 11,
+      "titleLimit": 400
     },
     "title": {
       "font": "Playfair Display, Georgia, serif",
