@@ -10,40 +10,130 @@
   <script src="https://cdn.jsdelivr.net/npm/vega-lite@5"></script>
   <script src="https://cdn.jsdelivr.net/npm/vega-embed@6"></script>
   <style>
-    /* Sizes: title 4rem > section headings 2.2rem > body text 1.4rem > chart titles 20px */
+    /* Sizes: title 3.8rem > section headings 2.2rem > body text 1.4rem > header subtext 1.1rem > chart titles 20px */
+    :root {
+      --navy: #16294a;       /* header block */
+      --light-blue: #e2eaf5; /* alternating section band */
+      --off-white: #f3f0e8;  /* alternating section band / page */
+    }
     body {
       margin: 0;
       font-family: "Inter", system-ui, sans-serif;
       font-size: 1.4rem;
       line-height: 1.5;
       color: #222;
-      background: #fafaf7;
+      background: var(--off-white);
     }
-    main {
+    .wrap {
       max-width: 980px;
       margin: 0 auto;
-      padding: 56px 20px 80px;
+      padding: 0 20px;
     }
     h1, h2 {
       font-family: "Playfair Display", Georgia, serif;
       font-weight: 900;
       text-align: center;
     }
-    h1 {
-      font-size: clamp(2.6rem, 8vw, 4.4rem);
-      line-height: 1.1;
-      margin: 0 0 24px;
-    }
     h2 {
       font-size: 2.2rem;
       line-height: 1.2;
-      margin: 88px 0 20px;
+      margin: 0 0 20px;
     }
+
+    /* ---------- Header band ---------- */
+    .hero {
+      background: var(--navy);
+      color: #fff;
+    }
+    .hero-inner {
+      max-width: 980px;
+      margin: 0 auto;
+      padding: 64px 20px 56px;
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: 48px;
+      align-items: center;
+    }
+    .hero h1 {
+      color: #fff;
+      text-align: left;
+      font-size: clamp(2.4rem, 6vw, 3.8rem);
+      line-height: 1.1;
+      margin: 0 0 12px;
+    }
+    .hero .kicker {
+      font-size: 0.85rem;
+      font-weight: 500;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: #9fb6dc;
+      margin: 0 0 18px;
+    }
+    .hero .lede {
+      font-size: 1.1rem;
+      line-height: 1.55;
+      color: rgba(255, 255, 255, 0.85);
+      margin: 0;
+      max-width: 34em;
+    }
+    .conclusion h2 {
+      color: #fff;
+      text-align: left;
+      font-size: clamp(2rem, 5vw, 3rem);
+      line-height: 1.1;
+      margin: 0 0 12px;
+    }
+    .conclusion .caveat {
+      font-size: 0.85rem;
+      color: rgba(255, 255, 255, 0.6);
+      margin: 16px 0 0;
+    }
+    .stats {
+      max-width: 260px;
+      display: flex;
+      flex-direction: column;
+      gap: 22px;
+      border-left: 1px solid rgba(255, 255, 255, 0.25);
+      padding-left: 36px;
+    }
+    .stat-num {
+      display: block;
+      font-family: "Playfair Display", Georgia, serif;
+      font-weight: 700;
+      font-size: 2rem;
+      line-height: 1.1;
+      color: #fff;
+    }
+    .stat-label {
+      display: block;
+      font-size: 0.85rem;
+      color: rgba(255, 255, 255, 0.75);
+    }
+    @media (max-width: 760px) {
+      .hero-inner { grid-template-columns: minmax(0, 1fr); gap: 32px; padding: 48px 20px 40px; }
+      .stats {
+        max-width: none;
+        flex-direction: row;
+        flex-wrap: wrap;
+        gap: 20px 32px;
+        border-left: none;
+        border-top: 1px solid rgba(255, 255, 255, 0.25);
+        padding-left: 0;
+        padding-top: 24px;
+      }
+      .stat-num { font-size: 1.6rem; }
+    }
+
+    /* ---------- Section bands (alternate light blue / off-white) ---------- */
+    .band { padding: 18px 0 34px; }
+    .band .wrap > :last-child { margin-bottom: 0; }
+    .band:nth-of-type(odd)  { background: var(--light-blue); }
+    .band:nth-of-type(even) { background: var(--off-white); }
+
     .lines { text-align: center; margin: 0 auto 8px; }
     .lines span { display: block; }
-    .lede { font-size: 1.5rem; color: #444; }
     .note { font-size: 1.05rem; color: #666; margin-top: 12px; }
-    .chart { margin: 24px 0 36px; background: #fff; padding: 16px; border-radius: 8px; overflow-x: hidden; }
+    .chart { margin: 24px 0 36px; background: #fff; padding: 16px; border-radius: 8px; overflow-x: hidden; box-shadow: 0 1px 3px rgba(22, 41, 74, 0.08); }
     .chart > div { width: 100%; }
     .split { display: grid; grid-template-columns: clamp(200px, 28%, 300px) minmax(0, 1fr); gap: 24px; align-items: center; margin: 24px 0 36px; }
     .split.rev { grid-template-columns: minmax(0, 1fr) clamp(200px, 28%, 300px); }
@@ -55,28 +145,57 @@
       .split, .split.rev { grid-template-columns: minmax(0, 1fr); }
       .split.rev .side { order: 0; }
     }
+    /* two maps side by side: charts share row 1, text shares row 2,
+       so the shorter chart's white box stretches to match the taller one */
+    .pair { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); grid-auto-flow: column; grid-template-rows: auto auto; column-gap: 24px; row-gap: 14px; margin: 24px 0 0; }
+    .pair .mapcol { display: contents; }
+    .pair .chart { margin: 0; display: flex; align-items: center; justify-content: center; }
+    .pair .lines { font-size: 1.15rem; margin: 0; }
+    @media (max-width: 760px) {
+      .pair { grid-template-columns: minmax(0, 1fr); grid-auto-flow: row; grid-template-rows: none; row-gap: 14px; }
+      .pair .mapcol:nth-child(2) .chart { margin-top: 18px; }
+    }
     .chart { text-align: center; }
     .chart > div { display: flex; justify-content: center; }
     .sidecol { display: flex; flex-direction: column; gap: 28px; }
     .sidecol .lines { margin: 0; }
-    .summary { border-top: 1px solid #ddd; padding-top: 20px; }
+    .summary { border-top: 1px solid #c9d3e2; padding-top: 20px; }
     .chart svg { max-width: 100%; height: auto; }
     .chart .vega-embed { max-width: 100%; }
-    footer { margin-top: 80px; font-size: 0.85rem; line-height: 1.6; color: #555; border-top: 1px solid #ddd; padding-top: 24px; }
+    footer { padding: 48px 0 64px; font-size: 0.85rem; line-height: 1.6; color: #555; border-top: 1px solid #d9d4c7; }
     footer li { margin-bottom: 6px; }
   </style>
 </head>
 <body>
-<main>
-  <h1>Australia's Design Industries</h1>
-  <p class="lines lede">
-    <span>History / People / Present</span>
-    <span> <span>
-    <span>Every logo, building and garment starts</span>
-    <span>with a designer. Australian businesses are led</span>
-    <span>by the designers therefore.</span>
-  </p>
+<header class="hero">
+  <div class="hero-inner">
+    <div>
+      <h1>Australia's Design Industries</h1>
+      <p class="kicker">History / People / Present</p>
+      <p class="lede">
+        Every logo, building and garment starts with a designer.
+        Australian businesses are led by the designers therefore.
+      </p>
+    </div>
+    <div class="stats">
+      <div>
+        <span class="stat-num">$61B</span>
+        <span class="stat-label">value added each year</span>
+      </div>
+      <div>
+        <span class="stat-num">3.4%</span>
+        <span class="stat-label">of Australia's GDP</span>
+      </div>
+      <div>
+        <span class="stat-num">39,000</span>
+        <span class="stat-label">design businesses (2012)</span>
+      </div>
+    </div>
+  </div>
+</header>
 
+<main>
+  <section class="band"><div class="wrap">
   <h2>1. Design is a $61 billion industry</h2>
   <div class="split rev">
   <p class="lines side">
@@ -88,15 +207,37 @@
   </p>
   <div class="chart"><div id="waffle"></div></div>
   </div>
+  </div></section>
 
+  <section class="band"><div class="wrap">
   <h2>2. A country of small businesses</h2>
-  <p class="lines">
-    <span>In 2012, Australia had about 39,000 design businesses.</span>
-    <span>New South Wales and Victoria hold two thirds.</span>
-    <span>Most firms have no employees.</span>
-  </p>
-  <div class="chart"><div id="symbolmap"></div></div>
+  <div class="pair">
+    <div class="mapcol">
+      <div class="chart"><div id="symbolmap"></div></div>
+      <p class="lines">
+        <span>In 2012, Australia had about 39,000 design businesses.</span>
+        <span>They cluster in the south-east.</span>
+        <span>New South Wales and Victoria hold two thirds.</span>
+        <span>The smaller states and territories hold far fewer.</span>
+        <span>Colour shows each state's largest design industry.</span>
+        <span>Most firms are tiny and have no employees.</span>
+      </p>
+    </div>
+    <div class="mapcol">
+      <div class="chart"><div id="alonemap"></div></div>
+      <p class="lines">
+        <span>Architects tell the same story.</span>
+        <span>In 2011, about 1 in 7 worked alone, with no staff.</span>
+        <span>Tasmania was highest, at more than 1 in 4.</span>
+        <span>South Australia followed at 18%.</span>
+        <span>The ACT and Northern Territory were lowest, near 9%.</span>
+        <span>Over a third of architects ran their own practice.</span>
+      </p>
+    </div>
+  </div>
+  </div></section>
 
+  <section class="band"><div class="wrap">
   <h2>3. Where design is most common</h2>
   <div class="split">
   <p class="lines side">
@@ -107,14 +248,18 @@
   </p>
   <div class="chart"><div id="choropleth"></div></div>
   </div>
-  <p class="lines">
+  <div class="split rev">
+  <p class="lines side">
     <span>The same pattern showed in 2001.</span>
   </p>
   <div class="chart"><div id="heatmap"></div></div>
+  </div>
   <p class="lines note">
     <span>Note: Counting methods changed so compared patterns only.</span>
   </p>
+  </div></section>
 
+  <section class="band"><div class="wrap">
   <h2>4. Where design is growing</h2>
   <div class="split rev">
   <p class="lines side">
@@ -133,7 +278,9 @@
   </p>
   <div class="chart"><div id="bivariate"></div></div>
   </div>
+  </div></section>
 
+  <section class="band"><div class="wrap">
   <h2>5. Where design skills are trained</h2>
   <div class="split rev">
   <p class="lines side">
@@ -144,13 +291,17 @@
   </p>
   <div class="chart"><div id="dotmap"></div></div>
   </div>
-  <p class="lines">
+  <div class="split">
+  <p class="lines side">
     <span>Creative arts is 3.5% of qualifications nationally.</span>
     <span>In Sydney it reaches 6%.</span>
     <span>Over half live around Sydney and Melbourne.</span>
   </p>
   <div class="chart"><div id="hexmap"></div></div>
+  </div>
+  </div></section>
 
+  <section class="band"><div class="wrap">
   <h2>6. Zooming in on the cities</h2>
   <p class="lines">
     <span>Creative arts is strongest in inner suburbs.</span>
@@ -162,7 +313,9 @@
     <span>Creative share: Vincent 57%, Mandurah 22%.</span>
   </p>
   <div class="chart"><div id="lgasymbols"></div></div>
+  </div></section>
 
+  <section class="band"><div class="wrap">
   <h2>7. The people behind the businesses</h2>
   <div class="split rev">
   <p class="lines side">
@@ -202,28 +355,51 @@
   </p>
   <div class="chart"><div id="dotplot"></div></div>
   </div>
+  </div></section>
 
+  <section class="band"><div class="wrap">
   <h2>8. Inside the industry</h2>
   <div class="split">
-  <div class="sidecol">
   <p class="lines side">
     <span>Design firms employ more than designers.</span>
     <span>In architecture, 71% hold design-related jobs.</span>
     <span>In advertising, only 31% do.</span>
   </p>
-  <p class="lines side summary">
-    <span>In short: a $61 billion industry,</span>
-    <span>built from small businesses in the south-east.</span>
-    <span>Skills are trained in inner cities.</span>
-    <span>Women's share is rising, but pay lags.</span>
-    <span>Most design data ends in 2012.</span>
-    <span>Skills maps are from 2016.</span>
-  </p>
-  </div>
   <div class="chart"><div id="treemap"></div></div>
   </div>
+  </div></section>
+</main>
 
-  <footer>
+<aside class="hero conclusion">
+  <div class="hero-inner">
+    <div>
+      <h2>In Short</h2>
+      <p class="kicker">Conclusion</p>
+      <p class="lede">
+        A $61 billion industry, built from small businesses in the south-east.
+        Skills are trained in inner cities. Women's share is rising, but pay lags.
+      </p>
+      <p class="caveat">Most design data ends in 2012. Skills maps are from 2016.</p>
+    </div>
+    <div class="stats">
+      <div>
+        <span class="stat-num">460,000</span>
+        <span class="stat-label">people doing design work (2007)</span>
+      </div>
+      <div>
+        <span class="stat-num">46%</span>
+        <span class="stat-label">women's share of graphic design, up from 35%</span>
+      </div>
+      <div>
+        <span class="stat-num">31%</span>
+        <span class="stat-label">of women earned $40,000+, vs 50% of men</span>
+      </div>
+    </div>
+  </div>
+</aside>
+
+<footer>
+  <div class="wrap">
     <p><strong>Data sources.</strong></p>
     <ul>
       <li>Australian Bureau of Statistics (ABS), Survey of Work in Selected Culture and Leisure Activities, April 2001, 2004 and 2007, published in ABS 4172.0 Arts and Culture in Australia: design participation, including by sex and income from design.</li>
@@ -232,16 +408,18 @@
       <li>ABS Australian Demographic Statistics (3101.0): state population at June 2001 (December 2006 issue, Table 4; persons are males plus females) and June 2012 (preliminary, June 2012 issue).</li>
       <li>IP Australia, <em>Defining design: Design's role in the Australian economy</em> (2020), Table 1: value added by design industries and embedded designers, in 2019 dollars. IP Australia draws on BCAR (2018), IBISWorld (2019) and the Census.</li>
       <li>ABS Census of Population and Housing 2016, table G47 (non-school qualification: field of study) by local government area, from the ABS Data API: residents with a qualification in architecture and building and in creative arts.</li>
+      <li>Association of Consulting Architects (ACA), <em>Architects in Australia</em> state and territory reports (Gill Matthewson), from the ABS Census of Population and Housing 2001 and 2011, Table 3: architects by employment situation (employees, own account workers, employers).</li>
       <li>State boundaries: Natural Earth admin-1 boundaries (public domain). Local government area boundaries: geoBoundaries (open licence). Both filtered to Australia and simplified.</li>
     </ul>
     <p>Created by Dean G Park 33156727. Charts built with Vega-Lite and Vega. Ai was used inorder to help find the vast amount of data needed to built the graphs/maps.</p>
-  </footer>
-</main>
+  </div>
+</footer>
 
 <script>
   const charts = {
     waffle: 'specs/chart8_waffle_value_added.json',
     symbolmap: 'specs/chart9_symbol_map_businesses_2012.json',
+    alonemap: 'specs/chart17_choropleth_architects_working_alone_2011.json',
     choropleth: 'specs/chart10_choropleth_per_capita_2012.json',
     heatmap: 'specs/chart3_heatmap_bars_per_capita.json',
     tilemap: 'specs/chart11_tile_map_change_2007_2012.json',

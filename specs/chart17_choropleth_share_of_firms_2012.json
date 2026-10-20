@@ -1,0 +1,148 @@
+{
+  "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+  "title": {
+    "text": "NSW and Victoria hold two thirds",
+    "subtitle": [
+      "Each state's share of Australia's design firms, June 2012.",
+      "Darker = bigger share."
+    ]
+  },
+  "width": "container",
+  "height": 380,
+  "projection": {
+    "type": "conicEqualArea",
+    "rotate": [-132, 0],
+    "center": [0, -27],
+    "parallels": [-18, -36]
+  },
+  "layer": [
+    {
+      "data": {
+        "url": "data/australia_states.geojson",
+        "format": {"property": "features"}
+      },
+      "transform": [
+        {
+          "lookup": "properties.name",
+          "from": {
+            "data": {"url": "data/design_businesses_by_state_2012.csv"},
+            "key": "state",
+            "fields": [
+              "Architectural services",
+              "Advertising services",
+              "Other specialised design services"
+            ]
+          },
+          "as": ["arch", "adv", "oth"]
+        },
+        {
+          "calculate": "isValid(datum.arch) ? toNumber(datum.arch) + toNumber(datum.adv) + toNumber(datum.oth) : null",
+          "as": "total"
+        },
+        {
+          "joinaggregate": [{"op": "sum", "field": "total", "as": "national"}]
+        },
+        {
+          "calculate": "isValid(datum.total) ? datum.total / datum.national : null",
+          "as": "share"
+        }
+      ],
+      "mark": {"type": "geoshape", "stroke": "white", "strokeWidth": 1.5},
+      "encoding": {
+        "color": {
+          "field": "share",
+          "type": "quantitative",
+          "title": "Share of all design firms",
+          "scale": {"scheme": "blues", "domainMin": 0},
+          "legend": {
+            "orient": "bottom",
+            "direction": "horizontal",
+            "format": ".0%",
+            "gradientLength": 180
+          }
+        },
+        "tooltip": [
+          {"field": "properties.name", "title": "State"},
+          {"field": "total", "title": "Design firms", "format": ","},
+          {"field": "share", "title": "Share of all firms", "format": ".1%"}
+        ]
+      }
+    },
+    {
+      "data": {"url": "data/state_labels.csv"},
+      "transform": [
+        {
+          "lookup": "state",
+          "from": {
+            "data": {"url": "data/design_businesses_by_state_2012.csv"},
+            "key": "state",
+            "fields": [
+              "Architectural services",
+              "Advertising services",
+              "Other specialised design services"
+            ]
+          },
+          "as": ["arch", "adv", "oth"]
+        },
+        {
+          "calculate": "toNumber(datum.arch) + toNumber(datum.adv) + toNumber(datum.oth)",
+          "as": "total"
+        },
+        {
+          "joinaggregate": [{"op": "sum", "field": "total", "as": "national"}]
+        },
+        {
+          "calculate": "datum.total / datum.national",
+          "as": "share"
+        },
+        {
+          "calculate": "datum.state + ' ' + format(datum.share, '.0%')",
+          "as": "label"
+        }
+      ],
+      "mark": {
+        "type": "text",
+        "fontSize": 11,
+        "fontWeight": "bold",
+        "color": "#1a1a1a"
+      },
+      "encoding": {
+        "longitude": {"field": "lon", "type": "quantitative"},
+        "latitude": {"field": "labelLat", "type": "quantitative"},
+        "text": {"field": "label"}
+      }
+    },
+    {
+      "data": {
+        "values": [
+          {"lon": 131, "lat": -37.3, "note": ["The other six states and", "territories share the last third"]}
+        ]
+      },
+      "mark": {
+        "type": "text",
+        "fontSize": 11,
+        "fontStyle": "italic",
+        "color": "#16294a"
+      },
+      "encoding": {
+        "longitude": {"field": "lon", "type": "quantitative"},
+        "latitude": {"field": "lat", "type": "quantitative"},
+        "text": {"field": "note"}
+      }
+    }
+  ],
+  "config": {
+    "view": {"stroke": null},
+    "legend": {"labelFontSize": 11, "titleFontSize": 11},
+    "title": {
+      "font": "Playfair Display, Georgia, serif",
+      "fontSize": 20,
+      "fontWeight": 700,
+      "anchor": "start",
+      "subtitleFontSize": 13,
+      "subtitleColor": "#555",
+      "subtitlePadding": 4,
+      "offset": 10
+    }
+  }
+}

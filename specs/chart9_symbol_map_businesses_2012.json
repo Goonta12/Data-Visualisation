@@ -1,15 +1,14 @@
 {
   "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
   "title": {
-    "text": "NSW and Victoria hold two thirds of firms",
+    "text": "Where the design firms are",
     "subtitle": [
-      "Design businesses added together, June 2012.",
-      "Bigger circle means more businesses.",
-      "Colour shows each state's largest industry."
+      "Design businesses by state, June 2012.",
+      "Bigger circle = more firms. Colour = largest industry."
     ]
   },
   "width": "container",
-  "height": 480,
+  "height": 380,
   "projection": {
     "type": "conicEqualArea",
     "rotate": [
@@ -69,11 +68,24 @@
           "as": "total"
         },
         {
+          "joinaggregate": [
+            {
+              "op": "sum",
+              "field": "total",
+              "as": "national"
+            }
+          ]
+        },
+        {
+          "calculate": "datum.total / datum.national",
+          "as": "share"
+        },
+        {
           "calculate": "toNumber(datum.arch) >= toNumber(datum.adv) && toNumber(datum.arch) >= toNumber(datum.oth) ? 'Architectural services' : (toNumber(datum.adv) >= toNumber(datum.oth) ? 'Advertising services' : 'Other specialised design services')",
           "as": "largest"
         },
         {
-          "calculate": "datum.state + ' ' + format(datum.total, ',')",
+          "calculate": "datum.state + ' ' + format(datum.total, ',') + ' (' + format(datum.share, '.0%') + ')'",
           "as": "label"
         }
       ],
@@ -101,18 +113,22 @@
               "scale": {
                 "range": [
                   0,
-                  5200
+                  2800
                 ]
               },
               "legend": {
-                "orient": "bottom-left",
+                "orient": "bottom",
+                "direction": "horizontal",
                 "values": [
-                  500,
-                  2000,
+                  1000,
                   5000,
                   10000
                 ],
-                "format": ",.0f"
+                "format": ",.0f",
+                "symbolOpacity": 0.5,
+                "labelFontSize": 10,
+                "titleFontSize": 10,
+                "offset": 12
               }
             },
             "color": {
@@ -132,7 +148,14 @@
                 ]
               },
               "legend": {
-                "orient": "top-left"
+                "orient": "top",
+                "direction": "horizontal",
+                "title": null,
+                "labelExpr": "datum.label == 'Architectural services' ? 'Architecture' : datum.label == 'Advertising services' ? 'Advertising' : 'Other design'",
+                "labelFontSize": 10,
+                "symbolSize": 80,
+                "offset": 6,
+                "columnPadding": 12
               }
             },
             "tooltip": [
@@ -159,6 +182,11 @@
                 "field": "total",
                 "title": "Total",
                 "format": ","
+              },
+              {
+                "field": "share",
+                "title": "Share of all firms",
+                "format": ".1%"
               }
             ]
           }
@@ -166,7 +194,7 @@
         {
           "mark": {
             "type": "text",
-            "fontSize": 12,
+            "fontSize": 11,
             "fontWeight": "bold",
             "color": "#1a1a1a"
           },
@@ -183,13 +211,132 @@
               "field": "label"
             }
           }
+        },
+        {
+          "transform": [
+            {
+              "aggregate": [
+                {
+                  "op": "sum",
+                  "field": "total",
+                  "as": "all"
+                }
+              ]
+            },
+            {
+              "calculate": "['Australia:', format(datum.all, ',') + ' design firms']",
+              "as": "note"
+            },
+            {
+              "calculate": "113.5",
+              "as": "lon"
+            },
+            {
+              "calculate": "-13",
+              "as": "lat"
+            }
+          ],
+          "mark": {
+            "type": "text",
+            "align": "left",
+            "fontSize": 12,
+            "fontWeight": "bold",
+            "color": "#16294a"
+          },
+          "encoding": {
+            "longitude": {
+              "field": "lon",
+              "type": "quantitative"
+            },
+            "latitude": {
+              "field": "lat",
+              "type": "quantitative"
+            },
+            "text": {
+              "field": "note"
+            }
+          }
         }
       ]
+    },
+    {
+      "data": {
+        "values": [
+          {
+            "lon": 136.5,
+            "lat": -36.4,
+            "lon2": 145.8,
+            "lat2": -35.0
+          }
+        ]
+      },
+      "mark": {
+        "type": "rule",
+        "color": "#16294a",
+        "strokeWidth": 1.2,
+        "strokeDash": [
+          3,
+          2
+        ]
+      },
+      "encoding": {
+        "longitude": {
+          "field": "lon",
+          "type": "quantitative"
+        },
+        "latitude": {
+          "field": "lat",
+          "type": "quantitative"
+        },
+        "longitude2": {
+          "field": "lon2"
+        },
+        "latitude2": {
+          "field": "lat2"
+        }
+      }
+    },
+    {
+      "data": {
+        "values": [
+          {
+            "lon": 131,
+            "lat": -37.3,
+            "note": [
+              "NSW + Victoria:",
+              "two thirds of all firms"
+            ]
+          }
+        ]
+      },
+      "mark": {
+        "type": "text",
+        "fontSize": 11,
+        "fontStyle": "italic",
+        "color": "#16294a"
+      },
+      "encoding": {
+        "longitude": {
+          "field": "lon",
+          "type": "quantitative"
+        },
+        "latitude": {
+          "field": "lat",
+          "type": "quantitative"
+        },
+        "text": {
+          "field": "note"
+        }
+      }
     }
   ],
   "config": {
     "view": {
       "stroke": null
+    },
+    "legend": {
+      "labelFontSize": 11,
+      "titleFontSize": 11
     },
     "title": {
       "font": "Playfair Display, Georgia, serif",
