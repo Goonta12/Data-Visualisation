@@ -327,6 +327,24 @@
     .chart .vega-bind input[type=range] { width: 200px; accent-color: var(--navy); cursor: pointer; }
     .chart .vega-bind input[type=range] + span { display: none; } /* the map shows the year, so hide the 0/1/2 index */
     .chart > div { flex-direction: column; align-items: center; }
+    /* ---------- Conclusion summary points ---------- */
+    .summary-points { margin-top: 18px; padding-top: 16px; border-top: 1px solid rgba(255, 255, 255, 0.2); }
+    .summary-points .lede { font-size: 0.98rem; margin: 0 0 10px; max-width: 40em; }
+    .summary-points strong { color: #fff; font-weight: 600; }
+    /* ---------- Two text cards under the last chart in section VIII ---------- */
+    .cards { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 24px; }
+    .card {
+      background: #fff;
+      border: 1px solid var(--rule);
+      border-top: 4px solid var(--navy);
+      border-radius: 8px;
+      padding: 22px 24px;
+      box-shadow: 0 1px 3px rgba(22, 41, 74, 0.08);
+      display: flex; flex-direction: column;
+    }
+    .card h3 { font-family: var(--font-heading); font-size: 1.3rem; font-weight: 700; margin: 0 0 10px; color: var(--navy); }
+    .card p { font-family: var(--font-body); font-size: var(--size-chart-text); line-height: 1.6; margin: 0; }
+    @media (max-width: 760px) { .cards { grid-template-columns: minmax(0, 1fr); } .card { aspect-ratio: auto; } }
   </style>
 </head>
 <body>
@@ -400,7 +418,7 @@
       </div>
       <div>
         <span class="stat-num">39,000</span>
-        <span class="stat-label">design businesses (2012)</span>
+        <span class="stat-label">design businesses</span>
       </div>
     </div>
   </div>
@@ -667,15 +685,20 @@
   </div>
   <div class="solo">
     <div class="chart"><div id="workforce"></div></div>
-    <p class="lines">
-      <span>The latest figures give the fullest picture.</span>
-      <span>About 125,300 people now work in the four main design occupation groups.</span>
-      <span>Graphic and web design and illustration is the largest, with 56,100 people, 45% of the total.</span>
-      <span>Architects are the best paid, at a median $2,308 a week full-time,</span>
-      <span>and added the most jobs in the past year (+1,000).</span>
-      <span>Interior design is the most female field (73%) and architecture the least (37%),</span>
-      <span>while graphic and web design has reached an even split.</span>
-    </p>
+    <div class="cards">
+      <div class="card">
+        <h3>Who does the work</h3>
+        <p>The latest figures give the fullest picture. About 125,300 people now work in the
+          four main design occupation groups. Graphic and web design and illustration is the
+          largest, with 56,100 people, 45% of the total.</p>
+      </div>
+      <div class="card">
+        <h3>Pay and gender</h3>
+        <p>Architects are the best paid, at a median $2,308 a week full-time, and added the
+          most jobs in the past year (+1,000). Interior design is the most female field (73%)
+          and architecture the least (37%), while graphic and web design has reached an even split.</p>
+      </div>
+    </div>
   </div>
   </div></section>
 </main>
@@ -686,15 +709,32 @@
       <h2>In Short</h2>
       <p class="kicker">Conclusion</p>
       <p class="lede">
-        A $61 billion industry, built from small businesses in the south-east.
-        Skills are trained in inner cities. Women's share is rising, but pay lags.
+        A $61 billion industry, built from small businesses in the South East region of Australia.
+        Skills are trained in inner cities.
       </p>
-      <p class="caveat">Most design data ends in 2012. Skills maps are from 2016.</p>
+      <div class="summary-points">
+        <p class="lede"><strong>Big and growing.</strong> Design adds 3.4% of GDP, and jobs in architecture and
+          design firms rose 38% in ten years, from 55,840 in 2006 to 76,940 in 2016.
+          About 125,300 people now work in the main design occupations.</p>
+        <p class="lede"><strong>Small firms, mostly in two states.</strong> Around 39,000 design businesses
+          operate, and about 6 in 10 have no employees. NSW and Victoria have held two
+          thirds of them since 2001.</p>
+        <p class="lede"><strong>Victoria is rising.</strong> Per person, Victoria and WA lead in architecture
+          and NSW in advertising. Victoria is the only state that is both dense and
+          fast-growing, a sign Melbourne is catching up with Sydney.</p>
+        <p class="lede"><strong>Skills sit in the inner city.</strong> Creative arts is 3.5% of qualifications
+          nationally but about 10.5% in suburbs like Yarra and the Inner West, while
+          outer suburbs lean towards building trades.</p>
+        <p class="lede"><strong>More women, unequal pay.</strong> Women's share of graphic design rose from 35%
+          to 46%, and graphic and web design is now an even split. But in 2007 half of
+          men earned $40,000+ from design, against 31% of women.</p>
+      </div>
+      
     </div>
     <div class="stats">
       <div>
         <span class="stat-num">460,000</span>
-        <span class="stat-label">people doing design work (2007)</span>
+        <span class="stat-label">people doing design work</span>
       </div>
       <div>
         <span class="stat-num">46%</span>
@@ -723,7 +763,7 @@
       <li>Association of Consulting Architects (ACA), <em>Architects in Australia</em> state and territory reports (Gill Matthewson), from the ABS Census of Population and Housing 2001, 2006 and 2011, Table 3: architects by employment situation (employees, own account workers, employers).</li>
       <li>State boundaries: Natural Earth admin-1 boundaries (public domain). Local government area boundaries: geoBoundaries (open licence). Both filtered to Australia and simplified.</li>
     </ul>
-    <p>Created by Dean G Park 33156727. Charts built with Vega-Lite and Vega. Ai was used inorder to help find the vast amount of data needed to built the graphs/maps.</p>
+    <p>Created by Dean G Park 33156727. Charts built with Vega-Lite and Vega. Ai was used inorder to help find the vast amount of data needed to built the graphs/maps as well as help with formatting and animation.</p>
   </div>
 </footer>
 
@@ -731,7 +771,7 @@
   // Scroll-in animation: each heading, chart row and text block fades up as it enters the screen.
   (function () {
     document.documentElement.classList.add('js');
-    var items = document.querySelectorAll('.toc li, .band h2, .band .solo > *, .band .split, .band .pair .mapcol > *, .band .wrap > .lines, .conclusion .hero-inner > *');
+    var items = document.querySelectorAll('.toc li, .band h2, .band .solo > .chart, .band .card, .band .split, .band .pair .mapcol > *, .band .wrap > .lines, .conclusion .hero-inner > *');
     items.forEach(function (el) {
       el.classList.add('reveal');
       // stagger elements that share a parent so they arrive one after another
