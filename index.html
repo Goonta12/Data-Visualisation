@@ -238,6 +238,7 @@
     .chart .vega-embed { max-width: 100%; }
     footer { padding: 48px 0 64px; font-size: 0.85rem; line-height: 1.6; color: #555; border-top: 1px solid #d9d4c7; }
     footer li { margin-bottom: 6px; }
+    footer a { color: var(--navy); overflow-wrap: anywhere; }
     /* ---------- Scroll-in animation ----------
        Only applied when JavaScript runs (html.js), so content is never hidden without it. */
     html.js .reveal {
@@ -761,20 +762,38 @@
 
 <footer>
   <div class="wrap">
-    <p><strong>Data sources.</strong></p>
+    <p><strong>Data sources</strong></p>
     <ul>
-      <li>Australian Bureau of Statistics (ABS), Survey of Work in Selected Culture and Leisure Activities, April 2001, 2004 and 2007, published in ABS 4172.0 Arts and Culture in Australia: design participation, including by sex and income from design.</li>
-      <li>ABS Australian Business Register counts, June 2001, and ABS Counts of Australian Businesses, June 2007 and June 2012 (ABS 4172.0, 2009 and 2014 editions): design businesses by state and by employment size.</li>
-      <li>ABS Census of Population and Housing 2011, published in ABS 4172.0 (2014 edition): people employed in design industries, by occupation.</li>
-      <li>ABS Australian Demographic Statistics (3101.0): state population at June 2001 (December 2006 issue, Table 4; persons are males plus females) and June 2012 (preliminary, June 2012 issue).</li>
-      <li>IP Australia, <em>Defining design: Design's role in the Australian economy</em> (2020), Table 1: value added by design industries and embedded designers, in 2019 dollars. IP Australia draws on BCAR (2018), IBISWorld (2019) and the Census.</li>
-      <li>ABS Census of Population and Housing 2016, table G47 (non-school qualification: field of study) by local government area, from the ABS Data API: residents with a qualification in architecture and building and in creative arts.</li>
-      <li>Jobs and Skills Australia, Occupation profiles (ANZSCO unit groups 2321 Architects and Landscape Architects, 2323 Fashion, Industrial and Jewellery Designers and 2325 Interior Designers, February 2026 release; 2324 Graphic and Web Designers, and Illustrators, August 2025 release): employment, women's share, full-time share and median age from the ABS Labour Force Survey, and median full-time weekly earnings from the ABS Survey of Employee Earnings and Hours.</li>
-      <li>Queensland University of Technology Digital Media Research Centre (S. Cunningham and M. McCutcheon), <em>The Creative Economy in Australia</em>, Factsheet 2: Employment by sector (2018), Table 4: people employed in the architecture and design industry sector, Census 2006, 2011 and 2016.</li>
-      <li>Association of Consulting Architects (ACA), <em>Architects in Australia</em> state and territory reports (Gill Matthewson), from the ABS Census of Population and Housing 2001, 2006 and 2011, Table 3: architects by employment situation (employees, own account workers, employers).</li>
-      <li>State boundaries: Natural Earth admin-1 boundaries (public domain). Local government area boundaries: geoBoundaries (open licence). Both filtered to Australia and simplified.</li>
+      <li>Australian Bureau of Statistics (ABS), <em>Survey of Work in Selected Culture and Leisure Activities</em>, April 2001, 2004 and 2007, published in ABS 4172.0 <em>Arts and Culture in Australia</em>: people doing design work, by activity, sex and income from design.
+        <a href="https://www.abs.gov.au/AUSSTATS/abs@.nsf/Previousproducts/BDF2D86997A51BBDCA2571E000068F5C">2001</a>,
+        <a href="https://www.abs.gov.au/AUSSTATS/abs@.nsf/Latestproducts/DF3ABA4E19C80BD9CA2572FA00218D1D">2004</a>,
+        <a href="https://www.abs.gov.au/AUSSTATS/abs@.nsf/0/A866EC8350CF0724CA2576550014084F">2007 (2009 edition)</a></li>
+      <li>ABS, <em>Australian Business Register counts</em>, June 2001, and <em>Counts of Australian Businesses</em>, June 2007 and June 2012 (ABS 4172.0, 2009 and 2014 editions): design businesses by state and by employment size.
+        <a href="https://www.abs.gov.au/AUSSTATS/abs@.nsf/Previousproducts/4737207436C423D7CA2571E000067234">June 2001</a>,
+        <a href="https://www.abs.gov.au/ausstats/abs@.nsf/Products/6E0D4EC6D348FFC8CA2574E9001329F7">June 2007</a>,
+        <a href="https://www.abs.gov.au/ausstats/abs@.nsf/Lookup/4172.0main+features232014">June 2012</a></li>
+      <li>ABS, <em>Census of Population and Housing 2011</em>, published in ABS 4172.0 (2014 edition): people employed in design industries, by occupation.
+        <a href="https://www.abs.gov.au/ausstats/abs@.nsf/Lookup/4172.0main+features232014">ABS 4172.0 (2014)</a></li>
+      <li>ABS, <em>Australian Demographic Statistics</em> (3101.0): state population at June 2001 (December 2006 issue, Table 4; persons are males plus females) and June 2012 (preliminary).
+        <a href="https://www.ausstats.abs.gov.au/ausstats/subscriber.nsf/0/D6EDD57581A05F75CA2572F0001CADFF/$File/31010_dec%202006.pdf">June 2001</a>,
+        <a href="https://www.abs.gov.au/AUSSTATS/abs@.nsf/Lookup/3101.0Main+Features1Jun%202012">June 2012</a></li>
+      <li>ABS, <em>Census of Population and Housing 2016</em>, table G47 (non-school qualification: field of study) by local government area, from the ABS Data API: residents with a qualification in architecture and building and in creative arts.
+        <a href="https://data.api.abs.gov.au/rest/dataflow/ABS/ABS_C16_G47_LGA/1.0.0?references=all">ABS Data API (ABS_C16_G47_LGA)</a></li>
+      <li>IP Australia, <em>Defining design: Design's role in the Australian economy</em> (2020), Table 1: value added by design industries and embedded designers, in 2019 dollars. IP Australia draws on BCAR (2018), IBISWorld (2019) and the Census.
+        <a href="https://www.ipaustralia.gov.au/about-us/our-agency/our-research/~/-/media/Project/IPA/IPAustralia/PDF/defining-design-ip-australia-report.pdf">Report (PDF)</a></li>
+      <li>Queensland University of Technology Digital Media Research Centre (S. Cunningham and M. McCutcheon), <em>The Creative Economy in Australia</em>, Factsheet 2: Employment by sector (2018), Table 4: people employed in the architecture and design industry sector, Census 2006, 2011 and 2016.
+        <a href="https://research.qut.edu.au/dmrc/wp-content/uploads/sites/5/2018/10/Factsheet-2-Employment-by-sector-V6.pdf">Factsheet 2 (PDF)</a></li>
+      <li>Association of Consulting Architects (ACA), <em>Architects in Australia</em> state and territory reports (Gill Matthewson), from the ABS Census 2001, 2006 and 2011, Table 3: architects by employment situation (employees, own account workers, employers).
+        <a href="https://aca.org.au/architects-in-australia/">ACA reports</a></li>
+      <li>Jobs and Skills Australia, <em>Occupation profiles</em>: ANZSCO 2321 Architects and Landscape Architects, 2323 Fashion, Industrial and Jewellery Designers and 2325 Interior Designers (February 2026 release); 2324 Graphic and Web Designers, and Illustrators (August 2025 release). Employment, women's share, full-time share and median age are from the ABS Labour Force Survey; median full-time weekly earnings are from the ABS Survey of Employee Earnings and Hours.
+        <a href="https://www.jobsandskills.gov.au/data/labour-market-insights/occupations/2321-architects-and-landscape-architects">2321</a>,
+        <a href="https://www.jobsandskills.gov.au/data/occupation-and-industry-profiles/occupations/2323-fashion-industrial-and-jewellery-designers">2323</a>,
+        <a href="https://www.jobsandskills.gov.au/data/labour-market-insights/occupations/2324-graphic-and-web-designers-and-illustrators">2324</a>,
+        <a href="https://www.jobsandskills.gov.au/data/labour-market-insights/occupations/2325-interior-designers">2325</a></li>
+      <li>Map boundaries: state boundaries from <a href="https://github.com/nvkelso/natural-earth-vector">Natural Earth</a> admin-1 (public domain); local government area boundaries from <a href="https://github.com/wmgeolab/geoBoundaries">geoBoundaries</a> ADM2 (open licence). Both filtered to Australia and simplified.</li>
     </ul>
-    <p>Created by Dean G Park 33156727. Charts built with Vega-Lite and Vega. Ai was used inorder to help find the vast amount of data needed to structure the text as well as help with formatting and animation.</p>
+    <p><strong>Calculations.</strong> Rates per 100,000 residents, shares, growth and ranks were calculated from the sources above. Dot positions on the dot map are placed randomly inside each local government area (the counts are real, the exact positions are not). Hexagon bins, local government area centre points, tile positions and label positions were made by the author.</p>
+    <p><strong>Author.</strong> Created by Dean G Park (33156727), October 2026. Charts built with Vega-Lite and Vega. AI tools were used to help find data sources, structure the text, and with formatting and animation.</p>
   </div>
 </footer>
 
